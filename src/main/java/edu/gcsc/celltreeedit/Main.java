@@ -2,9 +2,6 @@ package edu.gcsc.celltreeedit;
 
 import eu.mihosoft.vswcreader.SWCSegment;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
@@ -27,6 +24,7 @@ public class Main {
         List<SWCSegment> segments = SWCSegment.fromString(swcContent);
 
         // TODO do something with the swc data
+
         // output segments
         System.out.println("----------------------------------------------------------");
         System.out.println("> segment data:");
@@ -39,32 +37,5 @@ public class Main {
         System.out.println("----------------------------------------------------------");
         String swcContent2 = SWCSegment.toSWCString(segments);
         System.out.println(swcContent2);
-
-
-        System.out.println("**************************************************************");
-        System.out.println("------------------------From Steam----------------------------");
-        List<SWCSegment> segments2;
-        try {
-            FileInputStream fi = new FileInputStream(
-                    new File("C:/Users/Erid/Dropbox/Dokumente/Informatik-UNI/SOSe2017/Bachelorarbeit/194-4-29nj.CNG.SWC"));
-//            segments2 = SWCSegment.fromStream(fi);
-//            segments2.forEach(t->System.out.println(t));
-//            System.out.println(segments2.size());
-        }catch(FileNotFoundException e){
-            System.out.println(e);
-        }
-
-        System.out.println("***************************************************************");
-        System.out.println("----------------------Tree_Konstruktor-------------------------");
-        try{
-            FileInputStream f= new FileInputStream(
-                    new File("C:/Users/Erid/Dropbox/Dokumente/Informatik-UNI/SOSe2017/Bachelorarbeit/194-4-29nj.CNG - Kopie.SWC"));
-            Tree tree=new Tree(f);
-            List<Integer> l= tree.getChildren(1);
-            l.forEach(integer -> System.out.println(integer));
-        }catch(FileNotFoundException e){
-            System.out.println(e);
-        }
-
     }
 }
