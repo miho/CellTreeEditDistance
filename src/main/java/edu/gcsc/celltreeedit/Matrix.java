@@ -3,12 +3,10 @@ package edu.gcsc.celltreeedit;
 import java.io.*;
 import distance.APTED;
 import node.Node;
-import javax.swing.*;
-
 /**
  * Created by Erid on 16.02.2018.
  *
- * The class will do the comparison of the files imported from ChooseFiles and do the representation in a Matrix
+ * The class will do the comparison of the files imported from ChooseFiles and saves the results in a 2d array
  */
 public class Matrix {
 
@@ -19,7 +17,11 @@ public class Matrix {
     public static void compare(File[] files) {
 
         int size= files.length;
-        float[][]results= new float[size][size];                                    // array saves the results of the algorithm
+        float[][]results= new float[size][size];                         // array saves the results of the algorithm
+        String[] names=new String[size];
+        for(int i=0;i<size;i++){
+            names[i]=files[i].getName();
+        }
 
         try {
             for(int i=0; i<size-1;i++){
@@ -48,22 +50,37 @@ public class Matrix {
             e.printStackTrace();
         }
 
-        Matrix.show(results);
+        Matrix.print(results, names);
     }
 
 
     /**
-     *      Methode muss noch definiert werden um die Matrix in einer Frame anzeigen zu lassen.
      *
+     * @param results
      */
-    public static void show(float[][] results){
+    public static void print(float[][] results, String[] names){
 
 
         int size=results.length;
         //Ausgabe der results Array formattieren---------------Tabelle oder Graph plotten !!!!!
+        String filename="*%10s -> ";
+        System.out.printf("****************************** Filenames ***************************************\n");
+        System.out.print("*\n");
+        for(int i=0;i<size;i++){
+            int z=i+1;
+            System.out.printf(filename,"file "+z);
+            System.out.printf(names[i]+"\n");
+        }
+        System.out.print("*\n");
+        System.out.printf("********************************************************************************\n");
+
+
 
         String placeholder="|%8s|";
         String name="%8s |";
+        System.out.print("\n");
+        System.out.printf("******************************* Results ****************************************\n");
+        System.out.print("\n");
         System.out.printf(name,"");
         for(int i=0; i<size;i++){                       // printe die kopfzeiele....anstatt k kann der name angezeigt werden
             int k=i+1;
