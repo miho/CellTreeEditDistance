@@ -5,7 +5,8 @@ import node.Node;
 /**
  *
  */
-public class CostModel implements costmodel.CostModel<NodeData> {
+public class TreeCostModel implements costmodel.CostModel<NodeData> {
+
     /**
      *
      * @param n
@@ -13,7 +14,7 @@ public class CostModel implements costmodel.CostModel<NodeData> {
      */
     @Override
     public float del(Node<NodeData> n) {
-        return 1.0f;
+        return Math.abs((float) n.getNodeData().getLabel());
     }
 
     /**
@@ -23,7 +24,7 @@ public class CostModel implements costmodel.CostModel<NodeData> {
      */
     @Override
     public float ins(Node<NodeData> n) {
-        return 1.0f;
+        return Math.abs((float) n.getNodeData().getLabel());
     }
 
     /**
@@ -35,8 +36,7 @@ public class CostModel implements costmodel.CostModel<NodeData> {
     @Override
     public float ren(Node<NodeData> n1, Node<NodeData> n2) {
         if(n1.getNodeData().getLabel()==n2.getNodeData().getLabel())
-            return 0.0f;
-        else
-            return 1.0f;
+          return 0;
+        else return Math.abs((float) n1.getNodeData().getLabel()- (float) n2.getNodeData().getLabel());
     }
 }
