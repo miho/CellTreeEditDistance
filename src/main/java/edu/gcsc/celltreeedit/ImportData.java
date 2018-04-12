@@ -88,19 +88,10 @@ public class ImportData {
         }
            /*
     Label definition:
-    0.length   - distance from father segment
-    1.Tree length - Sum of all label0
-    2.Approx length - label0 / label1
-    3.length from soma - distance to the father soma
-    4.volume
-    5.tree volume
-    6.approx volume
-    7.volume from t[i] to soma
-    8.surface
-    9.tree surface
-    10.approx surface
-    11.surface from t[i] to soma
-    12.angle between children of t[i]
+    1-
+    2-
+    3-
+    4-
      */
     }
 

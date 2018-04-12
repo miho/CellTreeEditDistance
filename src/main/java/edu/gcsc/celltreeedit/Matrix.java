@@ -70,14 +70,22 @@ public class Matrix {
                     // compare each two files
                     FileInputStream f= new FileInputStream(files[i]);
                     FileInputStream f2= new FileInputStream(files[j]);
-                    ImportData i1 = new ImportData();
-                    ImportData i2 = new ImportData();
-                    InputParser parser1 = new InputParser();
-                    InputParser parser2 = new InputParser();
-                    i1.importData(f, choice);
-                    i2.importData(f2,choice);
-                    Node<NodeData> t1 = parser1.createTree(i1, 1);
-                    Node<NodeData> t2 = parser2.createTree(i2, 1);
+                //    ImportData i1 = new ImportData();
+                 //   ImportData i2 = new ImportData();
+                  //  InputParser parser1 = new InputParser();
+                    //InputParser parser2 = new InputParser();
+                    //i1.importData(f, choice);
+                    //i2.importData(f2,choice);
+                    //Node<NodeData> t1 = parser1.createTree(i1, 1);
+             //       System.out.println("Baum T1:"+t1.getNodeCount());
+                    //Node<NodeData> t2 = parser2.createTree(i2, 1);
+              //      System.out.println("Baum T2:"+t2.getNodeCount());
+
+                     TestBaum one = new TestBaum();
+                     TestBaum two = new TestBaum();
+
+                    Node<NodeData> t1 = one.createTree(f,choice);
+                    Node<NodeData> t2 = two.createTree(f2,choice);
 
                     // Initialise APTED.
                     APTED<TreeCostModel, NodeData> apted = new APTED<>(new TreeCostModel());

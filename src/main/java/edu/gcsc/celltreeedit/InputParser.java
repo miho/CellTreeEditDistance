@@ -7,11 +7,11 @@ import java.util.Vector;
 /**
  *
  */
-public class InputParser implements parser.InputParser {
+public class InputParser implements parser.InputParser<NodeData> {
 
     /**
      * @param importData ein Objekt dieser Klasse speichert die Bauminformation in Arrays.
-     * @param z          sit ein zeiger
+     * @param z          wie ein zeiger, zeigt welcher segment als node dargestellt wird
      * @return
      */
     public Node<NodeData> createTree(ImportData importData, int z) {
@@ -29,7 +29,7 @@ public class InputParser implements parser.InputParser {
     }
 
     /**
-     *
+     *  must becouse of interface declarations
      * @param s
      * @return
      */
