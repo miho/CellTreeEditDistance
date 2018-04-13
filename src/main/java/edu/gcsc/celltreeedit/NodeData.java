@@ -8,7 +8,7 @@ import javax.xml.soap.Node;
 public class NodeData {
 
     double label;
-    int structure;
+    int type;
     int index;
     int parent;
     double posX;
@@ -23,9 +23,9 @@ public class NodeData {
         this.label=label;
     }
 
-    public NodeData(int index, int structure, double posX, double posY, double posZ, double radius, int parent){
+    public NodeData(int index, int type, double posX, double posY, double posZ, double radius, int parent){
         this.index=index;
-        this.structure=structure;
+        this.type=type;
         this.posX=posX;
         this.posY=posY;
         this.posZ=posZ;
@@ -33,20 +33,41 @@ public class NodeData {
         this.parent=parent;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        NodeData nodeData = (NodeData) o;
+
+        if (Double.compare(nodeData.label, label) != 0) return false;
+        if (type != nodeData.type) return false;
+        if (index != nodeData.index) return false;
+        if (parent != nodeData.parent) return false;
+        if (Double.compare(nodeData.posX, posX) != 0) return false;
+        if (Double.compare(nodeData.posY, posY) != 0) return false;
+        if (Double.compare(nodeData.posZ, posZ) != 0) return false;
+        return Double.compare(nodeData.radius, radius) == 0;
+    }
 
     @Override
     public int hashCode() {
-        return super.hashCode();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return super.equals(obj);
-    }
-
-    @Override
-    public String toString() {
-        return super.toString();
+        int result;
+        long temp;
+        temp = Double.doubleToLongBits(label);
+        result = (int) (temp ^ (temp >>> 32));
+        result = 31 * result + type;
+        result = 31 * result + index;
+        result = 31 * result + parent;
+        temp = Double.doubleToLongBits(posX);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(posY);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(posZ);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(radius);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        return result;
     }
 
     public double getLabel(){
@@ -105,12 +126,12 @@ public class NodeData {
         this.radius = radius;
     }
 
-    public int getStructure() {
+    public int getType() {
 
-        return structure;
+        return type;
     }
 
-    public void setStructure(int structure) {
-        this.structure = structure;
+    public void setType(int Type) {
+        this.type = type;
     }
 }

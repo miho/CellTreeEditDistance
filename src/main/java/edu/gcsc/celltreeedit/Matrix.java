@@ -81,8 +81,8 @@ public class Matrix {
                     //Node<NodeData> t2 = parser2.createTree(i2, 1);
               //      System.out.println("Baum T2:"+t2.getNodeCount());
 
-                     TestBaum one = new TestBaum();
-                     TestBaum two = new TestBaum();
+                     TreeCreator one = new TreeCreator();
+                     TreeCreator two = new TreeCreator();
 
                     Node<NodeData> t1 = one.createTree(f,choice);
                     Node<NodeData> t2 = two.createTree(f2,choice);

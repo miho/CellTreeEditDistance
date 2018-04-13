@@ -17,8 +17,8 @@ public class Main {
      //   FileInputStream f= new FileInputStream(new File("C:\\Users\\Erid\\Dropbox\\Dokumente\\Informatik-UNI\\SoSe2017\\Bachelorarbeit\\files\\1k.SWC"));
       //  FileInputStream f2= new FileInputStream(new File("C:\\Users\\Erid\\Dropbox\\Dokumente\\Informatik-UNI\\SoSe2017\\Bachelorarbeit\\files\\LA31_07_15_10_39_191516-1SpalaxMelDAPI_ov10_Z85_sdx20_3.CNG.SWC"));
 
-       // TestBaum t1 = new TestBaum();
-      //  TestBaum t2 = new TestBaum();
+       // TreeCreator t1 = new TreeCreator();
+      //  TreeCreator t2 = new TreeCreator();
 
        // Node<NodeData> one = t1.createTree(f);
         //Node<NodeData> two = t2.createTree(f2);
@@ -27,7 +27,7 @@ public class Main {
       //  APTED<TreeCostModel, NodeData> apted = new APTED<>(new TreeCostModel());
 // Execute APTED.
         //float result = apted.computeEditDistance(one, two);
-       // System.out.println(result);
+        // System.out.println(result);
        // System.out.println(one.getNodeCount());
         //System.out.println(two.getNodeCount());
 
