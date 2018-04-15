@@ -1,10 +1,12 @@
 package edu.gcsc.celltreeedit;
 
-import java.io.*;
-import java.util.Scanner;
 import distance.APTED;
 import node.Node;
+
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import java.io.*;
+import java.util.Scanner;
 
 /**
  * Created by Erid on 16.02.2018.
@@ -13,13 +15,63 @@ import javax.swing.*;
  */
 public class Matrix {
 
+    private float[][] results;
+
+    public float[][] getResults(){
+        return this.results;
+    }
+
+    public static File[] choose(){
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setCurrentDirectory(new File("C:\\Users\\Erid\\Dropbox\\Dokumente\\Informatik-UNI\\SoSe2017\\Bachelorarbeit"));
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES); //accept files and directories as input
+        FileNameExtensionFilter swc=new FileNameExtensionFilter("SWC","SWC");
+        fileChooser.addChoosableFileFilter(swc);                            // filter on swc files
+        fileChooser.setAcceptAllFileFilterUsed(false);                     // show only swc files
+        fileChooser.setMultiSelectionEnabled(true);                       // accept multiple files as input
+        fileChooser.showOpenDialog(null);
+
+        if(fileChooser.getSelectedFile().isFile())
+            return fileChooser.getSelectedFiles();
+        else{
+            File folder= new File(fileChooser.getSelectedFile().getAbsolutePath());
+            File[] selectedFiles= folder.listFiles(new FilenameFilter() {              // return only swc files
+                @Override
+                public boolean accept(File dir, String name) {
+                    return name.endsWith(".swc");
+                }
+            });
+            return selectedFiles;
+        }
+    }
+
+    public static String showLabels(){
+
+        StringBuilder sb= new StringBuilder();
+        String labels=null;
+        sb.append("Choose a label of the followings by inserting the number\n");
+        sb.append("1.  1\n");
+        sb.append("2.  1/n\n");
+        sb.append("4.  length of t[i]\n");
+        sb.append("5.  surface of t[i]\n");
+        sb.append("6.  volume of t[i]\n");
+        sb.append("7.  legnth of t[i]\n");
+        sb.append("8.  legnth of t[i]\n");
+        sb.append("9.  legnth of t[i]\n");
+        sb.append("10. legnth of t[i]\n");
+        sb.append("11. legnth of t[i]\n");
+
+        labels=sb.toString();
+        return labels;
+    }
     /**
      *
      * @param files
      */
-    public static void compare(File[] files) {
+    public static float[][] compare(File[] files) {
 
         int size= files.length;
+        System.out.println(size+" Files were imported!");
         int gesamtBerechnung= ((size*size)-size)/2;
         int progress=0;
         float[][]results= new float[size][size];                         // array saves the results of the algorithm
@@ -123,6 +175,55 @@ public class Matrix {
             System.out.println("");
             System.out.println("Input not recognized. Save is canceled");
         }
+        return results;
+    }
+
+
+
+    public float[][] compareFile(int choice) {
+        File[] files=Matrix.choose();
+        int size= files.length;
+        System.out.println(size+" Files were imported!");
+        int gesamtBerechnung= ((size*size)-size)/2;
+        int progress=0;
+        results= new float[size][size];                         // array saves the results of the algorithm
+        String[] names=new String[size];
+        for(int i=0;i<size;i++){
+            names[i]=files[i].getName();
+        }
+
+        try {
+            System.out.println("****************************** Progress ****************************************");
+            System.out.println("*");
+            for(int i=0; i<size-1;i++){
+                for(int j=i+1; j<size;j++){
+                    // compare each two files
+                    FileInputStream f= new FileInputStream(files[i]);
+                    FileInputStream f2= new FileInputStream(files[j]);
+
+                    TreeCreator one = new TreeCreator();
+                    TreeCreator two = new TreeCreator();
+
+                    Node<NodeData> t1 = one.createTree(f,choice);
+                    Node<NodeData> t2 = two.createTree(f2,choice);
+
+                    // Initialise APTED.
+                    APTED<TreeCostModel, NodeData> apted = new APTED<>(new TreeCostModel());
+                    // Execute APTED.
+                    float result = apted.computeEditDistance(t1, t2);
+                    results[i][j]=result;
+                    results[j][i]=result;
+                    progress++;
+                    System.out.println("* Progress.........:"+progress+"/"+gesamtBerechnung);
+                }
+            }
+            System.out.println("*");
+            System.out.printf("********************************************************************************\n");
+            System.out.println("");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return results;
     }
 
 

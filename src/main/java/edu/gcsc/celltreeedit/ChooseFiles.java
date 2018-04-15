@@ -13,11 +13,12 @@ import java.io.FilenameFilter;
  */
 public class ChooseFiles {
 
+    private File[] selectedFiles;
     /**
      *
      * @return a list of files which were selected
      */
-    public static File[] choose(){
+    public File[] choose(){
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setCurrentDirectory(new File("C:\\Users\\Erid\\Dropbox\\Dokumente\\Informatik-UNI\\SoSe2017\\Bachelorarbeit"));
         fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES); //accept files and directories as input
@@ -31,7 +32,7 @@ public class ChooseFiles {
             return fileChooser.getSelectedFiles();
         else{
             File folder= new File(fileChooser.getSelectedFile().getAbsolutePath());
-            File[] selectedFiles= folder.listFiles(new FilenameFilter() {              // return only swc files
+            selectedFiles= folder.listFiles(new FilenameFilter() {              // return only swc files
                 @Override
                 public boolean accept(File dir, String name) {
                     return name.endsWith(".swc");

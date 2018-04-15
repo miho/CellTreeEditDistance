@@ -12,12 +12,4 @@ public class MatrixTest {
     public void compare() throws Exception {
     }
 
-    @Test
-    public void print() throws Exception {
-    }
-
-    @Test
-    public void printToTxt() throws Exception {
-    }
-
 }

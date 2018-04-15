@@ -2,6 +2,8 @@ package edu.gcsc.celltreeedit;
 
 import org.junit.Test;
 
+import javax.xml.soap.Node;
+
 import static org.junit.Assert.*;
 
 /**
@@ -13,7 +15,8 @@ public class NodeDataTest {
 
     @Test
     public void getLabel() throws Exception {
-
+        NodeData n= new NodeData(1);
+        assertEquals(1,n.getLabel(),1.0);
     }
 
 
