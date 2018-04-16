@@ -4,7 +4,6 @@ import distance.APTED;
 import node.Node;
 
 import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.*;
 import java.util.Scanner;
 
@@ -16,58 +15,29 @@ import java.util.Scanner;
 public class Matrix {
 
     private float[][] results;
+    private File[] files;
+    private String[] fileNames;
+
+    public String[] getFileNames(){
+        return this.fileNames;
+    }
 
     public float[][] getResults(){
         return this.results;
     }
 
-    public static File[] choose(){
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setCurrentDirectory(new File("C:\\Users\\Erid\\Dropbox\\Dokumente\\Informatik-UNI\\SoSe2017\\Bachelorarbeit"));
-        fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES); //accept files and directories as input
-        FileNameExtensionFilter swc=new FileNameExtensionFilter("SWC","SWC");
-        fileChooser.addChoosableFileFilter(swc);                            // filter on swc files
-        fileChooser.setAcceptAllFileFilterUsed(false);                     // show only swc files
-        fileChooser.setMultiSelectionEnabled(true);                       // accept multiple files as input
-        fileChooser.showOpenDialog(null);
-
-        if(fileChooser.getSelectedFile().isFile())
-            return fileChooser.getSelectedFiles();
-        else{
-            File folder= new File(fileChooser.getSelectedFile().getAbsolutePath());
-            File[] selectedFiles= folder.listFiles(new FilenameFilter() {              // return only swc files
-                @Override
-                public boolean accept(File dir, String name) {
-                    return name.endsWith(".swc");
-                }
-            });
-            return selectedFiles;
-        }
+    public File[] getFiles(){
+        return this.files;
     }
 
-    public static String showLabels(){
-
-        StringBuilder sb= new StringBuilder();
-        String labels=null;
-        sb.append("Choose a label of the followings by inserting the number\n");
-        sb.append("1.  1\n");
-        sb.append("2.  1/n\n");
-        sb.append("4.  length of t[i]\n");
-        sb.append("5.  surface of t[i]\n");
-        sb.append("6.  volume of t[i]\n");
-        sb.append("7.  legnth of t[i]\n");
-        sb.append("8.  legnth of t[i]\n");
-        sb.append("9.  legnth of t[i]\n");
-        sb.append("10. legnth of t[i]\n");
-        sb.append("11. legnth of t[i]\n");
-
-        labels=sb.toString();
-        return labels;
+    public void showLabels(){
+        TableView labels= new TableView();
+        //labels.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        labels.setSize(800,300);
+        labels.setVisible(true);
+        labels.setTitle("Labels");
     }
-    /**
-     *
-     * @param files
-     */
+
     public static float[][] compare(File[] files) {
 
         int size= files.length;
@@ -156,7 +126,7 @@ public class Matrix {
             e.printStackTrace();
         }
 
-        Matrix.print(results, names);
+        Matrix.printtoConsole(results, names);
         System.out.println("");
         System.out.println("* Do you want to save the matrix in a txt file? (yes/no) ");
         System.out.println("");
@@ -178,13 +148,15 @@ public class Matrix {
         return results;
     }
 
-
-
-    public float[][] compareFile(int choice) {
-        File[] files=Matrix.choose();
+    public void compareFiles(int choice, int showtable, int exportTxt) {
+        files=ChooseFiles.choose();
         int size= files.length;
-        System.out.println(size+" Files were imported!");
-        int gesamtBerechnung= ((size*size)-size)/2;
+        fileNames=new String[size];
+        for(int i=0;i<size;i++){
+            fileNames[i]=files[i].getName();
+        }
+        System.out.println(size+" Files were imported!");    // loggen?
+        int nrofCalculations= ((size*size)-size)/2;
         int progress=0;
         results= new float[size][size];                         // array saves the results of the algorithm
         String[] names=new String[size];
@@ -193,7 +165,7 @@ public class Matrix {
         }
 
         try {
-            System.out.println("****************************** Progress ****************************************");
+            System.out.println("* Progress *");
             System.out.println("*");
             for(int i=0; i<size-1;i++){
                 for(int j=i+1; j<size;j++){
@@ -214,26 +186,27 @@ public class Matrix {
                     results[i][j]=result;
                     results[j][i]=result;
                     progress++;
-                    System.out.println("* Progress.........:"+progress+"/"+gesamtBerechnung);
+                    System.out.println("* Progress....:"+progress+"/"+nrofCalculations);
                 }
             }
             System.out.println("*");
-            System.out.printf("********************************************************************************\n");
+            System.out.printf("************************\n");
             System.out.println("");
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return results;
+        if(exportTxt==1)
+            this.printToTxt(results);
+        if(showtable==1){
+            TableView tableView= new TableView(fileNames,results);
+            //tableView.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            tableView.setSize(800,300);
+            tableView.setVisible(true);
+            tableView.setTitle("Comparison Results");
+        }
     }
 
-
-    /**
-     *
-     * @param results
-     */
-    public static void print(float[][] results, String[] names){
-
-
+    public static void printtoConsole(float[][] results, String[] names){
         int size=results.length;
         //Ausgabe der results Array formattieren---------------Tabelle oder Graph plotten !!!!!
         String filename="*%10s -> ";
@@ -285,10 +258,6 @@ public class Matrix {
 
     }
 
-    /**
-     *
-     * @param results
-     */
     public static void printToTxt(float[][] results){
         System.out.printf("********************************************************************************\n");
         System.out.println("");
