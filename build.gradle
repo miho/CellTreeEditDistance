@@ -1,5 +1,17 @@
 apply plugin: 'java'
 
+buildscript {
+
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+
+    dependencies {
+        classpath (group: 'eu.mihosoft.vrl', name: 'vrl', version: '0.4.3.2.3')
+    }
+}
+
 sourceCompatibility = '1.8'
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
@@ -19,4 +31,69 @@ dependencies {
     testCompile 'org.testfx:testfx-junit:4.0.4-alpha'
 
     compile 'eu.mihosoft.vswc:vswc:0.0.1'
+
+    compile (group: 'eu.mihosoft.vrl', name: 'vrl', version: '0.4.3.2.3')
+
+    compile files("libs/apted-master.jar")
+}
+
+
+
+def loadProperties(String sourceFileName) {
+
+    def config = new Properties()
+    def propFile = new File(projectDir,sourceFileName)
+
+    if (propFile.isFile()) {
+        config.load(new FileInputStream(propFile))
+        for (Map.Entry property in config) {
+            ext.set(property.key, property.value)
+        }
+    }
+}
+
+// loads the property file
+loadProperties('build.properties')
+
+// create a fat-jar (class files plus dependencies
+// excludes VRL.jar (plugin jar files must not start with 'vrl-\\d+')
+jar {
+
+    // dependencies except VRL
+    from configurations.runtime.asFileTree.
+            filter({file->return !file.name.startsWith("vrl-0")}).
+            files.collect { zipTree(it) }
+
+    // project class files compiled from source
+    from files(sourceSets.main.output.classesDir)
+}
+
+String getVRLDir() {
+
+    String result
+
+    if (vrldir.isEmpty()) {
+        result = System.getProperty("user.home")
+        result+= "/.vrl/"
+        result+= eu.mihosoft.vrl.system.Constants.VERSION_MAJOR
+        result+= "/default"
+    } else {
+        result = vrldir
+    }
+
+    return result
+}
+
+// compiles and installs the vrl plugin to the specified folder
+task installVRLPlugin(dependsOn: [clean,jar]) {
+    doLast {
+        println(">> copying vrl plugin to: " + getVRLDir() + "/plugin-updates")
+
+        copy {
+            from buildDir.getPath() + "/libs/" + rootProject.name + ".vrlplugin"
+            into getVRLDir() + "/plugin-updates/"
+            include rootProject.name + ".vrlplugin"
+            rename (rootProject.name + ".vrlplugin", rootProject.name + ".jar")
+        }
+    }
 }

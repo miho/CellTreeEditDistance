@@ -4,3 +4,4 @@ build
 CellTreeEditDistance.iml
 .idea
 .gradle
+out/
