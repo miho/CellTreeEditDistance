@@ -3,7 +3,7 @@ package edu.gcsc.celltreeedit;
 import javax.swing.*;
 import java.awt.*;
 
-public class TableView extends JFrame{
+public class TableView extends JPanel{
 
     JTable table;
     public TableView(String[] names, float[][] result){

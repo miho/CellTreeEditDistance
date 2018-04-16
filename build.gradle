@@ -65,7 +65,7 @@ jar {
             files.collect { zipTree(it) }
 
     // project class files compiled from source
-    from files(sourceSets.main.output.classesDir)
+    from files(sourceSets.main.output.classesDirs)
 }
 
 String getVRLDir() {

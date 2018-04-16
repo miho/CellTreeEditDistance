@@ -31,11 +31,13 @@ public class Matrix {
     }
 
     public void showLabels(){
+        JFrame frame = new JFrame();
         TableView labels= new TableView();
+        frame.add(labels);
         //labels.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        labels.setSize(800,300);
-        labels.setVisible(true);
-        labels.setTitle("Labels");
+        frame.setSize(800,300);
+        frame.setVisible(true);
+        frame.setTitle("Labels");
     }
 
     public static float[][] compare(File[] files) {
@@ -198,11 +200,15 @@ public class Matrix {
         if(exportTxt==1)
             this.printToTxt(results);
         if(showtable==1){
+            JFrame frame= new JFrame();
+
             TableView tableView= new TableView(fileNames,results);
+
+            frame.add(tableView);
             //tableView.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            tableView.setSize(800,300);
-            tableView.setVisible(true);
-            tableView.setTitle("Comparison Results");
+            frame.setSize(800,300);
+            frame.setVisible(true);
+            frame.setTitle("Comparison Results");
         }
     }
 

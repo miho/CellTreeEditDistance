@@ -19,11 +19,11 @@ public class Main {
         for(int i=0;i<size;i++){
             names[i]=file[i].getName();
         }
-        TableView tableView= new TableView(names, Matrix.compare(filechooser.choose()));
-        tableView.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        tableView.setSize(800,300);
-        tableView.setVisible(true);
-        tableView.setTitle("matrix");
+//        TableView tableView= new TableView(names, Matrix.compare(filechooser.choose()));
+//        tableView.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        tableView.setSize(800,300);
+//        tableView.setVisible(true);
+//        tableView.setTitle("matrix");
 
     }
 }
