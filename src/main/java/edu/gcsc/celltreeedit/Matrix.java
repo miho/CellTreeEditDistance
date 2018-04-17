@@ -1,11 +1,7 @@
 package edu.gcsc.celltreeedit;
 
-import distance.APTED;
-import node.Node;
-
 import javax.swing.*;
-import java.io.*;
-import java.util.Scanner;
+import java.io.File;
 
 /**
  * Created by Erid on 16.02.2018.
@@ -39,7 +35,7 @@ public class Matrix {
         frame.setVisible(true);
         frame.setTitle("Labels");
     }
-
+/*
     public static float[][] compare(File[] files) {
 
         int size= files.length;
@@ -300,5 +296,5 @@ public class Matrix {
 
 
     }
-
+*/
 }

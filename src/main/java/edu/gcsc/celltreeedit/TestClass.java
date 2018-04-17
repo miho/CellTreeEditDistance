@@ -7,7 +7,7 @@ import eu.mihosoft.vrl.annotation.ParamInfo;
 import javax.swing.*;
 import java.io.File;
 
-@ComponentInfo(name = "TestClass", category = "CellTreeEditDistance")
+@ComponentInfo(name = "TestClass", category = "Matrix")
 public class TestClass implements java.io.Serializable {
     private static final long serialVersionUID = 1L;
 

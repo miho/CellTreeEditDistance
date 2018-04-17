@@ -165,7 +165,6 @@ public class ImportData {
                     double lengthItoJ = Math.pow(x * x + y * y + z * z, 0.5);
                     surface= surface+ lengthItoJ*getRadius(j)*2*3.142;
                 }
-
         }
         }
         return surface;

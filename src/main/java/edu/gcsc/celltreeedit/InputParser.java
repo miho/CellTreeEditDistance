@@ -29,7 +29,7 @@ public class InputParser implements parser.InputParser<NodeData> {
     }
 
     /**
-     *  must becouse of interface declarations
+     *  must because of interface declarations
      * @param s
      * @return
      */
