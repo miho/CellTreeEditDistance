@@ -51,23 +51,36 @@ public class TreeCreator implements parser.InputParser<NodeData>{
     }
 
     public Node<NodeData> createTreeStructure(int segNr){   // bei 0 anfangen    mit Listennummerierung anzugeben
+        //Vaterknoten wird mitgenommen
         List<Integer> Index=new ArrayList<>();
+        List<Double> PosX = new ArrayList<>();
+        List<Double> PosY = new ArrayList<>();
+        List<Double> PosZ = new ArrayList<>();
+        List<Double> R = new ArrayList<>();
+        List<Integer> Parent=new ArrayList<>();
+        int vaterID= swcSegments.get(segNr).getParent();
+       // System.out.println("vaterseg: "+vaterID);
+
+        if(vaterID!=-1){        //Vaterknoteninfos werden als erstes in die liste geschoben, dann die vom aufrufparameter
+            Index.add(swcSegments.get(vaterID-1).getIndex());
+            //System.out.println(swcSegments.get(vaterID-1).getIndex());
+            PosX.add(swcSegments.get(vaterID-1).getPos().getX());
+            PosY.add(swcSegments.get(vaterID-1).getPos().getY());
+            PosZ.add(swcSegments.get(vaterID-1).getPos().getZ());
+            R.add(swcSegments.get(vaterID-1).getR());
+            Parent.add(swcSegments.get(vaterID-1).getParent());
+        }
         Index.add(swcSegments.get(segNr).getIndex());
         int type=swcSegments.get(segNr).getType();
-        List<Double> PosX = new ArrayList<>();
         PosX.add(swcSegments.get(segNr).getPos().getX());
-        List<Double> PosY = new ArrayList<>();
         PosY.add(swcSegments.get(segNr).getPos().getY());
-        List<Double> PosZ = new ArrayList<>();
         PosZ.add(swcSegments.get(segNr).getPos().getZ());
-        List<Double> R = new ArrayList<>();
         R.add(swcSegments.get(segNr).getR());
-        List<Integer> Parent=new ArrayList<>();
         Parent.add(swcSegments.get(segNr).getParent());
 
         Node<NodeData> node= new Node<>(new NodeData(Index,type,PosX,PosY,PosZ,R,Parent));
-        nodeList.add(node);
-        int nr=segNr+1;
+        nodeList.add(node);     // vaterknoten wurde als erstes in die liste geschoben
+        int nr=segNr+1;                     // die echte segmentID
         while(!ifBranchOrEnd(nr)){                         // mit Arraynummerierung anzugeben
           //  System.out.println("Node"+nr+" hat nur ein Kind");
             node.getNodeData().getIndex().add(swcSegments.get(nr).getIndex());                  // mit Listennummerierung anzugeben
@@ -84,8 +97,8 @@ public class TreeCreator implements parser.InputParser<NodeData>{
            // System.out.println(nr+" ist ein branch point oder ein endsegment");
             Vector children = this.getChildren(nr);
             for (int i = 0; i < children.size(); i++) {
-         //       System.out.println("Kindknoten  "+children.get(i)+" wird an "+nr+" gehängt");
-                int aufruf=(Integer) children.get(i)-1;
+               // System.out.println("Kindknoten  "+children.get(i)+" wird an "+nr+" gehängt");
+                int aufruf=(Integer) children.get(i)-1;         // weil Listennummerierung
                 node.addChild(createTreeStructure(aufruf));
             }
         }
@@ -122,20 +135,21 @@ public class TreeCreator implements parser.InputParser<NodeData>{
         }
         if(label==5){                                   //approxlength of a section
             for(int i=0;i<nodeList.size(); i++){
-                double x=nodeList.get(i).getNodeData().getPosX().get(nodeList.size()-1)-nodeList.get(i).getNodeData().getPosX().get(0);
-                double y=nodeList.get(i).getNodeData().getPosY().get(nodeList.size()-1)-nodeList.get(i).getNodeData().getPosY().get(0);
-                double z=nodeList.get(i).getNodeData().getPosZ().get(nodeList.size()-1)-nodeList.get(i).getNodeData().getPosZ().get(0);
+                double x=nodeList.get(i).getNodeData().getPosX().get(nodeList.get(i).getNodeData().getPosX().size()-1)-nodeList.get(i).getNodeData().getPosX().get(0);
+                double y=nodeList.get(i).getNodeData().getPosY().get(nodeList.get(i).getNodeData().getPosY().size()-1)-nodeList.get(i).getNodeData().getPosY().get(0);
+                double z=nodeList.get(i).getNodeData().getPosZ().get(nodeList.get(i).getNodeData().getPosZ().size()-1)-nodeList.get(i).getNodeData().getPosZ().get(0);
                 double approxlength=Math.pow(x * x + y * y + z * z, 0.5);
+                System.out.println(i+" : "+approxlength);
                 nodeList.get(i).getNodeData().setLabel(approxlength);
             }
         }
-        if(label==5){                                   //length of tree rooted at 1
+        if(label==6){                                   //length of tree rooted at 1
         }
-        if(label==6){                                   //length of a section/length of tree rooted at i
+        if(label==7){                                   //length of a section/length of tree rooted at i
         }
-        if(label==7){                                   //length of tree rooted at i / length of tree rooted at 1
+        if(label==8){                                   //length of tree rooted at i / length of tree rooted at 1
         }
-        if(label==8){                                   //surface of a section
+        if(label==9){                                   //surface of a section
             for(int i=0;i<nodeList.size(); i++){
                 double surface=0;
                 Node<NodeData> node= nodeList.get(i);
@@ -151,7 +165,7 @@ public class TreeCreator implements parser.InputParser<NodeData>{
                 node.getNodeData().setLabel(surface);
             }
         }
-        if(label==9){                                   //approxsurface of a section
+        if(label==10){                                   //approxsurface of a section
             double approxlength=0;
             for(int i=0;i<nodeList.size(); i++){
                 double x=nodeList.get(i).getNodeData().getPosX().get(nodeList.size()-1)-nodeList.get(i).getNodeData().getPosX().get(0);
@@ -169,15 +183,16 @@ public class TreeCreator implements parser.InputParser<NodeData>{
             double approxSurface=approxlength*avgR*2*3.142;
             nodeList.forEach(t->t.getNodeData().setLabel(approxSurface));
         }
-        if(label==9){                                   //surface of tree rooted at i
+        if(label==11){                                   //surface of tree rooted at i
+
         }
-        if(label==10){                                  //surface of tree rooted at 1
+        if(label==12){                                  //surface of tree rooted at 1
         }
-        if(label==11){                                  //surface of a section/surface of tree rooted at i
+        if(label==13){                                  //surface of a section/surface of tree rooted at i
         }
-        if(label==12){                                  //surface of tree rooted at i / surface of tree rooted at 1
+        if(label==14){                                  //surface of tree rooted at i / surface of tree rooted at 1
         }
-        if(label==12){                                  //volume of a section
+        if(label==15){                                  //volume of a section
             for(int i=0;i<nodeList.size(); i++){
                 double volume=0;
                 Node<NodeData> node= nodeList.get(i);
@@ -193,7 +208,7 @@ public class TreeCreator implements parser.InputParser<NodeData>{
                 node.getNodeData().setLabel(volume);
             }
         }
-        if(label==14){                                   //approxvolume of a section
+        if(label==16){                                   //approxvolume of a section
             double approxlength=0;
             for(int i=0;i<nodeList.size(); i++){
                 double x=nodeList.get(i).getNodeData().getPosX().get(nodeList.size()-1)-nodeList.get(i).getNodeData().getPosX().get(0);
@@ -211,15 +226,15 @@ public class TreeCreator implements parser.InputParser<NodeData>{
             double approxVolume=approxlength*avgR*2*3.142;
             nodeList.forEach(t->t.getNodeData().setLabel(approxVolume));
         }
-        if(label==14){                                  //volume of tree rooted at i
+        if(label==17){                                  //volume of tree rooted at i
         }
-        if(label==15){                                  //volume of tree rooted at 1
+        if(label==18){                                  //volume of tree rooted at 1
         }
-        if(label==16){                                  //volume of a section/volume of tree rooted at i
+        if(label==19){                                  //volume of a section/volume of tree rooted at i
         }
-        if(label==17){                                  //volume of tree rooted at i / volume of tree rooted at 1
+        if(label==20){                                  //volume of tree rooted at i / volume of tree rooted at 1
         }
-        if(label==18){                                  //angle between children of i
+        if(label==21){                                  //angle between children of i
         }
         else{
 
