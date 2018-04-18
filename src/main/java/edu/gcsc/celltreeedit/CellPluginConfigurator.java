@@ -89,7 +89,7 @@ public class CellPluginConfigurator extends VPluginConfigurator{
             // vapi.addComponent(MyComponent.class);
             // vapi.addTypeRepresentation(MyType.class);
 
-            vapi.addComponent(Matrix.class);
+            vapi.addComponent(CellTreeEditDistance.class);
             vapi.addComponent(TestClass.class);
         }
     }

@@ -2,14 +2,14 @@ package edu.gcsc.celltreeedit;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.Serializable;
 
-public class TableView extends JPanel{
+public class TableView extends JPanel implements Serializable{
 
     JTable table;
     public TableView(String[] names, float[][] result){
-        setLayout(new FlowLayout());
-        table =new JTable(names.length+1,names.length+1);
 
+        table =new JTable(names.length+1,names.length+1);
         for(int i=0; i<names.length;i++){
             table.setValueAt(names[i],i+1,0);
             table.setValueAt(names[i],0,i+1);
@@ -21,14 +21,13 @@ public class TableView extends JPanel{
                 System.out.println();
             }
         }
-
-
+        table.setPreferredScrollableViewportSize(new Dimension(400,200));
+        table.setFillsViewportHeight(true);
         JScrollPane pane= new JScrollPane(table);
         add(pane);
     }
 
     public TableView(){
-        setLayout(new FlowLayout());
         table =new JTable(20,2);
         table.setValueAt("ID",0,0);
         table.setValueAt("1",1,0);

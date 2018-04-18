@@ -4,10 +4,9 @@ package edu.gcsc.celltreeedit;
 import eu.mihosoft.vrl.annotation.ComponentInfo;
 import eu.mihosoft.vrl.annotation.ParamInfo;
 
-import javax.swing.*;
 import java.io.File;
 
-@ComponentInfo(name = "TestClass", category = "Matrix")
+@ComponentInfo(name = "TestClass", category = "CellTreeEditDistance")
 public class TestClass implements java.io.Serializable {
     private static final long serialVersionUID = 1L;
 

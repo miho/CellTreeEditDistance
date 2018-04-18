@@ -1,14 +1,23 @@
 package edu.gcsc.celltreeedit;
 
-import javax.swing.*;
-import java.io.File;
+import distance.APTED;
+import eu.mihosoft.vrl.annotation.ComponentInfo;
+import eu.mihosoft.vrl.annotation.ParamInfo;
+import node.Node;
 
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.*;
+import java.util.Scanner;
 /**
  * Created by Erid on 16.02.2018.
  *
  * The class will do the comparison of the files imported from ChooseFiles and save the results in a 2d array
  */
-public class Matrix {
+@ComponentInfo(name = "CellTreeEditDistance", category = "CellTreeEditDistance")
+public class CellTreeEditDistance implements java.io.Serializable{
+    private static final long serialVersionUID = 1L;
 
     private float[][] results;
     private File[] files;
@@ -35,8 +44,8 @@ public class Matrix {
         frame.setVisible(true);
         frame.setTitle("Labels");
     }
-/*
-    public static float[][] compare(File[] files) {
+
+    public static float[][] compare(File[] files, int choice) {
 
         int size= files.length;
         System.out.println(size+" Files were imported!");
@@ -47,65 +56,19 @@ public class Matrix {
         for(int i=0;i<size;i++){
             names[i]=files[i].getName();
         }
-        System.out.printf("********************************************************************************\n");
-        System.out.println("* Select one of the following labels for the comparison (type the number)");
-        System.out.println("*");
-        String tableformat="*|%13s|%6s|%13s|%42s|%1s";
-        System.out.print("*-------------------------------------------------------------------------------\n");
-        System.out.format(tableformat," ","k","Abbreviation","Label (t[i])","  \n");
-        System.out.print("*-------------------------------------------------------------------------------\n");
-        System.out.format(tableformat,"Topology","1","top1","1","\n");
-        System.out.format(tableformat," ","2","top2","1 / |T|","\n");
-        System.out.format(tableformat,"Length","3","lsec","Lenght of t[i]","\n");
-        System.out.format(tableformat,"","4","lsoma","Length from t[i] to soma","\n");
-        System.out.format(tableformat,"","5","ltree","Length of T[i]","\n");
-        System.out.format(tableformat,"","6","Lsec","length of t[i] / length of T","\n");
-        System.out.format(tableformat,"","7","Lsoma","length from t[i] to soma / length of T","\n");
-        System.out.format(tableformat,"","8","Ltree","length of T[i] / length of T","\n");
-        System.out.format(tableformat,"Volume","9","vsec","Volume of t[i]","\n");
-        System.out.format(tableformat,"","10","vsoma","Volume from t[i] to soma","\n");
-        System.out.format(tableformat,"","11","vtree","Volume of T[i]","\n");
-        System.out.format(tableformat,"","12","Vsec","volume of t[i] / volume of T","\n");
-        System.out.format(tableformat,"","13","Vsoma","volume from t[i] to soma / volume of T","\n");
-        System.out.format(tableformat,"","14","Vtree","volume of T[i] / volume of T","\n");
-        System.out.format(tableformat,"Surface","15","ssec","Surface of t[i]","\n");
-        System.out.format(tableformat,"","16","ssoma","Surface from t[i] to soma","\n");
-        System.out.format(tableformat,"","17","stree","Surface of T[i]","\n");
-        System.out.format(tableformat,"","18","Ssec","surface of t[i] / surface of T","\n");
-        System.out.format(tableformat,"","19","Ssoma","surface from t[i] to soma / surface of T","\n");
-        System.out.format(tableformat,"","20","Stree","surface of T[i] / surface of T","\n");
-        System.out.format(tableformat,"","21","vSsec","volume of t[i] / surface of T","\n");
-        System.out.format(tableformat,"Angle","22","asec","Angle between children of t[i]","\n");
-        System.out.print("*-------------------------------------------------------------------------------\n");
-
-        Scanner slabel= new Scanner(System.in);
-        String labelchoice=slabel.next();
-        int choice= Integer.parseInt(labelchoice);
-
         try {
             System.out.println("****************************** Progress ****************************************");
-            System.out.println("*");
             for(int i=0; i<size-1;i++){
                 for(int j=i+1; j<size;j++){
                     // compare each two files
                     FileInputStream f= new FileInputStream(files[i]);
                     FileInputStream f2= new FileInputStream(files[j]);
-                //    ImportData i1 = new ImportData();
-                 //   ImportData i2 = new ImportData();
-                  //  InputParser parser1 = new InputParser();
-                    //InputParser parser2 = new InputParser();
-                    //i1.importData(f, choice);
-                    //i2.importData(f2,choice);
-                    //Node<NodeData> t1 = parser1.createTree(i1, 1);
-             //       System.out.println("Baum T1:"+t1.getNodeCount());
-                    //Node<NodeData> t2 = parser2.createTree(i2, 1);
-              //      System.out.println("Baum T2:"+t2.getNodeCount());
 
-                     TreeCreator one = new TreeCreator();
-                     TreeCreator two = new TreeCreator();
+                    TreeCreator one = new TreeCreator(f);
+                    TreeCreator two = new TreeCreator(f2);
 
-                    Node<NodeData> t1 = one.createTree(f,choice);
-                    Node<NodeData> t2 = two.createTree(f2,choice);
+                    Node<NodeData> t1 = one.createTree(choice,0);
+                    Node<NodeData> t2 = two.createTree(choice,0);
 
                     // Initialise APTED.
                     APTED<TreeCostModel, NodeData> apted = new APTED<>(new TreeCostModel());
@@ -118,13 +81,11 @@ public class Matrix {
                 }
             }
             System.out.println("*");
-            System.out.printf("********************************************************************************\n");
-            System.out.println("");
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        Matrix.printtoConsole(results, names);
+        CellTreeEditDistance.printtoConsole(results, names);
         System.out.println("");
         System.out.println("* Do you want to save the matrix in a txt file? (yes/no) ");
         System.out.println("");
@@ -133,7 +94,7 @@ public class Matrix {
         Scanner s= new Scanner(System.in);
         String respond=s.next();
         if(respond.equals("yes")){
-            Matrix.printToTxt(results);
+            CellTreeEditDistance.printToTxt(results);
         }else if(respond.equals("no")){
             System.out.printf("********************************************************************************\n");
             System.out.println("");
@@ -146,7 +107,7 @@ public class Matrix {
         return results;
     }
 
-    public void compareFiles(int choice, int showtable, int exportTxt) {
+    public void compareFiles(@ParamInfo(name="Label", style="load-folder-dialog")int choice) {
         files=ChooseFiles.choose();
         int size= files.length;
         fileNames=new String[size];
@@ -164,18 +125,17 @@ public class Matrix {
 
         try {
             System.out.println("* Progress *");
-            System.out.println("*");
             for(int i=0; i<size-1;i++){
                 for(int j=i+1; j<size;j++){
                     // compare each two files
                     FileInputStream f= new FileInputStream(files[i]);
                     FileInputStream f2= new FileInputStream(files[j]);
 
-                    TreeCreator one = new TreeCreator();
-                    TreeCreator two = new TreeCreator();
+                    TreeCreator one = new TreeCreator(f);
+                    TreeCreator two = new TreeCreator(f2);
 
-                    Node<NodeData> t1 = one.createTree(f,choice);
-                    Node<NodeData> t2 = two.createTree(f2,choice);
+                    Node<NodeData> t1 = one.createTree(choice,0);
+                    Node<NodeData> t2 = two.createTree(choice,0);
 
                     // Initialise APTED.
                     APTED<TreeCostModel, NodeData> apted = new APTED<>(new TreeCostModel());
@@ -188,24 +148,25 @@ public class Matrix {
                 }
             }
             System.out.println("*");
-            System.out.printf("************************\n");
-            System.out.println("");
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if(exportTxt==1)
-            this.printToTxt(results);
-        if(showtable==1){
-            JFrame frame= new JFrame();
 
-            TableView tableView= new TableView(fileNames,results);
+        JFrame frame= new JFrame();
+        TableView tableView= new TableView(fileNames,results);
+        JButton export=new JButton("Export");
+        export.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                CellTreeEditDistance.printToTxt(results);
+            }
+        });
+        tableView.add(export);
+        frame.add(tableView);
 
-            frame.add(tableView);
-            //tableView.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setSize(800,300);
-            frame.setVisible(true);
-            frame.setTitle("Comparison Results");
-        }
+        frame.setSize(500,300);
+        frame.setVisible(true);
+        frame.setTitle("Comparison Results");
     }
 
     public static void printtoConsole(float[][] results, String[] names){
@@ -261,12 +222,7 @@ public class Matrix {
     }
 
     public static void printToTxt(float[][] results){
-        System.out.printf("********************************************************************************\n");
-        System.out.println("");
         System.out.println("Please choose the directory where you want to save the file");
-        System.out.println("");
-        System.out.printf("********************************************************************************\n");
-
         JFileChooser save= new JFileChooser();
         save.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         save.showSaveDialog(null);
@@ -290,11 +246,10 @@ public class Matrix {
             }
 
             br.close();
-        } catch (IOException e) {
+        }catch (IOException e) {
             e.printStackTrace();
         }
 
 
     }
-*/
 }

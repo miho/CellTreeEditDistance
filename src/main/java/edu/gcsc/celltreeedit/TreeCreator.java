@@ -5,6 +5,7 @@ import node.Node;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.Vector;
 /**
  * Created by Erid on 12.04.2018.
  */
-public class TreeCreator implements parser.InputParser<NodeData>{
+public class TreeCreator implements parser.InputParser<NodeData>, Serializable{
 
     private List<Node<NodeData>> nodeList= new ArrayList<>();
     private int[] firstChild, nextSibling; // Helparrays for finding out wether there is a branching point or an end structure

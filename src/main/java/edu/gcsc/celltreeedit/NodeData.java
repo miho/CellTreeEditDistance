@@ -1,11 +1,12 @@
 package edu.gcsc.celltreeedit;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  *
  */
-public class NodeData {
+public class NodeData implements Serializable{
 
     double label;
     int type;
@@ -15,10 +16,7 @@ public class NodeData {
     List<Double> posY;
     List<Double> posZ;
     List<Double> radius;
-    /**
-     *
-     * @param label
-     */
+
     public NodeData(double label){
         this.label=label;
     }
@@ -107,8 +105,4 @@ public class NodeData {
         this.posZ = posZ;
         this.radius = radius;
     }
-
-
-
-
 }
