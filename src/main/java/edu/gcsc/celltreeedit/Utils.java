@@ -2,8 +2,7 @@ package edu.gcsc.celltreeedit;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import java.io.File;
-import java.io.FilenameFilter;
+import java.io.*;
 
 
 /**
@@ -11,7 +10,7 @@ import java.io.FilenameFilter;
  *
  *  The class implements a file chooser, which can choose a number of Swc-files to compare or a whole folder.
  */
-public class ChooseFiles {
+public class Utils {
 
     /**
      *
@@ -41,4 +40,33 @@ public class ChooseFiles {
     }
 
 
+    public static void printToTxt(float[][] results){
+        System.out.println("Please choose the directory where you want to save the file");
+        JFileChooser save= new JFileChooser();
+        save.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        save.showSaveDialog(null);
+        String path=save.getSelectedFile().getAbsolutePath();
+        try {
+            FileWriter export=new FileWriter(path+"/export.txt");
+            BufferedWriter br=new BufferedWriter(export);
+            br.write("#;");
+            for(int i=0;i<results.length;i++){                              //kopfzeile
+                int a=i+1;
+                br.write(a+";");
+            }
+            br.newLine();
+            for(int i=0;i<results.length;i++){
+                int a=i+1;
+                br.write(a+";");
+                for(int j=0;j<results.length;j++){
+                    br.write(results[i][j]+";");
+                }
+                br.newLine();
+            }
+
+            br.close();
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

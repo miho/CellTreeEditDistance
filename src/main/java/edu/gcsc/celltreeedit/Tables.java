@@ -4,10 +4,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.Serializable;
 
-public class TableView extends JPanel implements Serializable{
+public class Tables extends JPanel implements Serializable{
 
     JTable table;
-    public TableView(String[] names, float[][] result){
+    public Tables(String[] names, float[][] result){
 
         table =new JTable(names.length+1,names.length+1);
         for(int i=0; i<names.length;i++){
@@ -27,9 +27,10 @@ public class TableView extends JPanel implements Serializable{
         add(pane);
     }
 
-    public TableView(){
+    public Tables(){
         table =new JTable(20,2);
         table.setValueAt("ID",0,0);
+        table.setValueAt("Label definition",0,1);
         table.setValueAt("1",1,0);
         table.setValueAt("2",2,0);
         table.setValueAt("3",3,0);
