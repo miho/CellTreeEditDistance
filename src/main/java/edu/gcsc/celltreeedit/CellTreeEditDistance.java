@@ -22,12 +22,12 @@ public class CellTreeEditDistance implements java.io.Serializable{
     private File[] files;
     private String[] fileNames;
 
-    public void showLabels(){
+    public static void showLabels(){
         JFrame frame = new JFrame();
         Tables labels= new Tables();
         frame.add(labels);
         //labels.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(800,300);
+        frame.setSize(500,350);
         frame.setVisible(true);
         frame.setTitle("Labels");
     }
@@ -82,7 +82,7 @@ public class CellTreeEditDistance implements java.io.Serializable{
         export.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Utils.printToTxt(results);
+                Utils.printToTxt(results, fileNames);
             }
         });
         tables.add(export);

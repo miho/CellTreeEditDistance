@@ -40,7 +40,7 @@ public class Utils {
     }
 
 
-    public static void printToTxt(float[][] results){
+    public static void printToTxt(float[][] results, String[] filenames){
         System.out.println("Please choose the directory where you want to save the file");
         JFileChooser save= new JFileChooser();
         save.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -49,17 +49,21 @@ public class Utils {
         try {
             FileWriter export=new FileWriter(path+"/export.txt");
             BufferedWriter br=new BufferedWriter(export);
-            br.write("#;");
-            for(int i=0;i<results.length;i++){                              //kopfzeile
-                int a=i+1;
-                br.write(a+";");
-            }
-            br.newLine();
+           // br.write("#;");
+            //for(int i=0;i<results.length;i++){                              //kopfzeile
+              //  if(i<results.length-1)
+                //    br.write(filenames[i]+";");
+                //else
+                  //  br.write(filenames[i]);
+            //}
+            //br.newLine();
             for(int i=0;i<results.length;i++){
-                int a=i+1;
-                br.write(a+";");
+              //  br.write(filenames[i]+";");
                 for(int j=0;j<results.length;j++){
-                    br.write(results[i][j]+";");
+                    if(j<results.length-1)
+                        br.write(results[i][j]+";");
+                    else
+                        br.write(results[i][j]+"");
                 }
                 br.newLine();
             }
@@ -68,5 +72,6 @@ public class Utils {
         }catch (IOException e) {
             e.printStackTrace();
         }
+        System.out.print("Done!");
     }
 }

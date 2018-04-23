@@ -65,5 +65,4 @@ public class TreeCostModelTest {
         assertEquals(14.7978,result6,0.1);
 
     }
-
 }

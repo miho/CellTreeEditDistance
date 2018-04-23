@@ -12,9 +12,10 @@ import java.io.IOException;
  */
 public class Main {
     public static void main(String[] args) throws IOException {
-        //CellTreeEditDistance matrix=new CellTreeEditDistance();
-        //matrix.compareFiles(3);
-        FileInputStream i=new FileInputStream(new File("C:\\Users\\Erid\\Dropbox\\Dokumente\\Informatik-UNI\\SoSe2017\\Bachelorarbeit\\beispiel.txt"));
+      //  CellTreeEditDistance matrix=new CellTreeEditDistance();
+       // matrix.showLabels();
+      //  matrix.compareFiles(1);
+       // FileInputStream i=new FileInputStream(new File("C:\\Users\\Erid\\Dropbox\\Dokumente\\Informatik-UNI\\SoSe2017\\Bachelorarbeit\\beispiel.txt"));
 
 
 
@@ -22,11 +23,15 @@ public class Main {
         // Schritt 2 den Baum Struktur erzeugen durch aufrufen vom TreeCreator.createTree(label, startknoten)
         // Schritt 3 die Labels berechnen
      //   FileInputStream i=new FileInputStream(new File("C:\\Users\\Erid\\Dropbox\\Dokumente\\Informatik-UNI\\SoSe2017\\Bachelorarbeit\\files\\1g_2.SWC"));
-       // FileInputStream i2=new FileInputStream(new File("C:\\Users\\Erid\\Dropbox\\Dokumente\\Informatik-UNI\\SoSe2017\\Bachelorarbeit\\files\\1k.SWC"));
-        TreeCreator treeCreator= new TreeCreator(i);
+        FileInputStream i2=new FileInputStream(new File("C:\\Users\\Erid\\Desktop\\files\\labelsTest.SWC"));
+        TreeCreator treeCreator= new TreeCreator(i2);
       //  TreeCreator treeCreator2= new TreeCreator(i2);
-          Node<NodeData> t1 = treeCreator.createTree(4,0);
-          System.out.println(t1.getChildren().get(1).getNodeData().getLabel());
+        Node<NodeData> t1 = treeCreator.createTreeStructure(0);
+
+        treeCreator.getNodeList().forEach(t-> System.out.println(t.getNodeCount()));
+
+        //  System.out.println(t1.getChildren().get(1).getNodeData().getLabel());
+
       //  Node<NodeData> t2 = treeCreator2.createTree(8,0);
         // Initialise APTED.
  //       APTED<TreeCostModel, NodeData> apted = new APTED<>(new TreeCostModel());

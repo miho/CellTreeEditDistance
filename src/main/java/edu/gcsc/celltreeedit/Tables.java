@@ -28,7 +28,7 @@ public class Tables extends JPanel implements Serializable{
     }
 
     public Tables(){
-        table =new JTable(20,2);
+        table =new JTable(16,2);
         table.setValueAt("ID",0,0);
         table.setValueAt("Label definition",0,1);
         table.setValueAt("1",1,0);
@@ -41,16 +41,26 @@ public class Tables extends JPanel implements Serializable{
         table.setValueAt("8",8,0);
         table.setValueAt("9",9,0);
         table.setValueAt("10",10,0);
+        table.setValueAt("11",11,0);
+        table.setValueAt("12",12,0);
+        table.setValueAt("13",13,0);
+        table.setValueAt("14",14,0);
+        table.setValueAt("15",15,0);
         table.setValueAt("1",1,1);
-        table.setValueAt("1/n",2,1);
-        table.setValueAt("length of t[i]",3,1);
-        table.setValueAt("surface of t[i]",4,1);
-        table.setValueAt("volume of t[i]",5,1);
-        table.setValueAt("length of T[i]",6,1);
-        table.setValueAt("volume of T[i]",7,1);
-        table.setValueAt("surface of T[i]",8,1);
-        table.setValueAt("length of t[i] / length of T[i]",9,1);
-        table.setValueAt("surface of t[i] / surface of T[i]",10,1);
+        table.setValueAt("1 / |T|",2,1);
+        table.setValueAt("1 / |T[i]|",3,1);
+        table.setValueAt("length of t[i]",4,1);
+        table.setValueAt("approxLength of t[i]",5,1);
+        table.setValueAt("length of T",6,1);
+        table.setValueAt("length of t[i] / length of T",7,1);
+        table.setValueAt("surface of t[i]",8,1);
+        table.setValueAt("approxSurface of t[i]",9,1);
+        table.setValueAt("surface of T",10,1);
+        table.setValueAt("surface of t[i] / surface of T",11,1);
+        table.setValueAt("volume of t[i]",12,1);
+        table.setValueAt("approxVolume of t[i]",13,1);
+        table.setValueAt("volume of T",14,1);
+        table.setValueAt("volume of t[i] / Volume of T",15,1);
 
         JScrollPane pane= new JScrollPane(table);
         add(pane);
