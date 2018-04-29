@@ -88,7 +88,7 @@ public class CellTreeEditDistance implements java.io.Serializable{
         tables.add(export);
         frame.add(tables);
 
-        frame.setSize(500,300);
+        frame.setSize(950,350);
         frame.setVisible(true);
         frame.setTitle("Comparison Results");
     }

@@ -21,9 +21,12 @@ public class Tables extends JPanel implements Serializable{
                 System.out.println();
             }
         }
-        table.setPreferredScrollableViewportSize(new Dimension(400,200));
+        table.setPreferredScrollableViewportSize(new Dimension(850,200));
+        table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         table.setFillsViewportHeight(true);
         JScrollPane pane= new JScrollPane(table);
+        pane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+        pane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         add(pane);
     }
 

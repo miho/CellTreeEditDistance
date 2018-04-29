@@ -266,7 +266,7 @@ public class TreeCreator implements parser.InputParser<NodeData>, Serializable{
                     double z=nodeList.get(i).getNodeData().getPosZ().get(j)-nodeList.get(i).getNodeData().getPosZ().get(k);
                     double lengthPart=Math.pow(x * x + y * y + z * z, 0.5);
                     double surfacepart=nodeList.get(i).getNodeData().getRadius().get(j)*2*lengthPart*3.142+nodeList.get(i).getNodeData().getRadius().get(j)*nodeList.get(i).getNodeData().getRadius().get(j)*2*3.142;
-                    treeSurface=treeSurface+surfacepart;
+                    surface=surface+surfacepart;
                 }
                 double surfaceRelation=surface/treeSurface;
                 node.getNodeData().setLabel(surfaceRelation);

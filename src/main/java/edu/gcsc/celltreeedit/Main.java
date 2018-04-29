@@ -1,10 +1,6 @@
 package edu.gcsc.celltreeedit;
 
 
-import node.Node;
-
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 
 /**
@@ -12,9 +8,9 @@ import java.io.IOException;
  */
 public class Main {
     public static void main(String[] args) throws IOException {
-      //  CellTreeEditDistance matrix=new CellTreeEditDistance();
+        CellTreeEditDistance matrix=new CellTreeEditDistance();
        // matrix.showLabels();
-      //  matrix.compareFiles(1);
+        matrix.compareFiles(1);
        // FileInputStream i=new FileInputStream(new File("C:\\Users\\Erid\\Dropbox\\Dokumente\\Informatik-UNI\\SoSe2017\\Bachelorarbeit\\beispiel.txt"));
 
 
@@ -23,12 +19,12 @@ public class Main {
         // Schritt 2 den Baum Struktur erzeugen durch aufrufen vom TreeCreator.createTree(label, startknoten)
         // Schritt 3 die Labels berechnen
      //   FileInputStream i=new FileInputStream(new File("C:\\Users\\Erid\\Dropbox\\Dokumente\\Informatik-UNI\\SoSe2017\\Bachelorarbeit\\files\\1g_2.SWC"));
-        FileInputStream i2=new FileInputStream(new File("C:\\Users\\Erid\\Desktop\\files\\labelsTest.SWC"));
-        TreeCreator treeCreator= new TreeCreator(i2);
+     //   FileInputStream i2=new FileInputStream(new File("C:\\Users\\Erid\\Desktop\\files\\labelsTest.SWC"));
+       // TreeCreator treeCreator= new TreeCreator(i2);
       //  TreeCreator treeCreator2= new TreeCreator(i2);
-        Node<NodeData> t1 = treeCreator.createTreeStructure(0);
+       // Node<NodeData> t1 = treeCreator.createTreeStructure(0);
 
-        treeCreator.getNodeList().forEach(t-> System.out.println(t.getNodeCount()));
+        //treeCreator.getNodeList().forEach(t-> System.out.println(t.getNodeCount()));
 
         //  System.out.println(t1.getChildren().get(1).getNodeData().getLabel());
 
