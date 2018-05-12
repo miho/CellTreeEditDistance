@@ -2,10 +2,12 @@ package edu.gcsc.celltreeedit;
 
 import node.Node;
 
+import java.io.Serializable;
+
 /**
  *
  */
-public class TreeCostModel implements costmodel.CostModel<NodeData> {
+public class TreeCostModel implements costmodel.CostModel<NodeData>, Serializable {
 
     /**
      *

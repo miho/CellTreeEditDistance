@@ -4,7 +4,6 @@ package edu.gcsc.celltreeedit;
 import eu.mihosoft.vrl.annotation.ComponentInfo;
 import eu.mihosoft.vrl.annotation.ParamInfo;
 
-import javax.swing.*;
 import java.io.File;
 
 @ComponentInfo(name = "TestClass", category = "CellTreeEditDistance")

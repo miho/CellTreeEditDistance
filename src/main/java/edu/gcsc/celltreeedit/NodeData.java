@@ -1,36 +1,24 @@
 package edu.gcsc.celltreeedit;
 
-import javax.xml.soap.Node;
+import java.io.Serializable;
+import java.util.List;
 
 /**
  *
  */
-public class NodeData {
+public class NodeData implements Serializable{
 
     double label;
     int type;
-    int index;
-    int parent;
-    double posX;
-    double posY;
-    double posZ;
-    double radius;
-    /**
-     *
-     * @param label
-     */
+    List<Integer> index;
+    List<Integer> parent;
+    List<Double> posX;
+    List<Double> posY;
+    List<Double> posZ;
+    List<Double> radius;
+
     public NodeData(double label){
         this.label=label;
-    }
-
-    public NodeData(int index, int type, double posX, double posY, double posZ, double radius, int parent){
-        this.index=index;
-        this.type=type;
-        this.posX=posX;
-        this.posY=posY;
-        this.posZ=posZ;
-        this.radius=radius;
-        this.parent=parent;
     }
 
     @Override
@@ -42,12 +30,12 @@ public class NodeData {
 
         if (Double.compare(nodeData.label, label) != 0) return false;
         if (type != nodeData.type) return false;
-        if (index != nodeData.index) return false;
-        if (parent != nodeData.parent) return false;
-        if (Double.compare(nodeData.posX, posX) != 0) return false;
-        if (Double.compare(nodeData.posY, posY) != 0) return false;
-        if (Double.compare(nodeData.posZ, posZ) != 0) return false;
-        return Double.compare(nodeData.radius, radius) == 0;
+        if (index != null ? !index.equals(nodeData.index) : nodeData.index != null) return false;
+        if (parent != null ? !parent.equals(nodeData.parent) : nodeData.parent != null) return false;
+        if (posX != null ? !posX.equals(nodeData.posX) : nodeData.posX != null) return false;
+        if (posY != null ? !posY.equals(nodeData.posY) : nodeData.posY != null) return false;
+        if (posZ != null ? !posZ.equals(nodeData.posZ) : nodeData.posZ != null) return false;
+        return radius != null ? radius.equals(nodeData.radius) : nodeData.radius == null;
     }
 
     @Override
@@ -57,81 +45,64 @@ public class NodeData {
         temp = Double.doubleToLongBits(label);
         result = (int) (temp ^ (temp >>> 32));
         result = 31 * result + type;
-        result = 31 * result + index;
-        result = 31 * result + parent;
-        temp = Double.doubleToLongBits(posX);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(posY);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(posZ);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(radius);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        result = 31 * result + (index != null ? index.hashCode() : 0);
+        result = 31 * result + (parent != null ? parent.hashCode() : 0);
+        result = 31 * result + (posX != null ? posX.hashCode() : 0);
+        result = 31 * result + (posY != null ? posY.hashCode() : 0);
+        result = 31 * result + (posZ != null ? posZ.hashCode() : 0);
+        result = 31 * result + (radius != null ? radius.hashCode() : 0);
         return result;
     }
 
-    public double getLabel(){
+    public void setLabel(double label) {
+
+        this.label = label;
+    }
+
+    public double getLabel() {
+
         return label;
     }
 
-    public void setLabel(double label){
-        this.label=label;
-    }
-
-    public int getIndex() {
-        return index;
-    }
-
-    public void setIndex(int index) {
-        this.index = index;
-    }
-
-    public int getParent() {
-        return parent;
-    }
-
-    public void setParent(int parent) {
-        this.parent = parent;
-    }
-
-    public double getPosX() {
-        return posX;
-    }
-
-    public void setPosX(double posX) {
-        this.posX = posX;
-    }
-
-    public double getPosY() {
-        return posY;
-    }
-
-    public void setPosY(double posY) {
-        this.posY = posY;
-    }
-
-    public double getPosZ() {
-        return posZ;
-    }
-
-    public void setPosZ(double posZ) {
-        this.posZ = posZ;
-    }
-
-    public double getRadius() {
-        return radius;
-    }
-
-    public void setRadius(double radius) {
-        this.radius = radius;
-    }
-
     public int getType() {
-
         return type;
     }
 
-    public void setType(int Type) {
+    public List<Integer> getIndex() {
+        return index;
+    }
+
+    public List<Integer> getParent() {
+        return parent;
+    }
+
+    public List<Double> getPosX() {
+        return posX;
+    }
+
+    public List<Double> getPosY() {
+        return posY;
+    }
+
+    public List<Double> getPosZ() {
+        return posZ;
+    }
+
+    public List<Double> getRadius() {
+        return radius;
+    }
+
+    public void setType(int type) {
         this.type = type;
+    }
+
+    public NodeData(List<Integer> index, int type, List<Double> posX, List<Double> posY, List<Double> posZ, List<Double> radius, List<Integer> parent) {
+        this.type = type;
+        this.index = index;
+        this.parent = parent;
+        this.posX = posX;
+        this.posY = posY;
+        this.posZ = posZ;
+        this.radius = radius;
     }
 }
