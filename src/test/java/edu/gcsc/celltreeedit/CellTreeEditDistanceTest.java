@@ -7,6 +7,7 @@ import org.junit.Test;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.net.URL;
 
 import static junit.framework.Assert.assertEquals;
 
@@ -19,6 +20,8 @@ public class CellTreeEditDistanceTest {
     public void compareSameTree(){
         try {
             FileInputStream f1=new FileInputStream(new File("C:\\Users\\Erid\\Desktop\\files\\1k.swc"));
+            URL url=CellTreeEditDistance.class.getResource("/TestSWCFiles/1k.swc");
+            File f=new File(url.getFile());
             FileInputStream f2=new FileInputStream(new File("C:\\Users\\Erid\\Desktop\\files\\1k.swc"));
             TreeCreator t1= new TreeCreator(f1);
             TreeCreator t2= new TreeCreator(f2);
