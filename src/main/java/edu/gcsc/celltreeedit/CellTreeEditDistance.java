@@ -30,6 +30,8 @@ public class CellTreeEditDistance implements java.io.Serializable{
         frame.setSize(500,350);
         frame.setVisible(true);
         frame.setTitle("Labels");
+    //    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
     }
 
     public void compareFiles(@ParamInfo(name="Label", style="load-folder-dialog")int choice) {
@@ -91,5 +93,6 @@ public class CellTreeEditDistance implements java.io.Serializable{
         frame.setSize(950,350);
         frame.setVisible(true);
         frame.setTitle("Comparison Results");
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
 }

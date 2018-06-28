@@ -18,8 +18,8 @@ public class CellTreeEditDistanceTest {
     @Test
     public void compareSameTree(){
         try {
-            FileInputStream f1=new FileInputStream(new File("C:\\Users\\Erid\\Desktop\\files\\1k.swc"));
-            FileInputStream f2=new FileInputStream(new File("C:\\Users\\Erid\\Desktop\\files\\1k.swc"));
+            FileInputStream f1=new FileInputStream(new File("...\\1k.swc"));
+            FileInputStream f2=new FileInputStream(new File("...\\1k.swc"));
             TreeCreator t1= new TreeCreator(f1);
             TreeCreator t2= new TreeCreator(f2);
             Node<NodeData> node1=t1.createTree(1,0);
@@ -35,7 +35,7 @@ public class CellTreeEditDistanceTest {
     @Test
     public void compareTreeToNull(){
         try {
-            FileInputStream f1=new FileInputStream(new File("C:\\Users\\Erid\\Desktop\\files\\1k.swc"));
+            FileInputStream f1=new FileInputStream(new File("...\\1k.swc"));
             TreeCreator t1= new TreeCreator(f1);
             Node<NodeData> node1=t1.createTree(1,0);
             Node<NodeData> node2=new Node<NodeData>(new NodeData(1));
@@ -50,8 +50,8 @@ public class CellTreeEditDistanceTest {
     @Test
     public void compareTreeToTree1(){
         try {
-            FileInputStream f1=new FileInputStream(new File("C:\\Users\\Erid\\Desktop\\files\\1k.swc"));
-            FileInputStream f2=new FileInputStream(new File("C:\\Users\\Erid\\Desktop\\files\\1k_2.swc"));
+            FileInputStream f1=new FileInputStream(new File("...\\1k.swc"));
+            FileInputStream f2=new FileInputStream(new File("...\\1k_2.swc"));
             TreeCreator t1= new TreeCreator(f1);
             TreeCreator t2= new TreeCreator(f2);
             Node<NodeData> node1=t1.createTree(1,0);
@@ -67,8 +67,8 @@ public class CellTreeEditDistanceTest {
     @Test
     public void compareTrees(){
         try{
-            FileInputStream f1= new FileInputStream(new File("C:\\Users\\Erid\\Desktop\\files\\1k.swc"));
-            FileInputStream f2= new FileInputStream(new File("C:\\Users\\Erid\\Desktop\\files\\1k_3.swc"));
+            FileInputStream f1= new FileInputStream(new File("...\\1k.swc"));
+            FileInputStream f2= new FileInputStream(new File("...\\1k_3.swc"));
             TreeCreator t1= new TreeCreator(f1);
             TreeCreator t2= new TreeCreator(f2);
             Node<NodeData> node1=t1.createTree(1,0);

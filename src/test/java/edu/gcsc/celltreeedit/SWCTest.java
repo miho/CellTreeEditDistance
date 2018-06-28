@@ -21,7 +21,7 @@ public class SWCTest {
     @Test
     public void readFile(){
         try {
-            FileInputStream fileInputStream=new FileInputStream(new File("C:\\Users\\Erid\\Desktop\\files\\test.swc"));
+            FileInputStream fileInputStream=new FileInputStream(new File("...\\test.swc"));
             List<SWCSegment> swcSegments=new ArrayList<SWCSegment>();
             swcSegments=SWCSegment.fromStream(fileInputStream);
             assertEquals(10,swcSegments.size());

@@ -18,7 +18,7 @@ public class TreeCreatorTest {
     @Test
     public void helpArrays(){
         try {
-            FileInputStream fileInputStream=new FileInputStream(new File("C:\\Users\\Erid\\Desktop\\files\\1k.swc"));
+            FileInputStream fileInputStream=new FileInputStream(new File("...\\1k.swc"));
             TreeCreator t1= new TreeCreator(fileInputStream);
             int[] firstChild={-1,2,-1,4,5,6,7,8,9,-1,11,12,13,-1};
             int[] nextSibling={-1,-1,3,-1,-1,-1,-1,10,-1,-1,-1,-1,-1,-1};
@@ -33,7 +33,7 @@ public class TreeCreatorTest {
     @Test
     public void helpArrays2(){
         try {
-            FileInputStream fileInputStream=new FileInputStream(new File("C:\\Users\\Erid\\Desktop\\files\\1k_2.swc"));
+            FileInputStream fileInputStream=new FileInputStream(new File("...\\1k_2.swc"));
             TreeCreator t1= new TreeCreator(fileInputStream);
             int[] firstChild={-1,2,16,4,5,6,7,8,9,14,11,12,13,15,-1,-1,-1};
             int[] nextSibling={-1,-1,3,-1,-1,-1,-1,10,-1,-1,-1,-1,-1,-1,-1,-1,-1};
@@ -48,7 +48,7 @@ public class TreeCreatorTest {
     @Test
     public void treeStructure(){
         try {
-            FileInputStream fileInputStream=new FileInputStream(new File("C:\\Users\\Erid\\Desktop\\files\\1k.swc"));
+            FileInputStream fileInputStream=new FileInputStream(new File("...\\1k.swc"));
             TreeCreator t1= new TreeCreator(fileInputStream);
             t1.createTreeStructure(0);
             assertEquals(t1.getNodeList().size(),5);

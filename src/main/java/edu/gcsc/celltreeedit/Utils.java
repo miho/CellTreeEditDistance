@@ -43,11 +43,14 @@ public class Utils {
     public static void printToTxt(float[][] results, String[] filenames){
         System.out.println("Please choose the directory where you want to save the file");
         JFileChooser save= new JFileChooser();
-        save.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        save.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        FileNameExtensionFilter text = new FileNameExtensionFilter("Text file (*.txt)","txt");
+        save.addChoosableFileFilter(text);
+        save.setAcceptAllFileFilterUsed(false);
         save.showSaveDialog(null);
         String path=save.getSelectedFile().getAbsolutePath();
         try {
-            FileWriter export=new FileWriter(path+"/export.txt");
+            FileWriter export=new FileWriter(path+".txt");
             BufferedWriter br=new BufferedWriter(export);
            // br.write("#;");
             //for(int i=0;i<results.length;i++){                              //kopfzeile
@@ -58,7 +61,7 @@ public class Utils {
             //}
             //br.newLine();
             for(int i=0;i<results.length;i++){
-              //  br.write(filenames[i]+";");
+                br.write(filenames[i]+";");
                 for(int j=0;j<results.length;j++){
                     if(j<results.length-1)
                         br.write(results[i][j]+";");
