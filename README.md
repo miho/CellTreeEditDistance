@@ -8,7 +8,7 @@ This code is the implementation of Tree Edit Distance in neurons. It computes th
 
 The code is intended to be used as a plugin in VRL-Studio. Therefore you need to have [VRL-Studio](https://vrl-studio.mihosoft.eu/) installed and follow these [instructions](https://vrl-studio.mihosoft.eu/documentation.html). 
 
-Another way to use it is in every IDE. Simply open the Main Class and run the following command with the label of your choice:
+This plugin can also comes with a main class and can run from any IDE with Gradle support. Simply open the Main Class and run the following command with the label of your choice:
 
 ```
 CellTreeEditDistance matrix=new CellTreeEditDistance(); 
@@ -34,6 +34,54 @@ hcs <- hclust(d, method="ward.D")
 plot(hcs)
 rect.hclust(hcs, k = 2, border = "red")	
 ````
+
+## How To Build The Project
+
+### 1. Dependencies
+
+- JDK >= 1.8
+- Internet Connection (other dependencies will be downloaded automatically)
+- Optional: IDE with [Gradle](http://www.gradle.org/) support
+
+
+### 2. Configuration (Optional)
+
+If the plugin shall be installed to a custom destination, specify the path in `build.properties`, e.g.,
+    
+    # vrl property folder location (plugin destination)
+    vrldir=/path/to/.vrl/0.4.3/myvrl
+    
+Otherwise, the plugin will be installed to the default location (depends on VRL version that is specified in the gradle dependencies).
+
+### 3. Build & Install
+
+#### IDE
+
+To build the project from an IDE do the following:
+
+- open the  [Gradle](http://www.gradle.org/) project
+- call the `installVRLPlugin` Gradle task to build and install the plugin
+- restart VRL-Studio
+
+#### Command Line
+
+Building the project from the command line is also possible.
+
+Navigate to the project folder and call the `installVRLPlugin` [Gradle](http://www.gradle.org/)
+task to build and install the plugin.
+
+##### Bash (Linux/OS X/Cygwin/other Unix-like OS)
+
+    cd Path/To/CellTreeEditDistance
+    ./gradlew installVRLPlugin
+    
+##### Windows (CMD)
+
+    cd Path\To\CellTreeEditDistance
+    gradlew installVRLPlugin
+
+Finally, restart VRL-Studio
+
 ## License
 
 This code is published under the BSD 2-Clause terms. For more details see the licence file found in the root directory of the project.
