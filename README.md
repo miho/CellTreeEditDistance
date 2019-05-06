@@ -49,7 +49,7 @@ rect.hclust(hcs, k = 2, border = "red")
 If the plugin shall be installed to a custom destination, specify the path in `build.properties`, e.g.,
     
     # vrl property folder location (plugin destination)
-    vrldir=/path/to/.vrl/0.4.3/myvrl
+    vrldir=/path/to/.vrl/0.4.4/myvrl
     
 Otherwise, the plugin will be installed to the default location (depends on VRL version that is specified in the gradle dependencies).
 
