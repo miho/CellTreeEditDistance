@@ -1,9 +1,9 @@
 package edu.gcsc.celltreeedit;
 
-import distance.APTED;
+import eu.mihosoft.ext.apted.distance.APTED;
+import eu.mihosoft.ext.apted.node.Node;
 import eu.mihosoft.vrl.annotation.ComponentInfo;
 import eu.mihosoft.vrl.annotation.ParamInfo;
-import node.Node;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

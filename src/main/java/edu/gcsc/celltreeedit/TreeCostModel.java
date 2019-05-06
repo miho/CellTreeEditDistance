@@ -1,13 +1,14 @@
 package edu.gcsc.celltreeedit;
 
-import node.Node;
-
 import java.io.Serializable;
+
+import eu.mihosoft.ext.apted.costmodel.CostModel;
+import eu.mihosoft.ext.apted.node.Node;
 
 /**
  *
  */
-public class TreeCostModel implements costmodel.CostModel<NodeData>, Serializable {
+public class TreeCostModel implements CostModel<NodeData>, Serializable {
 
     /**
      *

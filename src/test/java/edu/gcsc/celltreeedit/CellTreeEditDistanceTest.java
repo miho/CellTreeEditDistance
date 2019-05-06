@@ -1,8 +1,9 @@
 package edu.gcsc.celltreeedit;
 
-import distance.APTED;
-import node.Node;
 import org.junit.Test;
+
+import eu.mihosoft.ext.apted.distance.APTED;
+import eu.mihosoft.ext.apted.node.Node;
 
 import java.io.File;
 import java.io.FileInputStream;

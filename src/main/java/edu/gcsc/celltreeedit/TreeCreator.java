@@ -1,8 +1,5 @@
 package edu.gcsc.celltreeedit;
 
-import eu.mihosoft.vswcreader.SWCSegment;
-import node.Node;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
@@ -11,10 +8,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
 
+import eu.mihosoft.ext.apted.node.Node;
+import eu.mihosoft.ext.apted.parser.InputParser;
+import eu.mihosoft.vswcreader.SWCSegment;
+
 /**
  * Created by Erid on 12.04.2018.
  */
-public class TreeCreator implements parser.InputParser<NodeData>, Serializable{
+public class TreeCreator implements InputParser<NodeData>, Serializable{
 
     private List<Node<NodeData>> nodeList= new ArrayList<>();
     private int[] firstChild, nextSibling; // Helparrays for finding out wether there is a branching point or an end structure
