@@ -30,6 +30,8 @@ repositories {
 dependencies {
     testCompile 'org.testfx:testfx-junit:4.0.4-alpha'
 
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.9.9'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.9'
     
     compile 'eu.mihosoft.vvecmath:vvecmath:0.4.0'
 
