@@ -56,6 +56,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 public class NeuronMetadata {
 
+    @JsonProperty("neuron_id")
     public Integer neuronId;
     @JsonProperty("neuron_name")
     public String neuronName;
