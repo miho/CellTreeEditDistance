@@ -39,6 +39,33 @@ public class Utils {
         }
     }
 
+    /**
+     *
+     * @return a list of json-files which were selected
+     */
+    public static File[] chooseJSON(){
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES); //accept files and directories as input
+        FileNameExtensionFilter json=new FileNameExtensionFilter("json","json");
+        fileChooser.addChoosableFileFilter(json);                            // filter on swc files
+        fileChooser.setAcceptAllFileFilterUsed(false);                     // show only swc files
+        fileChooser.setMultiSelectionEnabled(true);                       // accept multiple files as input
+        fileChooser.showOpenDialog(null);
+
+        if(fileChooser.getSelectedFile().isFile())
+            return fileChooser.getSelectedFiles();
+        else{
+            File folder= new File(fileChooser.getSelectedFile().getAbsolutePath());
+            File[] selectedFiles= folder.listFiles(new FilenameFilter() {              // return only swc files
+                @Override
+                public boolean accept(File dir, String name) {
+                    return name.endsWith(".json");
+                }
+            });
+            return selectedFiles;
+        }
+    }
+
 
     public static void printToTxt(float[][] results, String[] filenames){
         System.out.println("Please choose the directory where you want to save the file");
