@@ -30,6 +30,8 @@ repositories {
 dependencies {
     testCompile 'org.testfx:testfx-junit:4.0.4-alpha'
 
+    compile group: 'com.apporiented', name: 'hierarchical-clustering', version: '1.2.0'
+
     
     compile 'eu.mihosoft.vvecmath:vvecmath:0.4.0'
 

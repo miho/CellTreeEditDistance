@@ -1,5 +1,10 @@
 package edu.gcsc.celltreeedit;
 
+import com.apporiented.algorithm.clustering.AverageLinkageStrategy;
+import com.apporiented.algorithm.clustering.Cluster;
+import com.apporiented.algorithm.clustering.ClusteringAlgorithm;
+import com.apporiented.algorithm.clustering.DefaultClusteringAlgorithm;
+import com.apporiented.algorithm.clustering.visualization.DendrogramPanel;
 import eu.mihosoft.ext.apted.distance.APTED;
 import eu.mihosoft.ext.apted.node.Node;
 import eu.mihosoft.vrl.annotation.ComponentInfo;
@@ -18,7 +23,7 @@ import java.io.*;
 public class CellTreeEditDistance implements java.io.Serializable{
     private static final long serialVersionUID = 1L;
 
-    private float[][] results;
+    private double[][] results;
     private File[] files;
     private String[] fileNames;
 
@@ -44,7 +49,7 @@ public class CellTreeEditDistance implements java.io.Serializable{
         System.out.println(size+" Files were imported!");    // loggen?
         int nrofCalculations= ((size*size)-size)/2;
         int progress=0;
-        results= new float[size][size];
+        results = new double[size][size];
         String[] names=new String[size];
         for(int i=0;i<size;i++){
             names[i]=files[i].getName();
@@ -66,7 +71,7 @@ public class CellTreeEditDistance implements java.io.Serializable{
                     // Initialise APTED.
                     APTED<TreeCostModel, NodeData> apted = new APTED<>(new TreeCostModel());
                     // Execute APTED.
-                    float result = apted.computeEditDistance(t1, t2);
+                    double result = (double) apted.computeEditDistance(t1, t2);
                     results[i][j]=result;
                     results[j][i]=result;
                     progress++;
@@ -94,5 +99,16 @@ public class CellTreeEditDistance implements java.io.Serializable{
         frame.setVisible(true);
         frame.setTitle("Comparison Results");
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+        ClusteringAlgorithm alg = new DefaultClusteringAlgorithm();
+        Cluster cluster = alg.performClustering(results, fileNames,
+                new AverageLinkageStrategy());
+        DendrogramPanel dp = new DendrogramPanel();
+        dp.setModel(cluster);
+        JFrame frame2 = new JFrame();
+        frame2.add(dp);
+        frame2.setSize(950,350);
+        frame2.setVisible(true);
+        frame2.setTitle("Dendrogram");
     }
 }
