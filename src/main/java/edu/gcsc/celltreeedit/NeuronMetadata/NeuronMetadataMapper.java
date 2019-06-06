@@ -7,22 +7,37 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.gcsc.celltreeedit.Utils;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 public class NeuronMetadataMapper {
 
-    public Map<String, NeuronMetadata> mapFromFile() throws IOException {
+    private final FileFilter fileFilter = (final File file) -> file.getName().toLowerCase().endsWith(".json");
 
+    public Map<String, NeuronMetadataRO> mapFromChooseJSON() throws IOException {
         // select jsonFiles from disk
         File[] files = Utils.chooseJSON();
+        return this.mapFromFiles(files);
+    }
 
-        NeuronMetadata neuronMetadataPOJO;
-        Map<String, NeuronMetadata> neuronMetadata = new HashMap<>();
+    public Map<String, NeuronMetadataRO> mapFromDirectory(File directory) throws IOException {
+        if (directory.isFile() && directory.getName().toLowerCase().endsWith(".json")) {
+            return this.mapFromFiles(new File[] {directory});
+        }
+        File[] files = directory.listFiles(fileFilter);
+        if (files == null) {
+            throw new IOException("No json-File available");
+        }
+        return this.mapFromFiles(files);
+    }
+
+
+    public Map<String, NeuronMetadataRO> mapFromFiles(File[] files) throws IOException {
+
+        NeuronMetadataRO neuronMetadataPOJO;
+        Map<String, NeuronMetadataRO> neuronMetadata = new HashMap<>();
 
         // maps jsonObjects to javaObjects
         ObjectMapper objectMapper = new ObjectMapper();
@@ -47,8 +62,8 @@ public class NeuronMetadataMapper {
                     jsonParser.nextToken();
                     // loop through all neurons from JsonArray and add them to HashMap
                     while(jsonParser.nextToken() != JsonToken.END_ARRAY) {
-                        neuronMetadataPOJO = objectMapper.readValue(jsonParser, NeuronMetadata.class);
-                        neuronMetadata.put(neuronMetadataPOJO.neuronName, neuronMetadataPOJO);
+                        neuronMetadataPOJO = objectMapper.readValue(jsonParser, NeuronMetadataRO.class);
+                        neuronMetadata.put(neuronMetadataPOJO.getNeuronName(), neuronMetadataPOJO);
                     }
                 }
             }

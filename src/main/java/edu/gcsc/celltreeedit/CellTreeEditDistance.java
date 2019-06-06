@@ -1,14 +1,18 @@
 package edu.gcsc.celltreeedit;
 
+import edu.gcsc.celltreeedit.NeuronMetadata.NeuronMetadataRO;
 import eu.mihosoft.ext.apted.distance.APTED;
 import eu.mihosoft.ext.apted.node.Node;
 import eu.mihosoft.vrl.annotation.ComponentInfo;
 import eu.mihosoft.vrl.annotation.ParamInfo;
+import eu.mihosoft.vswcreader.SWCSegment;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
+import java.util.*;
+
 /**
  * Created by Erid on 16.02.2018.
  *
@@ -21,6 +25,10 @@ public class CellTreeEditDistance implements java.io.Serializable{
     private float[][] results;
     private File[] files;
     private String[] fileNames;
+    private Set<String> swcFilenames;
+    private List<String> importedFileNames = new ArrayList<>();
+    private List<File> importedFiles = new ArrayList<>();
+
 
     public static void showLabels(){
         JFrame frame = new JFrame();
@@ -34,14 +42,47 @@ public class CellTreeEditDistance implements java.io.Serializable{
 
     }
 
-    public void compareFiles(@ParamInfo(name="Label", style="load-folder-dialog")int choice) {
-        files= Utils.choose();
+    public void compareFilesFromChoose(int choice) {
+        this.files= Utils.choose();
         int size= files.length;
         fileNames=new String[size];
         for(int i=0;i<size;i++){
             fileNames[i]=files[i].getName();
         }
         System.out.println(size+" Files were imported!");    // loggen?
+        this.compareFiles(choice);
+    }
+
+    public void compareFilesFromFilenames(Set<String> swcFilenames, File swcDirectory, int choice) {
+        this.swcFilenames = swcFilenames;
+        this.searchForSWCFiles(swcDirectory);
+        this.files = this.importedFiles.toArray(new File[this.importedFiles.size()]);
+        this.fileNames = this.importedFileNames.toArray(new String[this.importedFileNames.size()]);
+        this.compareFiles(choice);
+    }
+
+    public void searchForSWCFiles(File directory) {
+        File[] subFiles = directory.listFiles();
+        if (subFiles == null) {
+            return;
+        }
+        for (File subFile: subFiles) {
+            if (subFile.isFile()) {
+                if (this.swcFilenames.contains(Utils.removeSWCFileExtensions(subFile.getName()))) {
+                    this.importedFiles.add(subFile);
+                    this.importedFileNames.add(Utils.removeSWCFileExtensions(subFile.getName()));
+                }
+            } else {
+                if (subFile.getName().equals("NonMetadata") || subFile.getName().equals("NonCNGFiles") || subFile.getName().equals("DuplicateFiles") || subFile.getName().equals("ErrorFiles")) {
+                    continue;
+                }
+                this.searchForSWCFiles(subFile);
+            }
+        }
+    }
+
+    public void compareFiles(@ParamInfo(name="Label", style="load-folder-dialog")int choice) {
+        int size = files.length;
         int nrofCalculations= ((size*size)-size)/2;
         int progress=0;
         results= new float[size][size];

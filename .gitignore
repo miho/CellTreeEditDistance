@@ -4,9 +4,10 @@
 CellTreeEditDistance.iml
 /.idea
 /.gradle
-out/
+/out/
 /.vscode
 /bin/
 /.settings
 /.project
 /.classpath
+/Output/*

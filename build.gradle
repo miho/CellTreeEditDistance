@@ -12,6 +12,7 @@ buildscript {
     }
 }
 
+
 sourceCompatibility = '1.8'
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
@@ -72,6 +73,7 @@ jar {
 
     // project class files compiled from source
     from files(sourceSets.main.output.classesDirs)
+    manifest.attributes "Main-Class": "edu.gcsc.celltreeedit.Main"
 }
 
 String getVRLDir() {

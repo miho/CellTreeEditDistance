@@ -1,8 +1,16 @@
 package edu.gcsc.celltreeedit;
 
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.gcsc.celltreeedit.NeuronMetadata.NeuronMetadata;
+import edu.gcsc.celltreeedit.NeuronMetadata.NeuronMetadataRO;
+
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.*;
+import java.util.*;
 
 
 /**
@@ -103,5 +111,57 @@ public class Utils {
             e.printStackTrace();
         }
         System.out.print("Done!");
+    }
+
+    public static File chooseDirectory() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY); //accept only directories as input
+        fileChooser.showOpenDialog(null);
+        return fileChooser.getSelectedFile();
+    }
+
+    public static String removeSWCFileExtensions(String filename) {
+        if (filename.toLowerCase().endsWith(".cng.swc")) {
+            filename = filename.substring(0, filename.toLowerCase().lastIndexOf(".cng.swc"));
+        } else if (filename.toLowerCase().endsWith(".ims.swc")) {
+            filename = filename.substring(0, filename.toLowerCase().lastIndexOf(".ims.swc"));
+        }else if (filename.toLowerCase().endsWith(".swc")) {
+            filename = filename.substring(0, filename.toLowerCase().lastIndexOf(".swc"));
+        } else {
+            System.out.println("wrong fileending: " + filename);
+        }
+        return filename;
+    }
+
+    public static Set<String> parseJsonToFileNames(File jsonFile) throws IOException {
+        String fileName = "";
+        Set<String> fileNames = new HashSet<>();
+        // maps jsonObjects to javaObjects
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        // JsonParser creates TokenStream of JsonFile (Tokens: zB. JsonToken.START_OBJECT)
+        JsonFactory jsonFactory = new JsonFactory();
+        JsonParser jsonParser;
+
+        jsonParser = jsonFactory.createJsonParser(jsonFile);
+
+        // as long as the end of the file is not reached
+        while (jsonParser.nextToken() != JsonToken.END_OBJECT) {
+
+            // only map jsonObjects inside JsonArray 'neuronResources'
+            if ("neuronNames".equals(jsonParser.getCurrentName())) {
+                if (jsonParser.nextToken() != JsonToken.START_ARRAY) {
+                    throw new IllegalStateException("Expected a JsonArray");
+                }
+                // skip START_ARRAY Token
+//                jsonParser.nextToken();
+                // loop through all neurons from JsonArray and add them to HashMap
+                while(jsonParser.nextToken() != JsonToken.END_ARRAY) {
+                    fileName = objectMapper.readValue(jsonParser, String.class);
+                    fileNames.add(fileName);
+                }
+            }
+        }
+        return fileNames;
     }
 }

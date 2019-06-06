@@ -1,6 +1,6 @@
 package edu.gcsc.celltreeedit;
 
-import edu.gcsc.celltreeedit.NeuronMetadata.NeuronMetadata;
+import edu.gcsc.celltreeedit.NeuronMetadata.NeuronMetadataRO;
 import eu.mihosoft.vswcreader.SWCSegment;
 
 import java.io.File;
@@ -27,14 +27,15 @@ public class SWCTest {
     private final FileFilter fileFilter = (final File file) -> file.getName().toLowerCase().endsWith(".swc") || file.isDirectory();
     private Set<String> swcFilenames = new HashSet<>();
     private Set<String> alreadyReadFilenames = new HashSet<>();
-    private Map<String, NeuronMetadata> neuronMetadata;
+    private Map<String, NeuronMetadataRO> neuronMetadata;
     private Integer countCNGswc = 0;
     private Integer countMetadataWOMatching = 0;
 
-    public Set<String> preprocessSWCDirectory(Map<String, NeuronMetadata> neuronMetadata) {
+    public Set<String> preprocessSWCDirectory(Map<String, NeuronMetadataRO> neuronMetadata, File swcDirectory) {
 
         // choose Files that shall be checked
-        File directory = Utils.chooseDirectory();
+//        File directory = Utils.chooseDirectory();
+        File directory = swcDirectory;
         try {
             this.baseDirectory = directory.getCanonicalPath();
             System.out.println(this.baseDirectory);
@@ -44,19 +45,19 @@ public class SWCTest {
 
         this.neuronMetadata = neuronMetadata;
 
-        this.countCNGswc(directory);
-        System.out.println("countCNGswc: " + this.countCNGswc);
+//        this.countCNGswc(directory);
+//        System.out.println("countCNGswc: " + this.countCNGswc);
 
 //        this.moveNonMetadata(directory);
 
-//        this.moveNonCNGDirectories(directory);
+        this.moveNonCNGDirectories(directory);
 
-//        this.moveDuplicateFiles(directory);
+        this.moveDuplicateFiles(directory);
 
-//        this.moveErrorFiles(directory);
+        this.moveErrorFiles(directory);
 
-        this.findMetadataWOMatching();
-        System.out.println("countMetadataWOMatching: " + this.countMetadataWOMatching);
+//        this.findMetadataWOMatching();
+//        System.out.println("countMetadataWOMatching: " + this.countMetadataWOMatching);
 
         return swcFilenames;
     }
@@ -70,7 +71,7 @@ public class SWCTest {
         for (File subFile: subFiles) {
             if (subFile.isFile()) {
                 if (subFile.getName().endsWith(".CNG.swc")) {
-                    this.swcFilenames.add(Utils.removeFileExtension(subFile.getName()));
+                    this.swcFilenames.add(Utils.removeSWCFileExtensions(subFile.getName()));
                     this.countCNGswc += 1;
                 }
             } else {
@@ -98,8 +99,8 @@ public class SWCTest {
         }
         for (File subFile: subFiles) {
             if (subFile.isFile()) {
-                this.swcFilenames.add(Utils.removeFileExtension(subFile.getName()));
-                if (!this.neuronMetadata.containsKey(Utils.removeFileExtension(subFile.getName()))) {
+                this.swcFilenames.add(Utils.removeSWCFileExtensions(subFile.getName()));
+                if (!this.neuronMetadata.containsKey(Utils.removeSWCFileExtensions(subFile.getName()))) {
                     this.moveFile(subFile, "/NonMetadata");
                 }
             } else {
@@ -139,9 +140,9 @@ public class SWCTest {
         }
         for (File subFile: subFiles) {
             if (subFile.isFile()) {
-                this.swcFilenames.add(Utils.removeFileExtension(subFile.getName()));
-                if (!this.alreadyReadFilenames.contains(Utils.removeFileExtension(subFile.getName()))) {
-                    this.alreadyReadFilenames.add(Utils.removeFileExtension(subFile.getName()));
+                this.swcFilenames.add(Utils.removeSWCFileExtensions(subFile.getName()));
+                if (!this.alreadyReadFilenames.contains(Utils.removeSWCFileExtensions(subFile.getName()))) {
+                    this.alreadyReadFilenames.add(Utils.removeSWCFileExtensions(subFile.getName()));
                 } else {
                     this.moveFile(subFile, "/DuplicateFiles");
                 }
@@ -161,7 +162,7 @@ public class SWCTest {
         }
         for (File subFile: subFiles) {
             if (subFile.isFile()) {
-                this.swcFilenames.add(Utils.removeFileExtension(subFile.getName()));
+                this.swcFilenames.add(Utils.removeSWCFileExtensions(subFile.getName()));
 //                try to create a SWCSegment from file
                 try {
                     FileInputStream f = new FileInputStream(subFile);
