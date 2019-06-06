@@ -4,7 +4,6 @@ import edu.gcsc.celltreeedit.NeuronMetadata.NeuronMetadataRO;
 import eu.mihosoft.vswcreader.SWCSegment;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -24,12 +23,9 @@ public class SWCTest {
 
     private String baseDirectory;
 
-    private final FileFilter fileFilter = (final File file) -> file.getName().toLowerCase().endsWith(".swc") || file.isDirectory();
     private Set<String> swcFilenames = new HashSet<>();
     private Set<String> alreadyReadFilenames = new HashSet<>();
     private Map<String, NeuronMetadataRO> neuronMetadata;
-    private Integer countCNGswc = 0;
-    private Integer countMetadataWOMatching = 0;
 
     public Set<String> preprocessSWCDirectory(Map<String, NeuronMetadataRO> neuronMetadata, File swcDirectory) {
 
@@ -44,52 +40,11 @@ public class SWCTest {
         }
 
         this.neuronMetadata = neuronMetadata;
-
-//        this.countCNGswc(directory);
-//        System.out.println("countCNGswc: " + this.countCNGswc);
-
-//        this.moveNonMetadata(directory);
-
         this.moveNonCNGDirectories(directory);
-
         this.moveDuplicateFiles(directory);
-
         this.moveErrorFiles(directory);
 
-//        this.findMetadataWOMatching();
-//        System.out.println("countMetadataWOMatching: " + this.countMetadataWOMatching);
-
         return swcFilenames;
-    }
-
-
-    private void countCNGswc(File directory) {
-        File[] subFiles = directory.listFiles();
-        if (subFiles == null) {
-            return;
-        }
-        for (File subFile: subFiles) {
-            if (subFile.isFile()) {
-                if (subFile.getName().endsWith(".CNG.swc")) {
-                    this.swcFilenames.add(Utils.removeSWCFileExtensions(subFile.getName()));
-                    this.countCNGswc += 1;
-                }
-            } else {
-                if (subFile.getName().equals("NonMetadata") || subFile.getName().equals("NonCNGFiles") || subFile.getName().equals("DuplicateFiles") || subFile.getName().equals("ErrorFiles")) {
-                    continue;
-                }
-                this.countCNGswc(subFile);
-            }
-        }
-    }
-
-    private void findMetadataWOMatching() {
-        for (String name: this.neuronMetadata.keySet()) {
-            if (!this.swcFilenames.contains(name)) {
-                this.countMetadataWOMatching += 1;
-                System.out.println(name);
-            }
-        }
     }
 
     private void moveNonMetadata(File directory) {

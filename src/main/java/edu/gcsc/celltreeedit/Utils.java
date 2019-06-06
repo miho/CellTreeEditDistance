@@ -134,7 +134,7 @@ public class Utils {
     }
 
     public static Set<String> parseJsonToFileNames(File jsonFile) throws IOException {
-        String fileName = "";
+        String fileName;
         Set<String> fileNames = new HashSet<>();
         // maps jsonObjects to javaObjects
         ObjectMapper objectMapper = new ObjectMapper();
@@ -153,8 +153,6 @@ public class Utils {
                 if (jsonParser.nextToken() != JsonToken.START_ARRAY) {
                     throw new IllegalStateException("Expected a JsonArray");
                 }
-                // skip START_ARRAY Token
-//                jsonParser.nextToken();
                 // loop through all neurons from JsonArray and add them to HashMap
                 while(jsonParser.nextToken() != JsonToken.END_ARRAY) {
                     fileName = objectMapper.readValue(jsonParser, String.class);

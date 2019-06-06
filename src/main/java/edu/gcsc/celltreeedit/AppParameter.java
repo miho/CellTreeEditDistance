@@ -2,7 +2,7 @@ package edu.gcsc.celltreeedit;
 
 enum AppParameter
 {
-    CALC_SHORT("c"), CALC("calc="),
+    CALC_SHORT("c="), CALC("calc="),
     JSON_SHORT("j="), JSON("json="),
     SHOW_SHORT("s="), SHOW("show=");
 

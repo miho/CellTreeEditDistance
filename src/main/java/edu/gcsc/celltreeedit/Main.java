@@ -57,18 +57,18 @@ public class Main {
         NeuronMetadataMapper mapper = new NeuronMetadataMapper();
         Map<String, NeuronMetadataRO> neuronMetadata = mapper.mapFromDirectory(metadataPath);
 
-        CellTreeEditDistance matrix = new CellTreeEditDistance();
-        if (!jsonDirectory.getName().equals("")) {
-            Set<String> swcFileNames = Utils.parseJsonToFileNames(jsonDirectory);
-            matrix.compareFilesFromFilenames(swcFileNames, swcDirectory, 9);
-        } else {
-            matrix.compareFilesFromChoose(9);
-        }
+//        CellTreeEditDistance matrix = new CellTreeEditDistance();
+//        if (!jsonDirectory.getName().equals("")) {
+//            Set<String> swcFileNames = Utils.parseJsonToFileNames(jsonDirectory);
+//            matrix.compareFilesFromFilenames(swcFileNames, swcDirectory, 9);
+//        } else {
+//            matrix.compareFilesFromChoose(9);
+//        }
 
 
 
-//        SWCTest swcTest= new SWCTest();
-//        Set<String> fileNames = swcTest.preprocessSWCDirectory(neuronMetadata, swcDirectory);
+        SWCTest swcTest= new SWCTest();
+        Set<String> fileNames = swcTest.preprocessSWCDirectory(neuronMetadata, swcDirectory);
 
 //        for (String fileName: fileNames) {
 //            if (!neuronMetadata.containsKey(fileName)) {
