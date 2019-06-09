@@ -1,11 +1,9 @@
 package edu.gcsc.celltreeedit;
 
-import edu.gcsc.celltreeedit.NeuronMetadata.NeuronMetadataRO;
 import eu.mihosoft.ext.apted.distance.APTED;
 import eu.mihosoft.ext.apted.node.Node;
 import eu.mihosoft.vrl.annotation.ComponentInfo;
 import eu.mihosoft.vrl.annotation.ParamInfo;
-import eu.mihosoft.vswcreader.SWCSegment;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
