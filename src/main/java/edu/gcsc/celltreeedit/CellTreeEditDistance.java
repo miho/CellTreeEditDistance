@@ -23,7 +23,7 @@ package edu.gcsc.celltreeedit;
 public class CellTreeEditDistance implements java.io.Serializable{
     private static final long serialVersionUID = 1L;
 
-    private float[][] results;
+    private double[][] results;
     private File[] files;
     private String[] fileNames;
     private Set<String> swcFilenames;
@@ -86,11 +86,11 @@ public class CellTreeEditDistance implements java.io.Serializable{
         private final List<Node<NodeData>> nodeData;
         private int i;
         private int j;
-        private float[][] results;
+        private double[][] results;
         private APTED apted;
         private int choice;
 
-        public MyTask(int i, int j, float[][] results, APTED apted, int choice, List<Node<NodeData>> nodeData) {
+        public MyTask(int i, int j, double[][] results, APTED apted, int choice, List<Node<NodeData>> nodeData) {
             this.i = i;
             this.j = j;
             this.results = results;
@@ -118,12 +118,12 @@ public class CellTreeEditDistance implements java.io.Serializable{
         int size= files.length;
         int nrofCalculations= ((size*size)-size)/2;
         int progress=0;
-        results= new float[size][size];
+        results= new double[size][size];
         String[] names=new String[size];
         for(int i=0;i<size;i++){
             names[i]=files[i].getName();
         }
-        final float[][] resultsFinal = results;
+        final double[][] resultsFinal = results;
 
         List<Node<NodeData>> nodeData = Collections.synchronizedList(new ArrayList<Node<NodeData>>(size));
         for(int i = 0; i < size;i++) {

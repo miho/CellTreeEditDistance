@@ -1,9 +1,17 @@
 package edu.gcsc.celltreeedit;
 
 //import edu.gcsc.celltreeedit.AppProperties.AppParameter;
+import com.apporiented.algorithm.clustering.AverageLinkageStrategy;
+import com.apporiented.algorithm.clustering.Cluster;
+import com.apporiented.algorithm.clustering.ClusteringAlgorithm;
+import com.apporiented.algorithm.clustering.DefaultClusteringAlgorithm;
+import com.apporiented.algorithm.clustering.visualization.DendrogramPanel;
+import edu.gcsc.celltreeedit.AppProperties.AppProperties;
+import edu.gcsc.celltreeedit.AppProperties.CommandLineParsing;
 import edu.gcsc.celltreeedit.NeuronMetadata.NeuronMetadataMapper;
 import edu.gcsc.celltreeedit.NeuronMetadata.NeuronMetadataRImpl;
 
+import javax.swing.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -18,72 +26,37 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
 
-//        String rootPath = Thread.currentThread().getContextClassLoader().getResource("").getPath();
-//        String appConfigPath = rootPath + "/main/resources/AppConfig.properties";
-//        String appConfigPath = "src/main/resources/AppConfig.properties";
-//
-//        Properties appProps = new Properties();
-//        appProps.load(new FileInputStream(appConfigPath));
-//
-//        // get Default-Values Application-Properties
-//        File swcDirectory = new File(appProps.getProperty("swcDirectory"));
-//        File metadataPath = new File(appProps.getProperty("metadataPath"));
-//        String exportedMatrixName = appProps.getProperty("exportedMatrixName");
-//        File exportedMatrixPath = new File(appProps.getProperty("exportedMatrixPath"));
-//        int calcType = Integer.parseInt(appProps.getProperty("calcType"));
-//        File jsonDirectory = new File(appProps.getProperty("jsonDirectory"));
-//        boolean show = Boolean.parseBoolean(appProps.getProperty("show"));
-//
-//        for (final String arg: args) {
-//            if (hasValuedParam(arg, AppParameter.CALC_SHORT)){
-//                calcType = extractInt(arg, AppParameter.CALC_SHORT);
-//            }
-//            if (hasValuedParam(arg, AppParameter.CALC)){
-//                calcType = extractInt(arg, AppParameter.CALC);
-//            }
-//            if (hasValuedParam(arg, AppParameter.JSON_SHORT)){
-//                jsonDirectory = new File(extractString(arg, AppParameter.JSON_SHORT));
-//            }
-//            if (hasValuedParam(arg, AppParameter.JSON)){
-//                jsonDirectory = new File(extractString(arg, AppParameter.JSON));
-//            }
-//            if (hasValuedParam(arg, AppParameter.SHOW_SHORT)) {
-//                show = extractBoolean(arg, AppParameter.SHOW_SHORT);
-//            }
-//            if (hasValuedParam(arg, AppParameter.SHOW)) {
-//                show = extractBoolean(arg, AppParameter.SHOW);
-//            }
-//        }
+        AppProperties appProperties = CommandLineParsing.parseArguments(args);
+
         // calcType
         // 0 (default) -> calculate everything
         // 1 -> only calc matrix with minimum resources
         // 2 -> choose for json-file
         // 3 -> preprocess swc-files
-        int calcType = 1;
-        switch (calcType) {
-            case 0:
-                // calculate neuronMetadata
-                // calculate matrix
-                // calculate clustering
-                // generate dendrogram
-                break;
-            case 1:
-                // check if swc-directory is given
-                // calculate matrix
-                break;
-            case 2:
-                // let user query metadata through lucene
-                // let user export names into json file
-                break;
-            case 3:
-                preprocessSWCDirectory();
-                break;
-            default:
-                System.out.println("calcType not valid");
-                break;
-        }
+        System.out.println(appProperties.getCalcType());
+        System.out.println(appProperties.getBaseDirectory());
+        System.out.println(appProperties.getJsonDirectory());
+        System.out.println(appProperties.getDataDirectory());
+        System.out.println(appProperties.getMatrixExportName());
+        System.out.println(appProperties.getMatrixExportDirectory());
 
-
+//        switch (appProperties.getCalcType()) {
+//            case 0:
+//                calculateCompletely();
+//                break;
+//            case 1:
+//                calculateMatrixOnly();
+//                break;
+//            case 2:
+//                queryLucene();
+//                break;
+//            case 3:
+//                preprocessSWCDirectory();
+//                break;
+//            default:
+//                System.out.println("calcType not valid");
+//                break;
+//        }
 
 //        CellTreeEditDistance matrix = new CellTreeEditDistance();
 //        if (!jsonDirectory.getName().equals("")) {
@@ -92,6 +65,32 @@ public class Main {
 //        } else {
 //            matrix.compareFilesFromChoose(9);
 //        }
+    }
+
+    private static void calculateCompletely() throws IOException {
+        // put metadata in hashMap
+        NeuronMetadataMapper neuronMetadataMapper = new NeuronMetadataMapper();
+        Map<String, NeuronMetadataRImpl> neuronMetadata = neuronMetadataMapper.mapFromDirectory(new File("/media/exdisk/Sem06/BA/Data/Neuromorpho/Metadata"));
+
+        CellTreeEditDistance cellTreeEditDistance = new CellTreeEditDistance();
+        boolean argumentGiven = false;
+        if (argumentGiven) {
+//            cellTreeEditDistance.compareFilesFromFilenames();
+        } else {
+//            doSomething
+        }
+        // calculate clustering
+        // generate dendrogram
+    }
+
+    private static void calculateMatrixOnly() {
+        // check if swc-directory is given
+        // calculate matrix
+    }
+
+    private static void queryLucene() {
+        // let user query metadata through lucene
+        // let user export names into json file
     }
 
     private static void preprocessSWCDirectory() throws IOException {
