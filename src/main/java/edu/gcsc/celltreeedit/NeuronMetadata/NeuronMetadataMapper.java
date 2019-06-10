@@ -19,22 +19,22 @@ public class NeuronMetadataMapper {
     public Map<String, NeuronMetadataRImpl> mapFromChooseJSON() throws IOException {
         // select jsonFiles from disk
         File[] files = Utils.chooseJSON();
-        return this.mapFromFiles(files);
+        return this.mapFromJsonFiles(files);
     }
 
     public Map<String, NeuronMetadataRImpl> mapFromDirectory(File directory) throws IOException {
         if (directory.isFile() && directory.getName().toLowerCase().endsWith(".json")) {
-            return this.mapFromFiles(new File[] {directory});
+            return this.mapFromJsonFiles(new File[] {directory});
         }
         File[] files = directory.listFiles(fileFilter);
         if (files == null) {
             throw new IOException("No json-File available");
         }
-        return this.mapFromFiles(files);
+        return this.mapFromJsonFiles(files);
     }
 
 
-    public Map<String, NeuronMetadataRImpl> mapFromFiles(File[] files) throws IOException {
+    public Map<String, NeuronMetadataRImpl> mapFromJsonFiles(File[] files) throws IOException {
 
         NeuronMetadataRImpl neuronMetadataPOJO;
         Map<String, NeuronMetadataRImpl> neuronMetadata = new HashMap<>();

@@ -33,6 +33,7 @@ dependencies {
 
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.9.9'
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.9'
+    compile group: 'commons-cli', name: 'commons-cli', version: '1.4'
     
     compile 'eu.mihosoft.vvecmath:vvecmath:0.4.0'
 
