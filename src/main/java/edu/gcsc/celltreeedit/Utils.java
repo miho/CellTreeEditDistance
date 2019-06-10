@@ -73,7 +73,7 @@ public class Utils {
     }
 
 
-    public static void printToTxt(float[][] results, String[] filenames){
+    public static void printToTxt(double[][] results, String[] filenames){
         System.out.println("Please choose the directory where you want to save the file");
         JFileChooser save= new JFileChooser();
         save.setFileSelectionMode(JFileChooser.FILES_ONLY);
