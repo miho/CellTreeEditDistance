@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.gcsc.celltreeedit.AppProperties.AppProperties;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -73,17 +74,20 @@ public class Utils {
     }
 
 
-    public static void printToTxt(double[][] results, String[] filenames){
-        System.out.println("Please choose the directory where you want to save the file");
-        JFileChooser save= new JFileChooser();
-        save.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        FileNameExtensionFilter text = new FileNameExtensionFilter("Text file (*.txt)","txt");
-        save.addChoosableFileFilter(text);
-        save.setAcceptAllFileFilterUsed(false);
-        save.showSaveDialog(null);
-        String path=save.getSelectedFile().getAbsolutePath();
+    public static void printToTxt(double[][] results, String[] filenames, File exportDirectory, String fileName){
+//        System.out.println("Please choose the directory where you want to save the file");
+//        JFileChooser save= new JFileChooser();
+//        save.setFileSelectionMode(JFileChooser.FILES_ONLY);
+//        FileNameExtensionFilter text = new FileNameExtensionFilter("Text file (*.txt)","txt");
+//        save.addChoosableFileFilter(text);
+//        save.setAcceptAllFileFilterUsed(false);
+//        save.showSaveDialog(null);
+//        String path=save.getSelectedFile().getAbsolutePath();
+        exportDirectory.mkdirs();
+        String path = exportDirectory.getAbsolutePath() + "/" + fileName;
+
         try {
-            FileWriter export=new FileWriter(path+".txt");
+            FileWriter export=new FileWriter(path);
             BufferedWriter br=new BufferedWriter(export);
            // br.write("#;");
             //for(int i=0;i<results.length;i++){                              //kopfzeile

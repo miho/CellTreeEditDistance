@@ -1,18 +1,19 @@
 package edu.gcsc.celltreeedit;
 
-        import eu.mihosoft.ext.apted.distance.APTED;
-        import eu.mihosoft.ext.apted.node.Node;
-        import eu.mihosoft.vrl.annotation.ComponentInfo;
-        import eu.mihosoft.vrl.annotation.ParamInfo;
+import eu.mihosoft.ext.apted.distance.APTED;
+import eu.mihosoft.ext.apted.node.Node;
+import eu.mihosoft.vrl.annotation.ComponentInfo;
+import eu.mihosoft.vrl.annotation.ParamInfo;
+import javafx.util.Pair;
 
-        import javax.swing.*;
-        import java.awt.event.ActionEvent;
-        import java.awt.event.ActionListener;
-        import java.io.*;
-        import java.util.*;
-        import java.util.concurrent.ExecutorService;
-        import java.util.concurrent.Executors;
-        import java.util.concurrent.TimeUnit;
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.*;
+import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Erid on 16.02.2018.
@@ -27,8 +28,8 @@ public class CellTreeEditDistance implements java.io.Serializable{
     private File[] files;
     private String[] fileNames;
     private Set<String> swcFilenames;
-    private List<String> importedFileNames = new ArrayList<>();
-    private List<File> importedFiles = new ArrayList<>();
+    private List<String> foundFileNames = new ArrayList<>();
+    private List<File> foundFiles = new ArrayList<>();
 
     public static void showLabels(){
         JFrame frame = new JFrame();
@@ -42,26 +43,54 @@ public class CellTreeEditDistance implements java.io.Serializable{
 
     }
 
-    public void compareFilesFromChoose(int choice) {
+    public void compareFilesFromFileDialog(int choice) {
         this.files= Utils.choose();
         int size= files.length;
         fileNames=new String[size];
         for(int i=0;i<size;i++){
             fileNames[i]=files[i].getName();
         }
-        System.out.println(size+" Files were imported!");    // loggen?
+        System.out.println(size + " Files were imported!");    // loggen?
         this.compareFiles(choice);
     }
 
-    public void compareFilesFromFilenames(Set<String> swcFilenames, File swcDirectory, int choice) {
+    public Pair<double[][], String[]> compareFilesFromDirectory(File swcDirectory, int choice) {
+
+        this.findSWCFiles(swcDirectory);
+        this.files = this.foundFiles.toArray(new File[this.foundFiles.size()]);
+        this.fileNames = this.foundFileNames.toArray(new String[this.foundFileNames.size()]);
+        this.compareFiles(choice);
+        return new Pair<>(results, fileNames);
+    }
+
+    private void findSWCFiles(File directory) {
+        File[] subFiles = directory.listFiles();
+        if (subFiles == null) {
+            return;
+        }
+        for (File subFile: subFiles) {
+            if (subFile.isFile()) {
+                this.foundFiles.add(subFile);
+                this.foundFileNames.add(Utils.removeSWCFileExtensions(subFile.getName()));
+            } else {
+                if (subFile.getName().equals("00_Ignore")) {
+                    continue;
+                }
+                this.findSWCFiles(subFile);
+            }
+        }
+    }
+
+    public Pair<double[][], String[]> compareFilesFromFilenames(Set<String> swcFilenames, File swcDirectory, int choice) {
         this.swcFilenames = swcFilenames;
-        this.searchForSWCFiles(swcDirectory);
-        this.files = this.importedFiles.toArray(new File[this.importedFiles.size()]);
-        this.fileNames = this.importedFileNames.toArray(new String[this.importedFileNames.size()]);
+        this.findSWCFilesWithFilenames(swcDirectory);
+        this.files = this.foundFiles.toArray(new File[this.foundFiles.size()]);
+        this.fileNames = this.foundFileNames.toArray(new String[this.foundFileNames.size()]);
         this.compareFiles(choice);
+        return new Pair<>(results, fileNames);
     }
 
-    public void searchForSWCFiles(File directory) {
+    private void findSWCFilesWithFilenames(File directory) {
         File[] subFiles = directory.listFiles();
         if (subFiles == null) {
             return;
@@ -69,14 +98,14 @@ public class CellTreeEditDistance implements java.io.Serializable{
         for (File subFile: subFiles) {
             if (subFile.isFile()) {
                 if (this.swcFilenames.contains(Utils.removeSWCFileExtensions(subFile.getName()))) {
-                    this.importedFiles.add(subFile);
-                    this.importedFileNames.add(Utils.removeSWCFileExtensions(subFile.getName()));
+                    this.foundFiles.add(subFile);
+                    this.foundFileNames.add(Utils.removeSWCFileExtensions(subFile.getName()));
                 }
             } else {
-                if (subFile.getName().equals("NonMetadata") || subFile.getName().equals("NonCNGFiles") || subFile.getName().equals("DuplicateFiles") || subFile.getName().equals("ErrorFiles")) {
+                if (subFile.getName().equals("00_Ignore")) {
                     continue;
                 }
-                this.searchForSWCFiles(subFile);
+                this.findSWCFilesWithFilenames(subFile);
             }
         }
     }
@@ -105,8 +134,8 @@ public class CellTreeEditDistance implements java.io.Serializable{
             float result = apted.computeEditDistance(nodeData.get(i), nodeData.get(j));
 
             // TODO sync
-            results[i][j]=result;
-            results[j][i]=result;
+            results[i][j] = result;
+            results[j][i] = result;
         }
     }
 
@@ -115,11 +144,11 @@ public class CellTreeEditDistance implements java.io.Serializable{
         long runtimeInS = 0;
         final long start = System.nanoTime();
 
-        int size= files.length;
-        int nrofCalculations= ((size*size)-size)/2;
-        int progress=0;
-        results= new double[size][size];
-        String[] names=new String[size];
+        int size = files.length;
+        int nrofCalculations = ((size*size)-size)/2;
+        int progress = 0;
+        results = new double[size][size];
+        String[] names = new String[size];
         for(int i=0;i<size;i++){
             names[i]=files[i].getName();
         }
@@ -196,24 +225,6 @@ public class CellTreeEditDistance implements java.io.Serializable{
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-
-        JFrame frame= new JFrame();
-        Tables tables = new Tables(fileNames,results);
-        JButton export=new JButton("Export");
-        export.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Utils.printToTxt(results, fileNames);
-            }
-        });
-        tables.add(export);
-        frame.add(tables);
-
-        frame.setSize(950,350);
-        frame.setVisible(true);
-        frame.setTitle("Comparison Results");
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         final long runtimeInNanos = System.nanoTime() - start;
         runtimeInS = TimeUnit.NANOSECONDS.toSeconds(runtimeInNanos);

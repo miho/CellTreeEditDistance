@@ -10,8 +10,10 @@ import edu.gcsc.celltreeedit.AppProperties.AppProperties;
 import edu.gcsc.celltreeedit.AppProperties.CommandLineParsing;
 import edu.gcsc.celltreeedit.NeuronMetadata.NeuronMetadataMapper;
 import edu.gcsc.celltreeedit.NeuronMetadata.NeuronMetadataRImpl;
+import javafx.util.Pair;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -33,93 +35,70 @@ public class Main {
         // 1 -> only calc matrix with minimum resources
         // 2 -> choose for json-file
         // 3 -> preprocess swc-files
-        System.out.println(appProperties.getCalcType());
-        System.out.println(appProperties.getBaseDirectory());
-        System.out.println(appProperties.getJsonDirectory());
-        System.out.println(appProperties.getDataDirectory());
-        System.out.println(appProperties.getMatrixExportName());
-        System.out.println(appProperties.getMatrixExportDirectory());
-
-//        switch (appProperties.getCalcType()) {
-//            case 0:
-//                calculateCompletely();
-//                break;
-//            case 1:
-//                calculateMatrixOnly();
-//                break;
-//            case 2:
-//                queryLucene();
-//                break;
-//            case 3:
-//                preprocessSWCDirectory();
-//                break;
-//            default:
-//                System.out.println("calcType not valid");
-//                break;
-//        }
-
-//        CellTreeEditDistance matrix = new CellTreeEditDistance();
-//        if (!jsonDirectory.getName().equals("")) {
-//            Set<String> swcFileNames = Utils.parseJsonToFileNames(jsonDirectory);
-//            matrix.compareFilesFromFilenames(swcFileNames, swcDirectory, 9);
-//        } else {
-//            matrix.compareFilesFromChoose(9);
-//        }
+        switch (appProperties.getCalcType()) {
+            case 0:
+                calculateCompletely(appProperties);
+                break;
+            case 1:
+                calculateMatrixOnly(appProperties);
+                break;
+            case 2:
+                queryLucene(appProperties);
+                break;
+            case 3:
+                preprocessSWCDirectory(appProperties);
+                break;
+            default:
+                System.out.println("calcType not valid");
+                break;
+        }
     }
 
-    private static void calculateCompletely() throws IOException {
+    private static void calculateCompletely(AppProperties appProperties) throws IOException {
         // put metadata in hashMap
         NeuronMetadataMapper neuronMetadataMapper = new NeuronMetadataMapper();
-        Map<String, NeuronMetadataRImpl> neuronMetadata = neuronMetadataMapper.mapFromDirectory(new File("/media/exdisk/Sem06/BA/Data/Neuromorpho/Metadata"));
+        System.out.println(appProperties.getMetadataDirectory().getPath());
+        Map<String, NeuronMetadataRImpl> neuronMetadata = neuronMetadataMapper.mapFromDirectory(appProperties.getMetadataDirectory());
 
         CellTreeEditDistance cellTreeEditDistance = new CellTreeEditDistance();
-        boolean argumentGiven = false;
-        if (argumentGiven) {
-//            cellTreeEditDistance.compareFilesFromFilenames();
+        Pair<double[][], String[]> result;
+        if (appProperties.getJsonDirectory().getPath().equals("")) {
+            result = cellTreeEditDistance.compareFilesFromDirectory(appProperties.getSwcFileDirectory(), 9);
         } else {
-//            doSomething
+            result = cellTreeEditDistance.compareFilesFromFilenames(Utils.parseJsonToFileNames(appProperties.getJsonDirectory()), appProperties.getSwcFileDirectory(), 9);
         }
+        Utils.printToTxt(result.getKey(), result.getValue(), appProperties.getMatrixExportDirectory(), appProperties.getMatrixExportName());
         // calculate clustering
+        Clustering clustering = Clustering.getInstance();
+        Cluster cluster = clustering.createCluster(result.getKey(), result.getValue());
         // generate dendrogram
+        clustering.showCluster(cluster);
     }
 
-    private static void calculateMatrixOnly() {
-        // check if swc-directory is given
-        // calculate matrix
+    private static void calculateMatrixOnly(AppProperties appProperties) throws IOException {
+        CellTreeEditDistance cellTreeEditDistance = new CellTreeEditDistance();
+        Pair<double[][], String[]> result;
+        if (appProperties.getJsonDirectory().getPath().equals("")) {
+            result = cellTreeEditDistance.compareFilesFromDirectory(appProperties.getSwcFileDirectory(), 9);
+        } else {
+            result = cellTreeEditDistance.compareFilesFromFilenames(Utils.parseJsonToFileNames(appProperties.getJsonDirectory()), appProperties.getSwcFileDirectory(), 9);
+        }
+        Utils.printToTxt(result.getKey(), result.getValue(), appProperties.getMatrixExportDirectory(), appProperties.getMatrixExportName());
     }
 
-    private static void queryLucene() {
+    private static void queryLucene(AppProperties appProperties) {
         // let user query metadata through lucene
         // let user export names into json file
     }
 
-    private static void preprocessSWCDirectory() throws IOException {
+    private static void preprocessSWCDirectory(AppProperties appProperties) throws IOException {
         // put metadata in hashMap
         NeuronMetadataMapper neuronMetadataMapper = new NeuronMetadataMapper();
-        Map<String, NeuronMetadataRImpl> neuronMetadata = neuronMetadataMapper.mapFromDirectory(new File("/media/exdisk/Sem06/BA/Data/Neuromorpho/Metadata"));
+        Map<String, NeuronMetadataRImpl> neuronMetadata = neuronMetadataMapper.mapFromDirectory(appProperties.getMetadataDirectory());
 
         // preprocess SWC-Directory
-        File swcDirectory = new File("/media/exdisk/Sem06/BA/Data/Neuromorpho/SWC-Files/00_All");
+        File swcDirectory = new File("/media/exdisk/Sem06/BA/Data/SWC-Files/00_All");
         SWCPreprocessing swcPreprocessing = new SWCPreprocessing();
         swcPreprocessing.preprocessSWCDirectory(neuronMetadata, swcDirectory);
     }
-
-//    private static boolean hasValuedParam(final String cmdArg,
-//                                          final AppParameter parameter) {
-//        return cmdArg.startsWith(parameter.paramName) &&
-//                cmdArg.length() > parameter.valueOffset;
-//    }
-//
-//    private static boolean extractBoolean(final String cmdArg, final AppParameter parameter) {
-//        return Boolean.parseBoolean(cmdArg.substring(parameter.valueOffset));
-//    }
-//
-//    private static int extractInt(final String cmdArg, final AppParameter parameter) {
-//        return Integer.parseInt(cmdArg.substring(parameter.valueOffset));
-//    }
-//
-//    private static String extractString(final String cmdArg, final AppParameter parameter) {
-//        return cmdArg.substring(parameter.valueOffset);
-//    }
-
 }

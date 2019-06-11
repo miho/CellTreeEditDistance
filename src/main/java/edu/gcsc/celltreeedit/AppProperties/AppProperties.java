@@ -7,8 +7,8 @@ public class AppProperties {
     // Ziel: mit defaultwerten füllen und evtl durch CommandlineArgumente ersetzen
     // Default-Values
     int calcType = 0;
-    File baseDirectory = new File("/media/exdisk/Sem06/BA");
-    File jsonDirectory = new File("/media/exdisk/Sem06/BA/Data/swcFiles.json");
+    File baseDirectory = new File("/media/exdisk/Sem06/BA/ProgramData");
+    File jsonDirectory = new File("/media/exdisk/Sem06/BA/ProgramData/swcFiles.json");
     boolean show = true;
     String matrixExportName = "DistanceMatrix.txt";
 

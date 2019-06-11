@@ -28,7 +28,7 @@ public class NeuronMetadataMapper {
         }
         File[] files = directory.listFiles(fileFilter);
         if (files == null) {
-            throw new IOException("No json-File available");
+            throw new IOException("No json-Files for NeuronMetadata available");
         }
         return this.mapFromJsonFiles(files);
     }
