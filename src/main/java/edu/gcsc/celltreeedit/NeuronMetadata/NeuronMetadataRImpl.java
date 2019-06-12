@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+
 @JsonPropertyOrder({
         "neuron_id",
         "neuron_name",
@@ -73,9 +74,9 @@ public class NeuronMetadataRImpl implements NeuronMetadataR {
     @JsonProperty("age_classification")
     private String ageClassification;
     @JsonProperty("brain_region")
-    private List<String> brainRegion = null;
+    private List<String> brainRegion;
     @JsonProperty("cell_type")
-    private List<String> cellType = null;
+    private List<String> cellType;
     @JsonProperty("species")
     private String species;
     @JsonProperty("strain")
@@ -85,7 +86,7 @@ public class NeuronMetadataRImpl implements NeuronMetadataR {
     @JsonProperty("stain")
     private String stain;
     @JsonProperty("experiment_condition")
-    private List<String> experimentCondition = null;
+    private List<String> experimentCondition;
     @JsonProperty("protocol")
     private String protocol;
     @JsonProperty("slicing_direction")
@@ -141,9 +142,9 @@ public class NeuronMetadataRImpl implements NeuronMetadataR {
     @JsonProperty("png_url")
     private String pngUrl;
     @JsonProperty("reference_pmid")
-    private List<String> referencePmid = null;
+    private List<String> referencePmid;
     @JsonProperty("reference_doi")
-    private List<String> referenceDoi = null;
+    private List<String> referenceDoi;
     @JsonProperty("physical_Integrity")
     private String physicalIntegrity;
     @JsonProperty("_links")
@@ -192,11 +193,17 @@ public class NeuronMetadataRImpl implements NeuronMetadataR {
     }
 
     public List<String> getBrainRegion() {
+        if (brainRegion == null) {
+            return null;
+        }
         final List<String> brainRegionR = new ArrayList<>(brainRegion);
         return Collections.unmodifiableList(brainRegionR);
     }
 
     public List<String> getCellType() {
+        if (cellType == null) {
+            return null;
+        }
         final List<String> cellTypeR = new ArrayList<>(cellType);
         return Collections.unmodifiableList(cellTypeR);
     }
@@ -218,6 +225,9 @@ public class NeuronMetadataRImpl implements NeuronMetadataR {
     }
 
     public List<String> getExperimentCondition() {
+        if (experimentCondition == null) {
+            return null;
+        }
         final List<String> experimentConditionR = new ArrayList<>(experimentCondition);
         return Collections.unmodifiableList(experimentConditionR);
     }
@@ -331,11 +341,17 @@ public class NeuronMetadataRImpl implements NeuronMetadataR {
     }
 
     public List<String> getReferencePmid() {
+        if (referencePmid == null) {
+            return null;
+        }
         final List<String> referencePmidR = new ArrayList<>(referencePmid);
         return Collections.unmodifiableList(referencePmidR);
     }
 
     public List<String> getReferenceDoi() {
+        if (referenceDoi == null) {
+            return null;
+        }
         final List<String> referenceDoiR = new ArrayList<>(referenceDoi);
         return Collections.unmodifiableList(referenceDoiR);
     }
