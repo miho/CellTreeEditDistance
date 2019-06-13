@@ -33,6 +33,12 @@ public class AppProperties {
         return new File(baseDirectory.getPath() + "/Data/SWCFiles");
     }
 
+    public File getWorkingDirectory() { return new File(baseDirectory.getPath() + "/WorkingDir"); }
+
+    public File getOutputDirectory() {
+        return new File(baseDirectory.getPath() + "/Output");
+    }
+
     public File getJsonDirectory() {
         return jsonDirectory;
     }
@@ -43,10 +49,6 @@ public class AppProperties {
 
     public String getMatrixExportName() {
         return matrixExportName;
-    }
-
-    public File getMatrixExportDirectory() {
-        return new File(baseDirectory.getPath() + "/Output");
     }
 }
 

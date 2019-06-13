@@ -1,7 +1,6 @@
 package edu.gcsc.celltreeedit.Lucene;
 
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.queryparser.classic.ParseException;
@@ -20,12 +19,12 @@ import java.io.InputStreamReader;
 
 public class CLI {
 
-    public static void startCLI(File indexPath) throws IOException {
+    public static void startCLI(File indexPath, File outputDirectory) throws IOException {
         // preparation for queryparsing
         Directory indexDirectory = FSDirectory.open(indexPath.toPath());
         IndexReader indexReader = DirectoryReader.open(indexDirectory);
         final IndexSearcher indexSearcher = new IndexSearcher(indexReader);
-        Analyzer analyzer = new StandardAnalyzer();
+        Analyzer analyzer = new CaseInsensitiveKeywordAnalyzer();
         QueryParser queryParser = new QueryParser("neuronId", analyzer);
         Collector collector = new TotalHitCountCollector();
         String query = "";
@@ -45,10 +44,22 @@ public class CLI {
             try {
                 // perform search
                 TopDocs topDocs = indexSearcher.search(queryParser.parse(query), 110000);
-                System.out.println("Search produced " + topDocs.totalHits.value + " results. Save result to ... ? (y/n)");
-                s = br.readLine();
+                System.out.println("parsed Search: " + queryParser.parse(query).toString());
                 // output number of results
                 // save to file?
+                while (true) {
+                    System.out.println("Search produced " + topDocs.totalHits.value + " results. Save result to ... ? (y/n)");
+                    s = br.readLine();
+                    if (s.toLowerCase().equals("y")) {
+                        DocExport docExport = new DocExport();
+                        docExport.exportNamesToJson(indexSearcher, topDocs, outputDirectory);
+                        break;
+                    } else if (s.toLowerCase().equals("n")) {
+                        break;
+                    }
+                }
+
+
                 // restart
             } catch (ParseException ex) {
                 System.out.println("Query could not be parsed. Please try again.");

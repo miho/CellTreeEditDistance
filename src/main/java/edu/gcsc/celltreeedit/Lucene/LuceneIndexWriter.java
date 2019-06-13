@@ -2,10 +2,9 @@ package edu.gcsc.celltreeedit.Lucene;
 
 import edu.gcsc.celltreeedit.NeuronMetadata.NeuronMetadataRImpl;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
-import org.apache.lucene.document.StringField;
+import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.store.Directory;
@@ -33,7 +32,7 @@ public class LuceneIndexWriter {
     private boolean openIndex() {
         try {
             Directory dir = FSDirectory.open(indexDirectory.toPath());
-            Analyzer analyzer = new StandardAnalyzer();
+            Analyzer analyzer = new CaseInsensitiveKeywordAnalyzer();
             IndexWriterConfig iwc = new IndexWriterConfig(analyzer);
             //Always overwrite the directory
             iwc.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
@@ -64,35 +63,35 @@ public class LuceneIndexWriter {
 
     private void addStringToDoc(Document doc, String stringFieldName, String value) {
         if (value == null) {
-            doc.add(new StringField(stringFieldName, "", Field.Store.YES));
+            doc.add(new TextField(stringFieldName, "", Field.Store.YES));
         } else {
-            doc.add(new StringField(stringFieldName, value, Field.Store.YES));
+            doc.add(new TextField(stringFieldName, value.toLowerCase(), Field.Store.YES));
         }
     }
 
     private void addFloatToDoc(Document doc, String stringFieldName, Float value) {
         if (value == null) {
-            doc.add(new StringField(stringFieldName, "", Field.Store.YES));
+            doc.add(new TextField(stringFieldName, "", Field.Store.YES));
         } else {
-            doc.add(new StringField(stringFieldName, value.toString(), Field.Store.YES));
+            doc.add(new TextField(stringFieldName, value.toString(), Field.Store.YES));
         }
     }
 
     private void addListToDoc(Document doc, String stringFieldName, List<String> list) {
         if (list == null) {
-            doc.add(new StringField(stringFieldName, "", Field.Store.YES));
+            doc.add(new TextField(stringFieldName, "", Field.Store.YES));
             return;
         }
         for (String entry: list) {
-            doc.add(new StringField(stringFieldName, entry, Field.Store.YES));
+            doc.add(new TextField(stringFieldName, entry.toLowerCase(), Field.Store.YES));
         }
     }
 
     private void addDocumentsForNeuronMetadataObject(Document doc, NeuronMetadataRImpl neuronMetadataR) {
         // not allowed to be null values
-        doc.add(new StringField("neuronId", neuronMetadataR.getNeuronId().toString(), Field.Store.YES));
-        doc.add(new StringField("neuronName", neuronMetadataR.getNeuronName(), Field.Store.YES));
-        doc.add(new StringField("archive", neuronMetadataR.getArchive(), Field.Store.YES));
+        doc.add(new TextField("neuronId", neuronMetadataR.getNeuronId().toString(), Field.Store.YES));
+        doc.add(new TextField("neuronName", neuronMetadataR.getNeuronName(), Field.Store.YES));
+        doc.add(new TextField("archive", neuronMetadataR.getArchive(), Field.Store.YES));
 
         this.addStringToDoc(doc, "note", neuronMetadataR.getNote());
         this.addStringToDoc(doc, "ageScale", neuronMetadataR.getAgeScale());

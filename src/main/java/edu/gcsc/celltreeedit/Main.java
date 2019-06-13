@@ -13,8 +13,6 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.index.Term;
-import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.*;
 import org.apache.lucene.store.Directory;
@@ -70,7 +68,7 @@ public class Main {
         } else {
             result = cellTreeEditDistance.compareFilesFromFilenames(Utils.parseJsonToFileNames(appProperties.getJsonDirectory()), appProperties.getSwcFileDirectory(), 9);
         }
-        Utils.printToTxt(result.getKey(), result.getValue(), appProperties.getMatrixExportDirectory(), appProperties.getMatrixExportName());
+        Utils.printToTxt(result.getKey(), result.getValue(), appProperties.getOutputDirectory(), appProperties.getMatrixExportName());
         // calculate clustering
         Clustering clustering = Clustering.getInstance();
         Cluster cluster = clustering.createCluster(result.getKey(), result.getValue());
@@ -86,7 +84,7 @@ public class Main {
         } else {
             result = cellTreeEditDistance.compareFilesFromFilenames(Utils.parseJsonToFileNames(appProperties.getJsonDirectory()), appProperties.getSwcFileDirectory(), 9);
         }
-        Utils.printToTxt(result.getKey(), result.getValue(), appProperties.getMatrixExportDirectory(), appProperties.getMatrixExportName());
+        Utils.printToTxt(result.getKey(), result.getValue(), appProperties.getOutputDirectory(), appProperties.getMatrixExportName());
     }
 
     private static void queryLucene(AppProperties appProperties) throws IOException {
@@ -94,11 +92,11 @@ public class Main {
         NeuronMetadataMapper neuronMetadataMapper = new NeuronMetadataMapper();
         Map<String, NeuronMetadataRImpl> neuronMetadata = neuronMetadataMapper.mapFromDirectory(appProperties.getMetadataDirectory());
 
-        File indexDirectory = new File("/media/exdisk/Sem06/BA/ProgramData/LuceneIndex");
+        File indexDirectory = new File(appProperties.getWorkingDirectory() + "/LuceneIndex");
         LuceneIndexWriter luceneIndexWriter = new LuceneIndexWriter(indexDirectory);
         luceneIndexWriter.createIndex(neuronMetadata);
         System.out.println("lucene index created!");
-        CLI.startCLI(indexDirectory);
+        CLI.startCLI(indexDirectory, appProperties.getOutputDirectory());
 //        testQueryLucene(indexDirectory);
         // let user query metadata through lucene
         // let user export names into json file
