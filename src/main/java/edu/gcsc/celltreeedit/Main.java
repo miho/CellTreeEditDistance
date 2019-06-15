@@ -1,9 +1,9 @@
 package edu.gcsc.celltreeedit;
 
-//import edu.gcsc.celltreeedit.AppProperties.AppParameter;
 import com.apporiented.algorithm.clustering.Cluster;
 import edu.gcsc.celltreeedit.AppProperties.AppProperties;
 import edu.gcsc.celltreeedit.AppProperties.CommandLineParsing;
+import edu.gcsc.celltreeedit.JsonIO.JsonUtils;
 import edu.gcsc.celltreeedit.Lucene.CLI;
 import edu.gcsc.celltreeedit.Lucene.LuceneIndexWriter;
 import edu.gcsc.celltreeedit.NeuronMetadata.NeuronMetadataMapper;
@@ -21,6 +21,7 @@ import org.apache.lucene.store.FSDirectory;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by Erid on 12.02.2018.
@@ -50,6 +51,9 @@ public class Main {
                 queryByTypeCombination(appProperties);
                 break;
             case 4:
+                queryByFileDialog(appProperties);
+                break;
+            case 5:
                 preprocessSWCDirectory(appProperties);
                 break;
             default:
@@ -68,7 +72,7 @@ public class Main {
         if (appProperties.getJsonDirectory().getPath().equals("")) {
             result = cellTreeEditDistance.compareFilesFromDirectory(appProperties.getSwcFileDirectory(), 9);
         } else {
-            result = cellTreeEditDistance.compareFilesFromFilenames(Utils.parseJsonToFileNames(appProperties.getJsonDirectory()), appProperties.getSwcFileDirectory(), 9);
+            result = cellTreeEditDistance.compareFilesFromFilenames(JsonUtils.parseJsonToFileNames(appProperties.getJsonDirectory()), appProperties.getSwcFileDirectory(), 9);
         }
         Utils.printToTxt(result.getKey(), result.getValue(), appProperties.getOutputDirectory(), appProperties.getMatrixExportName());
         // calculate clustering
@@ -84,7 +88,7 @@ public class Main {
         if (appProperties.getJsonDirectory().getPath().equals("")) {
             result = cellTreeEditDistance.compareFilesFromDirectory(appProperties.getSwcFileDirectory(), 9);
         } else {
-            result = cellTreeEditDistance.compareFilesFromFilenames(Utils.parseJsonToFileNames(appProperties.getJsonDirectory()), appProperties.getSwcFileDirectory(), 9);
+            result = cellTreeEditDistance.compareFilesFromFilenames(JsonUtils.parseJsonToFileNames(appProperties.getJsonDirectory()), appProperties.getSwcFileDirectory(), 9);
         }
         Utils.printToTxt(result.getKey(), result.getValue(), appProperties.getOutputDirectory(), appProperties.getMatrixExportName());
     }
@@ -112,13 +116,14 @@ public class Main {
         // put metadata in hashMap
         NeuronMetadataMapper neuronMetadataMapper = new NeuronMetadataMapper();
         Map<String, NeuronMetadataRImpl> neuronMetadata = neuronMetadataMapper.mapFromDirectory(appProperties.getMetadataDirectory());
-
         // add all metadata to UniqueMetadata
         for (String neuronMetadataRKey : neuronMetadata.keySet()) {
             UniqueMetadata.addNeuronMetadata(neuronMetadata.get(neuronMetadataRKey));
         }
-
-        Set<UniqueMetadata> sortedUniqueMetadata = new TreeSet<>(UniqueMetadata.getUniqueMetadataMap().keySet());
+        List<UniqueMetadata> sortedUniqueMetadata = new ArrayList<>(UniqueMetadata.getUniqueMetadataMap().keySet());
+        // sort uniqueMetadata
+        sortedUniqueMetadata.sort(Comparator.comparingInt(UniqueMetadata::getNoOfNeurons).reversed());
+        System.out.println(sortedUniqueMetadata.size());
 
         // select neurons depending on typeCount and input-variables
         List<String> selectedNeuronNames = new ArrayList<>();
@@ -129,21 +134,26 @@ public class Main {
             }
             // select noOfNeuronsPerType neurons randomly
             selectedNeuronNames.addAll(pickNRandom(uniqueMetadata.getNeuronNames(), noOfNeuronsPerType));
-
             System.out.println(uniqueMetadata.getSpecies() + ";" + String.join(", ", uniqueMetadata.getBrainRegion()) + ";" + String.join(", ", uniqueMetadata.getCellTypes()) + ";" + uniqueMetadata.getNoOfNeurons() + ";" + uniqueMetadata.getArchives().size());
             k += 1;
         }
-        for (String neuronName: selectedNeuronNames) {
-            System.out.println(neuronName);
-        }
-
         // write to json
+        JsonUtils.writeJSON(selectedNeuronNames, appProperties.getOutputDirectory());
     }
 
     public static List<String> pickNRandom(List<String> lst, int n) {
         List<String> copy = new LinkedList<>(lst);
         Collections.shuffle(copy);
         return n > copy.size() ? copy.subList(0, copy.size()) : copy.subList(0, n);
+    }
+
+    private static void queryByFileDialog(AppProperties appProperties) throws IOException {
+        System.out.println("inside queryByFileDialog");
+        File[] files = Utils.choose();
+        List<String> selectedNeuronNames = Arrays.stream(files).map(file -> Utils.removeSWCFileExtensions(file.getName())).collect(Collectors.toList());
+
+        // write to json
+        JsonUtils.writeJSON(selectedNeuronNames, appProperties.getOutputDirectory());
     }
 
     private static void testQueryLucene(File indexPath) {

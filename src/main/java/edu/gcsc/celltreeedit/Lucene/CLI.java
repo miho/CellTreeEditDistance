@@ -1,14 +1,12 @@
 package edu.gcsc.celltreeedit.Lucene;
 
+import edu.gcsc.celltreeedit.JsonIO.JsonUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
-import org.apache.lucene.search.Collector;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.TopDocs;
-import org.apache.lucene.search.TotalHitCountCollector;
+import org.apache.lucene.search.*;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 
@@ -16,6 +14,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CLI {
 
@@ -51,8 +51,7 @@ public class CLI {
                     System.out.println("Search produced " + topDocs.totalHits.value + " results. Save result to ... ? (y/n)");
                     s = br.readLine();
                     if (s.toLowerCase().equals("y")) {
-                        DocExport docExport = new DocExport();
-                        docExport.exportNamesToJson(indexSearcher, topDocs, outputDirectory);
+                        exportNamesToJson(indexSearcher, topDocs, outputDirectory);
                         break;
                     } else if (s.toLowerCase().equals("n")) {
                         break;
@@ -64,6 +63,18 @@ public class CLI {
             } catch (ParseException ex) {
                 System.out.println("Query could not be parsed. Please try again.");
             }
+        }
+    }
+
+    private static void exportNamesToJson(IndexSearcher indexSearcher, TopDocs topDocs, File outputDirectory) {
+        List<String> neuronNames = new ArrayList<>();
+        try {
+            for (ScoreDoc scoreDoc : topDocs.scoreDocs) {
+                neuronNames.add(indexSearcher.doc(scoreDoc.doc).getField("neuronName").stringValue());
+            }
+            JsonUtils.writeJSON(neuronNames, outputDirectory);
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
     }
 }

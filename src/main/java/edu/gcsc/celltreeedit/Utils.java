@@ -1,15 +1,8 @@
 package edu.gcsc.celltreeedit;
 
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonToken;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.gcsc.celltreeedit.AppProperties.AppProperties;
-
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.*;
-import java.util.*;
 
 
 /**
@@ -133,35 +126,5 @@ public class Utils {
             System.out.println("wrong fileending: " + filename);
         }
         return filename;
-    }
-
-    public static Set<String> parseJsonToFileNames(File jsonFile) throws IOException {
-        String fileName;
-        Set<String> fileNames = new HashSet<>();
-        // maps jsonObjects to javaObjects
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        // JsonParser creates TokenStream of JsonFile (Tokens: zB. JsonToken.START_OBJECT)
-        JsonFactory jsonFactory = new JsonFactory();
-        JsonParser jsonParser;
-
-        jsonParser = jsonFactory.createJsonParser(jsonFile);
-
-        // as long as the end of the file is not reached
-        while (jsonParser.nextToken() != JsonToken.END_OBJECT) {
-
-            // only map jsonObjects inside JsonArray 'neuronResources'
-            if ("neuronNames".equals(jsonParser.getCurrentName())) {
-                if (jsonParser.nextToken() != JsonToken.START_ARRAY) {
-                    throw new IllegalStateException("Expected a JsonArray");
-                }
-                // loop through all neurons from JsonArray and add them to HashMap
-                while(jsonParser.nextToken() != JsonToken.END_ARRAY) {
-                    fileName = objectMapper.readValue(jsonParser, String.class);
-                    fileNames.add(fileName);
-                }
-            }
-        }
-        return fileNames;
     }
 }

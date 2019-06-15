@@ -1,11 +1,11 @@
-package edu.gcsc.celltreeedit.Lucene;
+package edu.gcsc.celltreeedit.JsonIO;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class NeuronNames {
+public class NeuronNamesWrapper {
 
     @JsonProperty
     private List<String> neuronNames = new ArrayList<>();
