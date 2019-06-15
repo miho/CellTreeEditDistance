@@ -20,7 +20,7 @@ import org.apache.lucene.store.FSDirectory;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Erid on 12.02.2018.
@@ -44,10 +44,12 @@ public class Main {
                 calculateMatrixOnly(appProperties);
                 break;
             case 2:
-                System.out.println("inside case 2");
                 queryLucene(appProperties);
                 break;
             case 3:
+                queryByTypeCombination(appProperties);
+                break;
+            case 4:
                 preprocessSWCDirectory(appProperties);
                 break;
             default:
@@ -100,6 +102,48 @@ public class Main {
 //        testQueryLucene(indexDirectory);
         // let user query metadata through lucene
         // let user export names into json file
+    }
+
+    private static void queryByTypeCombination(AppProperties appProperties) throws IOException {
+        System.out.println("inside queryByTypeCombination");
+        int noOfTypes = 10;
+        int noOfNeuronsPerType = 10;
+
+        // put metadata in hashMap
+        NeuronMetadataMapper neuronMetadataMapper = new NeuronMetadataMapper();
+        Map<String, NeuronMetadataRImpl> neuronMetadata = neuronMetadataMapper.mapFromDirectory(appProperties.getMetadataDirectory());
+
+        // add all metadata to UniqueMetadata
+        for (String neuronMetadataRKey : neuronMetadata.keySet()) {
+            UniqueMetadata.addNeuronMetadata(neuronMetadata.get(neuronMetadataRKey));
+        }
+
+        Set<UniqueMetadata> sortedUniqueMetadata = new TreeSet<>(UniqueMetadata.getUniqueMetadataMap().keySet());
+
+        // select neurons depending on typeCount and input-variables
+        List<String> selectedNeuronNames = new ArrayList<>();
+        int k = 1;
+        for (UniqueMetadata uniqueMetadata : sortedUniqueMetadata) {
+            if (k > noOfTypes) {
+                break;
+            }
+            // select noOfNeuronsPerType neurons randomly
+            selectedNeuronNames.addAll(pickNRandom(uniqueMetadata.getNeuronNames(), noOfNeuronsPerType));
+
+            System.out.println(uniqueMetadata.getSpecies() + ";" + String.join(", ", uniqueMetadata.getBrainRegion()) + ";" + String.join(", ", uniqueMetadata.getCellTypes()) + ";" + uniqueMetadata.getNoOfNeurons() + ";" + uniqueMetadata.getArchives().size());
+            k += 1;
+        }
+        for (String neuronName: selectedNeuronNames) {
+            System.out.println(neuronName);
+        }
+
+        // write to json
+    }
+
+    public static List<String> pickNRandom(List<String> lst, int n) {
+        List<String> copy = new LinkedList<>(lst);
+        Collections.shuffle(copy);
+        return n > copy.size() ? copy.subList(0, copy.size()) : copy.subList(0, n);
     }
 
     private static void testQueryLucene(File indexPath) {
