@@ -18,7 +18,7 @@ public class NeuronMetadataMapper {
 
     public Map<String, NeuronMetadataRImpl> mapFromChooseJSON() throws IOException {
         // select jsonFiles from disk
-        File[] files = Utils.chooseJSON();
+        File[] files = Utils.chooseJson();
         return this.mapFromJsonFiles(files);
     }
 

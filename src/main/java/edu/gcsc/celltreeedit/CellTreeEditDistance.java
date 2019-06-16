@@ -228,6 +228,6 @@ public class CellTreeEditDistance implements java.io.Serializable{
 
         final long runtimeInNanos = System.nanoTime() - start;
         runtimeInS = TimeUnit.NANOSECONDS.toSeconds(runtimeInNanos);
-        System.out.println(runtimeInS);
+        System.out.println("Runtime in seconds: " + runtimeInS);
     }
 }

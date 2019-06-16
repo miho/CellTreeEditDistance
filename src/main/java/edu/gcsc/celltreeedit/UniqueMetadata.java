@@ -13,6 +13,7 @@ import java.util.*;
 public class UniqueMetadata implements Comparable {
 
     public static Map<UniqueMetadata, UniqueMetadata> uniqueMetadataMap = new HashMap<>();
+    private static int count = 0;
 
     private Set<String> cellTypes;
     private Set<String> brainRegion;
@@ -21,6 +22,7 @@ public class UniqueMetadata implements Comparable {
     private List<String> neuronNames;
     private Set<String> archives;
     private int noOfNeurons;
+    private int uniqueMetadataId;
 
     public UniqueMetadata(Set<String> cellTypes, Set<String> brainRegion, String species, String neuronName, String archive) {
         this.cellTypes = cellTypes;
@@ -31,7 +33,7 @@ public class UniqueMetadata implements Comparable {
         this.noOfNeurons = 1;
     }
 
-    public static void addNeuronMetadata(NeuronMetadataR neuronMetadataR) {
+    public static UniqueMetadata addNeuronMetadata(NeuronMetadataR neuronMetadataR) {
         UniqueMetadata oldUniqueMetadata;
         UniqueMetadata newUniqueMetadata;
         newUniqueMetadata = new UniqueMetadata(
@@ -45,8 +47,12 @@ public class UniqueMetadata implements Comparable {
             oldUniqueMetadata.neuronNames.add(neuronMetadataR.getNeuronName());
             oldUniqueMetadata.archives.add(neuronMetadataR.getArchive());
             oldUniqueMetadata.noOfNeurons += 1;
+            return oldUniqueMetadata;
         } else {
             uniqueMetadataMap.put(newUniqueMetadata, newUniqueMetadata);
+            count += 1;
+            newUniqueMetadata.uniqueMetadataId = count;
+            return newUniqueMetadata;
         }
     }
 
@@ -75,49 +81,30 @@ public class UniqueMetadata implements Comparable {
         return cellTypes;
     }
 
-    public void setCellTypes(Set<String> cellTypes) {
-        this.cellTypes = cellTypes;
-    }
-
     public Set<String> getBrainRegion() {
         return brainRegion;
-    }
-
-    public void setBrainRegion(Set<String> brainRegion) {
-        this.brainRegion = brainRegion;
     }
 
     public String getSpecies() {
         return species;
     }
 
-    public void setSpecies(String species) {
-        this.species = species;
-    }
-
     public List<String> getNeuronNames() {
         return neuronNames;
-    }
-
-    public void setNeuronNames(List<String> neuronNames) {
-        this.neuronNames = neuronNames;
     }
 
     public int getNoOfNeurons() {
         return noOfNeurons;
     }
 
-    public void setNoOfNeurons(int noOfNeurons) {
-        this.noOfNeurons = noOfNeurons;
-    }
-
     public Set<String> getArchives() {
         return archives;
     }
 
-    public void setArchives(Set<String> archives) {
-        this.archives = archives;
+    public int getUniqueMetadataId() {
+        return uniqueMetadataId;
     }
+
 
     public static Map<UniqueMetadata, UniqueMetadata> getUniqueMetadataMap() {
         return uniqueMetadataMap;

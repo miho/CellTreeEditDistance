@@ -7,19 +7,14 @@ import edu.gcsc.celltreeedit.JsonIO.JsonUtils;
 import edu.gcsc.celltreeedit.Lucene.CLI;
 import edu.gcsc.celltreeedit.Lucene.LuceneIndexWriter;
 import edu.gcsc.celltreeedit.NeuronMetadata.NeuronMetadataMapper;
+import edu.gcsc.celltreeedit.NeuronMetadata.NeuronMetadataR;
 import edu.gcsc.celltreeedit.NeuronMetadata.NeuronMetadataRImpl;
 import javafx.util.Pair;
-import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.index.DirectoryReader;
-import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.queryparser.classic.QueryParser;
-import org.apache.lucene.search.*;
-import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.FSDirectory;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -32,11 +27,6 @@ public class Main {
 
         AppProperties appProperties = CommandLineParsing.parseArguments(args);
 
-        // calcType
-        // 0 (default) -> calculate everything
-        // 1 -> only calc matrix with minimum resources
-        // 2 -> choose for json-file
-        // 3 -> preprocess swc-files
         switch (appProperties.getCalcType()) {
             case 0:
                 calculateCompletely(appProperties);
@@ -45,16 +35,22 @@ public class Main {
                 calculateMatrixOnly(appProperties);
                 break;
             case 2:
-                queryLucene(appProperties);
+                analyzeMatrix(appProperties);
                 break;
             case 3:
-                queryByTypeCombination(appProperties);
+                queryLucene(appProperties);
                 break;
             case 4:
-                queryByFileDialog(appProperties);
+                queryByTypeCombination(appProperties);
                 break;
             case 5:
+                queryByFileDialog(appProperties);
+                break;
+            case 6:
                 preprocessSWCDirectory(appProperties);
+                break;
+            case 7:
+                doWhateverIsInMyFunctionBody(appProperties);
                 break;
             default:
                 System.out.println("calcType not valid");
@@ -93,6 +89,34 @@ public class Main {
         Utils.printToTxt(result.getKey(), result.getValue(), appProperties.getOutputDirectory(), appProperties.getMatrixExportName());
     }
 
+    private static void analyzeMatrix(AppProperties appProperties) throws IOException {
+
+        Pair<double[][], String[]> result = Utils.readMatrixFromTxt();
+
+        // put metadata in hashMap
+        NeuronMetadataMapper neuronMetadataMapper = new NeuronMetadataMapper();
+        Map<String, NeuronMetadataRImpl> neuronMetadata = neuronMetadataMapper.mapFromDirectory(appProperties.getMetadataDirectory());
+
+        String[] newFileNames = new String[result.getValue().length];
+
+        UniqueMetadata uniqueMetadata;
+        NeuronMetadataR neuronMetadataR;
+        // create unique metadata of files
+        for (int i = 0; i < result.getValue().length; i++) {
+            neuronMetadataR = neuronMetadata.get(result.getValue()[i]);
+            uniqueMetadata = UniqueMetadata.addNeuronMetadata(neuronMetadataR);
+            // uniqueMetadataId, archive, neuronId
+            newFileNames[i] = uniqueMetadata.getUniqueMetadataId() + ", " + neuronMetadataR.getArchive() + ", " + neuronMetadataR.getNeuronId();
+        }
+
+        Utils.printToTxt(result.getKey(), newFileNames, appProperties.getOutputDirectory(), "Matrix_fileNamesAdjusted.txt");
+        // create cluster with matrix and adjusted names
+        Clustering clustering = Clustering.getInstance();
+        Cluster cluster = clustering.createCluster(result.getKey(), newFileNames);
+        // generate dendrogram
+        clustering.showCluster(cluster);
+    }
+
     private static void queryLucene(AppProperties appProperties) throws IOException {
         // put metadata in hashMap
         NeuronMetadataMapper neuronMetadataMapper = new NeuronMetadataMapper();
@@ -103,15 +127,15 @@ public class Main {
         luceneIndexWriter.createIndex(neuronMetadata);
         System.out.println("lucene index created!");
         CLI.startCLI(indexDirectory, appProperties.getOutputDirectory());
-//        testQueryLucene(indexDirectory);
-        // let user query metadata through lucene
-        // let user export names into json file
+
     }
 
+
+    // for querying the mostCommon neurontypes
     private static void queryByTypeCombination(AppProperties appProperties) throws IOException {
-        System.out.println("inside queryByTypeCombination");
-        int noOfTypes = 10;
-        int noOfNeuronsPerType = 10;
+        // TODO: put in AppProperties and make adjustable from commandline?
+        int noOfTypes = 40;
+        int noOfNeuronsPerType = 25;
 
         // put metadata in hashMap
         NeuronMetadataMapper neuronMetadataMapper = new NeuronMetadataMapper();
@@ -121,11 +145,10 @@ public class Main {
             UniqueMetadata.addNeuronMetadata(neuronMetadata.get(neuronMetadataRKey));
         }
         List<UniqueMetadata> sortedUniqueMetadata = new ArrayList<>(UniqueMetadata.getUniqueMetadataMap().keySet());
-        // sort uniqueMetadata
+//         sort uniqueMetadata
         sortedUniqueMetadata.sort(Comparator.comparingInt(UniqueMetadata::getNoOfNeurons).reversed());
-        System.out.println(sortedUniqueMetadata.size());
 
-        // select neurons depending on typeCount and input-variables
+//         select neurons depending on typeCount and input-variables
         List<String> selectedNeuronNames = new ArrayList<>();
         int k = 1;
         for (UniqueMetadata uniqueMetadata : sortedUniqueMetadata) {
@@ -137,9 +160,57 @@ public class Main {
             System.out.println(uniqueMetadata.getSpecies() + ";" + String.join(", ", uniqueMetadata.getBrainRegion()) + ";" + String.join(", ", uniqueMetadata.getCellTypes()) + ";" + uniqueMetadata.getNoOfNeurons() + ";" + uniqueMetadata.getArchives().size());
             k += 1;
         }
+
         // write to json
         JsonUtils.writeJSON(selectedNeuronNames, appProperties.getOutputDirectory());
     }
+
+    // for querying a predefined combination
+//    private static void queryByTypeCombination(AppProperties appProperties) throws IOException {
+//        System.out.println("inside queryByTypeCombination");
+//        int noOfTypes = 40;
+//        int noOfNeuronsPerType = 37;
+//
+//        // define which uniqueMetadata Types shall be used
+//        Set<UniqueMetadata> selectedUniqueMetadata = new HashSet<>();
+//        selectedUniqueMetadata.add(new UniqueMetadata(new HashSet<>(Arrays.asList("principal cell", "pyramidal")), new HashSet<>(Arrays.asList("CA1", "hippocampus")), "rat", "", ""));
+//        selectedUniqueMetadata.add(new UniqueMetadata(new HashSet<>(Arrays.asList("principal cell", "pyramidal")), new HashSet<>(Arrays.asList("CA3", "hippocampus")), "rat", "", ""));
+//        selectedUniqueMetadata.add(new UniqueMetadata(new HashSet<>(Arrays.asList("principal cell", "granule")), new HashSet<>(Arrays.asList("dentate gyrus", "hippocampus")), "rat", "", ""));
+//        selectedUniqueMetadata.add(new UniqueMetadata(new HashSet<>(Arrays.asList("Glia", "astrocyte")), new HashSet<>(Arrays.asList("CA3", "hippocampus")), "rat", "", ""));
+//        selectedUniqueMetadata.add(new UniqueMetadata(new HashSet<>(Arrays.asList("Glia", "astrocyte")), new HashSet<>(Arrays.asList("CA1", "hippocampus")), "rat", "", ""));
+//        selectedUniqueMetadata.add(new UniqueMetadata(new HashSet<>(Arrays.asList("principal cell", "pyramidal")), new HashSet<>(Arrays.asList("somatosensory", "neocortex", "layer 4")), "rat", "", ""));
+//        selectedUniqueMetadata.add(new UniqueMetadata(new HashSet<>(Arrays.asList("stellate", "interneuron")), new HashSet<>(Arrays.asList("amygdala", "basolateral amygdala complex")), "rat", "", ""));
+//        selectedUniqueMetadata.add(new UniqueMetadata(new HashSet<>(Arrays.asList("principal cell", "pyramidal")), new HashSet<>(Arrays.asList("somatosensory", "neocortex", "layer 2")), "rat", "", ""));
+//        selectedUniqueMetadata.add(new UniqueMetadata(new HashSet<>(Arrays.asList("principal cell", "pyramidal")), new HashSet<>(Arrays.asList("somatosensory", "neocortex", "layer 3")), "rat", "", ""));
+//        selectedUniqueMetadata.add(new UniqueMetadata(new HashSet<>(Arrays.asList("principal cell", "pyramidal")), new HashSet<>(Arrays.asList("somatosensory", "neocortex", "layer 5a")), "rat", "", ""));
+//        selectedUniqueMetadata.add(new UniqueMetadata(new HashSet<>(Arrays.asList("principal cell", "pyramidal")), new HashSet<>(Arrays.asList("somatosensory", "neocortex", "layer 5b")), "rat", "", ""));
+//        selectedUniqueMetadata.add(new UniqueMetadata(new HashSet<>(Arrays.asList("Horizontal", "interneuron", "neurogliaform")), new HashSet<>(Arrays.asList("somatosensory", "neocortex", "layer 1")), "rat", "", ""));
+//        selectedUniqueMetadata.add(new UniqueMetadata(new HashSet<>(Arrays.asList("Star", "pyramidal", "interneuron")), new HashSet<>(Arrays.asList("somatosensory", "neocortex", "layer 4")), "rat", "", ""));
+//
+//        // put metadata in hashMap
+//        NeuronMetadataMapper neuronMetadataMapper = new NeuronMetadataMapper();
+//        Map<String, NeuronMetadataRImpl> neuronMetadata = neuronMetadataMapper.mapFromDirectory(appProperties.getMetadataDirectory());
+//        // add all metadata to UniqueMetadata
+//        for (String neuronMetadataRKey : neuronMetadata.keySet()) {
+//            UniqueMetadata.addNeuronMetadata(neuronMetadata.get(neuronMetadataRKey));
+//        }
+//
+////         select neurons depending on typeCount and input-variables
+//        List<String> selectedNeuronNames = new ArrayList<>();
+//        int k = 1;
+//        for (UniqueMetadata uniqueMetadata : selectedUniqueMetadata) {
+//            if (k > noOfTypes) {
+//                break;
+//            }
+//            // select noOfNeuronsPerType neurons randomly
+//            selectedNeuronNames.addAll(pickNRandom(UniqueMetadata.getUniqueMetadataMap().get(uniqueMetadata).getNeuronNames(), noOfNeuronsPerType));
+//            System.out.println(uniqueMetadata.getSpecies() + ";" + String.join(", ", uniqueMetadata.getBrainRegion()) + ";" + String.join(", ", uniqueMetadata.getCellTypes()) + ";" + uniqueMetadata.getNoOfNeurons() + ";" + uniqueMetadata.getArchives().size());
+//            k += 1;
+//        }
+//
+//        // write to json
+//        JsonUtils.writeJSON(selectedNeuronNames, appProperties.getOutputDirectory());
+//    }
 
     public static List<String> pickNRandom(List<String> lst, int n) {
         List<String> copy = new LinkedList<>(lst);
@@ -148,40 +219,11 @@ public class Main {
     }
 
     private static void queryByFileDialog(AppProperties appProperties) throws IOException {
-        System.out.println("inside queryByFileDialog");
         File[] files = Utils.choose();
         List<String> selectedNeuronNames = Arrays.stream(files).map(file -> Utils.removeSWCFileExtensions(file.getName())).collect(Collectors.toList());
 
         // write to json
         JsonUtils.writeJSON(selectedNeuronNames, appProperties.getOutputDirectory());
-    }
-
-    private static void testQueryLucene(File indexPath) {
-
-        // query consists of lucene terms and lucene operators
-        try {
-            Directory indexDirectory = FSDirectory.open(indexPath.toPath());
-            IndexReader indexReader = DirectoryReader.open(indexDirectory);
-            final IndexSearcher indexSearcher = new IndexSearcher(indexReader);
-
-            Analyzer analyzer = new StandardAnalyzer();
-            QueryParser queryParser = new QueryParser("neuronId", analyzer);
-            String queryString = "cellType:" + "interneuron" + " AND brainRegion:" + "lumbar";
-            Collector collector = new TotalHitCountCollector();
-            TopDocs topDocs = indexSearcher.search(queryParser.parse(queryString), 107395);
-
-
-
-//            Term t = new Term("cellType", "interneuron");
-//            Query query = new TermQuery(t);
-//            TopDocs topDocs = indexSearcher.search(query, 10);
-
-            for (ScoreDoc scoreDoc: topDocs.scoreDocs) {
-                System.out.println(indexSearcher.doc(scoreDoc.doc).getField("neuronId").stringValue());
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
     }
 
     private static void preprocessSWCDirectory(AppProperties appProperties) throws IOException {
@@ -193,5 +235,29 @@ public class Main {
         File swcDirectory = new File("/media/exdisk/Sem06/BA/Data/SWC-Files/00_All");
         SWCPreprocessing swcPreprocessing = new SWCPreprocessing();
         swcPreprocessing.preprocessSWCDirectory(neuronMetadata, swcDirectory);
+    }
+
+
+    // method to do some custom things which program should not be able to do in the end
+    private static void doWhateverIsInMyFunctionBody(AppProperties appProperties) throws IOException {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        CellTreeEditDistance cellTreeEditDistance;
+        Pair<double[][], String[]> result;
+        // calculate distances of Selection of SWC-Files for every possible label
+        Set<String> fileNames = JsonUtils.parseJsonToFileNames(new File("/media/exdisk/Sem06/BA/Testlaeufe/swcFiles_Selected_481_13Types_37Each.json"));
+        for (int i = 1; i < 16; i += 1) {
+            Date date = new Date();
+            System.out.println(dateFormat.format(date) + " Selection Label " + i);
+            cellTreeEditDistance = new CellTreeEditDistance();
+            result = cellTreeEditDistance.compareFilesFromFilenames(fileNames, appProperties.getSwcFileDirectory(), i);
+            Utils.printToTxt(result.getKey(), result.getValue(), appProperties.getOutputDirectory(), "Matrix_Selected_481_13Types_37Each_Label" + i + ".txt");
+        }
+
+        // calculate distances of 1000 of these SWC-Files
+        Date date = new Date();
+        System.out.println(dateFormat.format(date) + " 1000 mostCommon");
+        cellTreeEditDistance = new CellTreeEditDistance();
+        result = cellTreeEditDistance.compareFilesFromFilenames(JsonUtils.parseJsonToFileNames(new File("/media/exdisk/Sem06/BA/Testlaeufe/swcFiles_mostCommon_1000_40Types_25Each.json")), appProperties.getSwcFileDirectory(), 9);
+        Utils.printToTxt(result.getKey(), result.getValue(), appProperties.getOutputDirectory(), "Matrix_mostCommon_1000_40Types_25Each.txt");
     }
 }
