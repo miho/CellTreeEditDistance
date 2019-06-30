@@ -63,7 +63,7 @@ public class LabelTest {
         try {
             FileInputStream f1 = new FileInputStream(new File("...\\labelsTest.swc"));
             TreeCreator t1 = new TreeCreator(f1);
-            t1.createTree(1,0);
+            t1.createTree(1);
             assertEquals(1, t1.getNodeList().get(0).getNodeData().getLabel(),1.0);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -77,7 +77,7 @@ public class LabelTest {
             TreeCreator t1 = new TreeCreator(f1);
 
 
-            t1.createTree(2,0);
+            t1.createTree(2);
             assertEquals(1/3, t1.getNodeList().get(0).getNodeData().getLabel(),1.0);
 
 
@@ -93,7 +93,7 @@ public class LabelTest {
             TreeCreator t1 = new TreeCreator(f1);
 
 
-            t1.createTree(3,0);
+            t1.createTree(3);
             assertEquals(3, t1.getNodeList().get(0).getNodeData().getLabel(),1.0);
             assertEquals(1, t1.getNodeList().get(1).getNodeData().getLabel(),1.0);
             assertEquals(1, t1.getNodeList().get(2).getNodeData().getLabel(),1.0);
@@ -108,7 +108,7 @@ public class LabelTest {
         try {
             FileInputStream f1 = new FileInputStream(new File("...\\labelsTest.swc"));
             TreeCreator t1 = new TreeCreator(f1);
-            t1.createTree(4,0);
+            t1.createTree(4);
             assertEquals(4, t1.getNodeList().get(0).getNodeData().getLabel(),1.0);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -120,7 +120,7 @@ public class LabelTest {
         try {
             FileInputStream f1 = new FileInputStream(new File("...\\labelsTest.swc"));
             TreeCreator t1 = new TreeCreator(f1);
-            t1.createTree(5,0);
+            t1.createTree(5);
             assertEquals(4, t1.getNodeList().get(0).getNodeData().getLabel(),1.0);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -131,7 +131,7 @@ public class LabelTest {
         try {
             FileInputStream f1 = new FileInputStream(new File("...\\labelsTest.swc"));
             TreeCreator t1 = new TreeCreator(f1);
-            t1.createTree(6,0);
+            t1.createTree(6);
             assertEquals(16, t1.getNodeList().get(0).getNodeData().getLabel(),1.0);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -143,7 +143,7 @@ public class LabelTest {
         try {
             FileInputStream f1 = new FileInputStream(new File("...\\labelsTest.swc"));
             TreeCreator t1 = new TreeCreator(f1);
-            t1.createTree(7,0);
+            t1.createTree(7);
             assertEquals(4/3, t1.getNodeList().get(0).getNodeData().getLabel(),1.0);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -155,7 +155,7 @@ public class LabelTest {
         try {
             FileInputStream f1 = new FileInputStream(new File("...\\labelsTest.swc"));
             TreeCreator t1 = new TreeCreator(f1);
-            t1.createTree(8,0);
+            t1.createTree(8);
             assertEquals(12*3.142+10*3.142, t1.getNodeList().get(0).getNodeData().getLabel(),1.0);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -167,7 +167,7 @@ public class LabelTest {
         try {
             FileInputStream f1 = new FileInputStream(new File("...\\labelsTest.swc"));
             TreeCreator t1 = new TreeCreator(f1);
-            t1.createTree(9,0);
+            t1.createTree(9);
             assertEquals(8*3.142+2*3.142, t1.getNodeList().get(0).getNodeData().getLabel(),1.0);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -179,7 +179,7 @@ public class LabelTest {
         try {
             FileInputStream f1 = new FileInputStream(new File("...\\labelsTest.swc"));
             TreeCreator t1 = new TreeCreator(f1);
-            t1.createTree(10,0);
+            t1.createTree(10);
             assertEquals(28*3.142+26*3.142, t1.getNodeList().get(0).getNodeData().getLabel(),1.0);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -191,7 +191,7 @@ public class LabelTest {
         try {
             FileInputStream f1 = new FileInputStream(new File("...\\labelsTest.swc"));
             TreeCreator t1 = new TreeCreator(f1);
-            t1.createTree(11,0);
+            t1.createTree(11);
             assertEquals(12/28, t1.getNodeList().get(0).getNodeData().getLabel(),1.0);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -203,7 +203,7 @@ public class LabelTest {
         try {
             FileInputStream f1 = new FileInputStream(new File("...\\labelsTest.swc"));
             TreeCreator t1 = new TreeCreator(f1);
-            t1.createTree(12,0);
+            t1.createTree(12);
             assertEquals(10*3.142, t1.getNodeList().get(0).getNodeData().getLabel(),1.0);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -215,7 +215,7 @@ public class LabelTest {
         try {
             FileInputStream f1 = new FileInputStream(new File("...\\labelsTest.swc"));
             TreeCreator t1 = new TreeCreator(f1);
-            t1.createTree(13,0);
+            t1.createTree(13);
             assertEquals(4*3.142, t1.getNodeList().get(0).getNodeData().getLabel(),1.0);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -227,7 +227,7 @@ public class LabelTest {
         try {
             FileInputStream f1 = new FileInputStream(new File("...\\labelsTest.swc"));
             TreeCreator t1 = new TreeCreator(f1);
-            t1.createTree(14,0);
+            t1.createTree(14);
             assertEquals(26*3.142, t1.getNodeList().get(0).getNodeData().getLabel(),1.0);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -239,7 +239,7 @@ public class LabelTest {
         try {
             FileInputStream f1 = new FileInputStream(new File("...\\labelsTest.swc"));
             TreeCreator t1 = new TreeCreator(f1);
-            t1.createTree(15,0);
+            t1.createTree(15);
             assertEquals(10/26*3.142, t1.getNodeList().get(0).getNodeData().getLabel(),1.0);
         } catch (FileNotFoundException e) {
             e.printStackTrace();

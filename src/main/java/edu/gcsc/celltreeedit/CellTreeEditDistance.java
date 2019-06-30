@@ -7,8 +7,6 @@ import eu.mihosoft.vrl.annotation.ParamInfo;
 import javafx.util.Pair;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
@@ -182,7 +180,7 @@ public class CellTreeEditDistance implements java.io.Serializable{
                         } catch (FileNotFoundException e) {
                             e.printStackTrace();
                         }
-                        t1 = one.createTree(choice, 0);
+                        t1 = one.createTree(choice);
                         nodeData.set(finalI, t1);
                     }
                 });
