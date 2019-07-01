@@ -38,8 +38,8 @@ public class LabelTest {
     }
 
     private void checkLabel_2(Node<NodeData> currentNode) {
-        double expected = 1d/7;
-        assertEquals(expected, currentNode.getNodeData().getLabel(), 0.0d);
+        double expected = 0.142857142857143;
+        assertEquals(expected, currentNode.getNodeData().getLabel(), 0.000000000000001);
         if (currentNode.getChildren() == null) {
             return;
         }

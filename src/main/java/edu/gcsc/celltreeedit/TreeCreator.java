@@ -109,59 +109,43 @@ public class TreeCreator implements InputParser <NodeData> , Serializable {
 
     public void setNodeLabel(int label) {
 
-        if (label == 1) { //top1
+        if (label == 1) { // top_1
             nodeList.forEach(t -> t.getNodeData().setLabel(1));
         }
-        if (label == 2) { //top2
+
+        if (label == 2) { // top_2
             double a = 1.0 / nodeList.size();
             nodeList.forEach(t -> t.getNodeData().setLabel(a));
         }
-        if (label == 3) { //number of nodes of tree rooted at i
-            nodeList.forEach(t -> t.getNodeData().setLabel(t.getNodeCount()));
+
+        if (label == 3) { // l_sec length of t[i]
+            nodeList.forEach(node -> {
+                node.getNodeData().setLabel(calculate_l_sec(node));
+            });
         }
-        if (label == 4) { //length of a section
-            for (int i = 0; i < nodeList.size(); i++) {
-                double length = 0;
-                Node <NodeData> node = nodeList.get(i);
-                for (int j = 1; j < node.getNodeData().getPosX().size(); j++) {
-                    int k = j - 1;
-                    double x = nodeList.get(i).getNodeData().getPosX().get(j) - nodeList.get(i).getNodeData().getPosX().get(k);
-                    double y = nodeList.get(i).getNodeData().getPosY().get(j) - nodeList.get(i).getNodeData().getPosY().get(k);
-                    double z = nodeList.get(i).getNodeData().getPosZ().get(j) - nodeList.get(i).getNodeData().getPosZ().get(k);
-                    double lengthPart = Math.pow(x * x + y * y + z * z, 0.5);
-                    length = length + lengthPart;
-                }
-                node.getNodeData().setLabel(length);
-            }
+
+        // assumed first node in nodeList is root!
+        if (label == 4) { // l_soma length from t[i] to soma
+            nodeList.get(0).getNodeData().setLabel(0);
+            calculate_l_soma(nodeList.get(0));
         }
-        if (label == 5) { //approxlength of a section
-            for (int i = 0; i < nodeList.size(); i++) {
-                double x = nodeList.get(i).getNodeData().getPosX().get(nodeList.get(i).getNodeData().getPosX().size() - 1) - nodeList.get(i).getNodeData().getPosX().get(0);
-                double y = nodeList.get(i).getNodeData().getPosY().get(nodeList.get(i).getNodeData().getPosY().size() - 1) - nodeList.get(i).getNodeData().getPosY().get(0);
-                double z = nodeList.get(i).getNodeData().getPosZ().get(nodeList.get(i).getNodeData().getPosZ().size() - 1) - nodeList.get(i).getNodeData().getPosZ().get(0);
-                double approxlength = Math.pow(x * x + y * y + z * z, 0.5);
-                //  System.out.println(i+" : "+approxlength);
-                nodeList.get(i).getNodeData().setLabel(approxlength);
-            }
+
+        if (label == 5) { // l_tree length of T[i]
+            calculate_l_tree(nodeList.get(0));
         }
-        if (label == 6) { //length of tree rooted at 1
-            double treeLength = 0;
-            for (int i = 0; i < nodeList.size(); i++) {
-                Node <NodeData> node = nodeList.get(i);
-                for (int j = 1; j < node.getNodeData().getPosX().size(); j++) {
-                    int k = j - 1;
-                    double x = nodeList.get(i).getNodeData().getPosX().get(j) - nodeList.get(i).getNodeData().getPosX().get(k);
-                    double y = nodeList.get(i).getNodeData().getPosY().get(j) - nodeList.get(i).getNodeData().getPosY().get(k);
-                    double z = nodeList.get(i).getNodeData().getPosZ().get(j) - nodeList.get(i).getNodeData().getPosZ().get(k);
-                    double lengthPart = Math.pow(x * x + y * y + z * z, 0.5);
-                    treeLength = treeLength + lengthPart;
-                }
-            }
-            for (int i = 0; i < nodeList.size(); i++) {
-                Node <NodeData> node = nodeList.get(i);
-                node.getNodeData().setLabel(treeLength);
-            }
+
+        if (label == 6) { // L_sec length of t[i] / length of T
+            calculate_L_sec();
         }
+
+        if (label == 7) { // L_soma length from t[i] to soma / length of T
+            calculate_L_soma();
+        }
+
+        if (label == 8) { // L_tree length of T[i] / length of T
+            calculate_L_tree();
+        }
+
         if (label == 7) { //length of a section / length of tree rooted at 1
             double treeLength = 0;
             for (int i = 0; i < nodeList.size(); i++) {
@@ -354,6 +338,83 @@ public class TreeCreator implements InputParser <NodeData> , Serializable {
             System.out.println("Label nicht erkannt");
         }
     }
+
+    private double calculate_l_sec(Node<NodeData> currentNode) {
+        double length = 0;
+        for (int j = 1; j < currentNode.getNodeData().getPosX().size(); j++) {
+            double x = currentNode.getNodeData().getPosX().get(j) - currentNode.getNodeData().getPosX().get(j-1);
+            double y = currentNode.getNodeData().getPosY().get(j) - currentNode.getNodeData().getPosY().get(j-1);
+            double z = currentNode.getNodeData().getPosZ().get(j) - currentNode.getNodeData().getPosZ().get(j-1);
+            double lengthPart = Math.pow(x * x + y * y + z * z, 0.5);
+            length += lengthPart;
+        }
+        return length;
+    }
+
+    // calculate l_soma. is called with parent node with own label already set, calculates l_soma for children then recursion
+    private void calculate_l_soma(Node<NodeData> parentNode) {
+        List<Node<NodeData>> childNodes = parentNode.getChildren();
+        if (childNodes.isEmpty()) {
+            return;
+        }
+        double parentLabel = parentNode.getNodeData().getLabel();
+        for (Node<NodeData> childNode: childNodes) {
+            childNode.getNodeData().setLabel(calculate_l_sec(childNode) + parentLabel);
+            calculate_l_soma(childNode);
+        }
+    }
+
+    // calculate l_tree. is called with parentNode, calculates l_tree bottom up in Postorder
+    private double calculate_l_tree(Node<NodeData> parentNode) {
+        List<Node<NodeData>> childNodes = parentNode.getChildren();
+        if (childNodes.isEmpty()) {
+            double l_sec = calculate_l_sec(parentNode);
+            parentNode.getNodeData().setLabel(l_sec);
+            return l_sec;
+        }
+        double l_tree = 0;
+        for (Node<NodeData> childNode: childNodes) {
+            l_tree += calculate_l_tree(childNode);
+        }
+        l_tree += calculate_l_sec(parentNode);
+        parentNode.getNodeData().setLabel(l_tree);
+        return l_tree;
+    }
+
+    // calculate L_sec. is called with parentNode, first calculates all l_sec and lengthT. Second L_sec
+    private void calculate_L_sec() {
+        double lengthT = 0;
+        for (Node<NodeData> currentNode: nodeList) {
+            double l_sec = calculate_l_sec(currentNode);
+            currentNode.getNodeData().setLabel(l_sec); // first set with l_sec later divide by lengthT
+            lengthT += l_sec;
+        }
+        for (Node<NodeData> currentNode: nodeList) {
+            currentNode.getNodeData().setLabel(currentNode.getNodeData().getLabel()/lengthT);
+        }
+    }
+
+    // calculate L_soma.
+    private void calculate_L_soma() {
+        double lengthT = 0;
+        for (Node<NodeData> currentNode: nodeList) {
+            lengthT += calculate_l_sec(currentNode);
+        }
+        calculate_l_soma(nodeList.get(0));
+        for (Node<NodeData> currentNode: nodeList) {
+            currentNode.getNodeData().setLabel(currentNode.getNodeData().getLabel()/lengthT);
+        }
+    }
+
+    // calculate L_tree.
+    private void calculate_L_tree() {
+        calculate_l_tree(nodeList.get(0));
+        double lengthT = nodeList.get(0).getNodeData().getLabel();
+        for (Node<NodeData> currentNode: nodeList) {
+            currentNode.getNodeData().setLabel(currentNode.getNodeData().getLabel()/lengthT);
+        }
+    }
+
 
     public boolean ifBranchOrEnd(int index) {
         if (this.getChildren(index).size() == 1)
