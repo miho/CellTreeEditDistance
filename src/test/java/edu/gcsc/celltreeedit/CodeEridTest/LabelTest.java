@@ -28,7 +28,7 @@ public class LabelTest {
     @Test
     public void checkLabels() throws IOException {
 
-        for (int i = 1; i < 9; i++) {
+        for (int i = 18; i < 21; i++) {
             FileInputStream f = new FileInputStream(new File("/media/exdisk/Sem06/BA/ProgramData/Data/Test/labelTest.swc"));
             TreeCreator t = new TreeCreator(f);
             Node<NodeData> root = t.createTree(i);
@@ -55,7 +55,7 @@ public class LabelTest {
 
     // currentNode and index in preorder
     private int checkLabel(Node<NodeData> currentNode, int labelId, int nodeIndex) {
-        assertEquals(this.correctLabels[nodeIndex][labelId - 1], currentNode.getNodeData().getLabel(), 0.000001);
+        assertEquals(this.correctLabels[nodeIndex][labelId - 1], currentNode.getNodeData().getLabel(), 0.0000001);
 
         // if currentNode has no children return own index
         if (currentNode.getChildren() == null) {

@@ -108,6 +108,8 @@ public class TreeCreator implements InputParser <NodeData> , Serializable {
     }
 
     public void setNodeLabel(int label) {
+        // set label of root node 0 (needed for * to soma labels)
+        nodeList.get(0).getNodeData().setLabel(0);
 
         if (label == 1) { // top_1
             nodeList.forEach(t -> t.getNodeData().setLabel(1));
@@ -126,7 +128,6 @@ public class TreeCreator implements InputParser <NodeData> , Serializable {
 
         // assumed first node in nodeList is root!
         if (label == 4) { // l_soma length from t[i] to soma
-            nodeList.get(0).getNodeData().setLabel(0);
             calculate_l_soma(nodeList.get(0));
         }
 
@@ -146,207 +147,89 @@ public class TreeCreator implements InputParser <NodeData> , Serializable {
             calculate_L_tree();
         }
 
-        if (label == 7) { //length of a section / length of tree rooted at 1
-            double treeLength = 0;
-            for (int i = 0; i < nodeList.size(); i++) {
-                double length = 0;
-                Node <NodeData> node = nodeList.get(i);
-                for (int j = 1; j < node.getNodeData().getPosX().size(); j++) {
-                    int k = j - 1;
-                    double x = nodeList.get(i).getNodeData().getPosX().get(j) - nodeList.get(i).getNodeData().getPosX().get(k);
-                    double y = nodeList.get(i).getNodeData().getPosY().get(j) - nodeList.get(i).getNodeData().getPosY().get(k);
-                    double z = nodeList.get(i).getNodeData().getPosZ().get(j) - nodeList.get(i).getNodeData().getPosZ().get(k);
-                    double lengthPart = Math.pow(x * x + y * y + z * z, 0.5);
-                    length = length + lengthPart;
-                    treeLength = treeLength + length;
-                }
-            }
-            for (int i = 0; i < nodeList.size(); i++) {
-                double length = 0;
-                Node <NodeData> node = nodeList.get(i);
-                for (int j = 1; j < node.getNodeData().getPosX().size(); j++) {
-                    int k = j - 1;
-                    double x = nodeList.get(i).getNodeData().getPosX().get(j) - nodeList.get(i).getNodeData().getPosX().get(k);
-                    double y = nodeList.get(i).getNodeData().getPosY().get(j) - nodeList.get(i).getNodeData().getPosY().get(k);
-                    double z = nodeList.get(i).getNodeData().getPosZ().get(j) - nodeList.get(i).getNodeData().getPosZ().get(k);
-                    double lengthPart = Math.pow(x * x + y * y + z * z, 0.5);
-                    length = length + lengthPart;
-                }
-                double lengthRelation = length / treeLength;
-                nodeList.get(i).getNodeData().setLabel(lengthRelation);
-            }
+        if (label == 9) { // v_sec volume of t[i]
+            nodeList.forEach(node -> {
+                node.getNodeData().setLabel(calculate_v_sec(node));
+            });
         }
-        if (label == 8) { //surface of a section
-            for (int i = 0; i < nodeList.size(); i++) {
-                double surface = 0;
-                Node <NodeData> node = nodeList.get(i);
-                for (int j = 1; j < node.getNodeData().getPosX().size(); j++) {
-                    int k = j - 1;
-                    double x = nodeList.get(i).getNodeData().getPosX().get(j) - nodeList.get(i).getNodeData().getPosX().get(k);
-                    double y = nodeList.get(i).getNodeData().getPosY().get(j) - nodeList.get(i).getNodeData().getPosY().get(k);
-                    double z = nodeList.get(i).getNodeData().getPosZ().get(j) - nodeList.get(i).getNodeData().getPosZ().get(k);
-                    double lengthPart = Math.pow(x * x + y * y + z * z, 0.5);
-                    double surfacepart = nodeList.get(i).getNodeData().getRadius().get(j) * 2 * lengthPart * 3.142 + nodeList.get(i).getNodeData().getRadius().get(j) * nodeList.get(i).getNodeData().getRadius().get(j) * 2 * 3.142;
-                    surface = surface + surfacepart;
-                }
-                node.getNodeData().setLabel(surface);
-            }
+
+        // assumed first node in nodeList is root!
+        if (label == 10) { // v_soma volume from t[i] to soma
+            calculate_v_soma(nodeList.get(0));
         }
-        if (label == 9) { //approxsurface of a section
-            double approxlength = 0;
-            for (int i = 0; i < nodeList.size(); i++) {
-                double x = nodeList.get(i).getNodeData().getPosX().get(nodeList.get(i).getNodeData().getPosX().size() - 1) - nodeList.get(i).getNodeData().getPosX().get(0);
-                double y = nodeList.get(i).getNodeData().getPosY().get(nodeList.get(i).getNodeData().getPosY().size() - 1) - nodeList.get(i).getNodeData().getPosY().get(0);
-                double z = nodeList.get(i).getNodeData().getPosZ().get(nodeList.get(i).getNodeData().getPosZ().size() - 1) - nodeList.get(i).getNodeData().getPosZ().get(0);
-                approxlength = Math.pow(x * x + y * y + z * z, 0.5);
-                double avgR = 0;
-                for (int j = 0; j < nodeList.get(i).getNodeData().getRadius().size(); j++) {
-                    avgR = avgR + nodeList.get(i).getNodeData().getRadius().get(j);
-                }
-                avgR = avgR / nodeList.get(i).getNodeData().getRadius().size();
-                double approxSurface = approxlength * avgR * 2 * 3.142 + avgR * avgR * 2 * 3.142;
-                nodeList.get(i).getNodeData().setLabel(approxSurface);
-            }
+
+        if (label == 11) { // v_tree volume of T[i]
+            calculate_v_tree(nodeList.get(0));
         }
-        if (label == 10) { //surface of tree rooted at 1
-            double treeSurface = 0;
-            for (int i = 0; i < nodeList.size(); i++) {
-                Node <NodeData> node = nodeList.get(i);
-                for (int j = 1; j < node.getNodeData().getPosX().size(); j++) {
-                    int k = j - 1;
-                    double x = nodeList.get(i).getNodeData().getPosX().get(j) - nodeList.get(i).getNodeData().getPosX().get(k);
-                    double y = nodeList.get(i).getNodeData().getPosY().get(j) - nodeList.get(i).getNodeData().getPosY().get(k);
-                    double z = nodeList.get(i).getNodeData().getPosZ().get(j) - nodeList.get(i).getNodeData().getPosZ().get(k);
-                    double lengthPart = Math.pow(x * x + y * y + z * z, 0.5);
-                    double surfacepart = nodeList.get(i).getNodeData().getRadius().get(j) * 2 * lengthPart * 3.142 + nodeList.get(i).getNodeData().getRadius().get(j) * nodeList.get(i).getNodeData().getRadius().get(j) * 2 * 3.142;
-                    treeSurface = treeSurface + surfacepart;
-                }
-            }
-            for (int i = 0; i < nodeList.size(); i++) {
-                Node < NodeData > node = nodeList.get(i);
-                node.getNodeData().setLabel(treeSurface);
-            }
+
+        if (label == 12) { // V_sec volume of t[i] / volume of T
+            calculate_V_sec();
         }
-        if (label == 11) { //surface of a section/surface of tree rooted at 1
-            double treeSurface = 0;
-            for (int i = 0; i < nodeList.size(); i++) {
-                Node <NodeData> node = nodeList.get(i);
-                for (int j = 1; j < node.getNodeData().getPosX().size(); j++) {
-                    int k = j - 1;
-                    double x = nodeList.get(i).getNodeData().getPosX().get(j) - nodeList.get(i).getNodeData().getPosX().get(k);
-                    double y = nodeList.get(i).getNodeData().getPosY().get(j) - nodeList.get(i).getNodeData().getPosY().get(k);
-                    double z = nodeList.get(i).getNodeData().getPosZ().get(j) - nodeList.get(i).getNodeData().getPosZ().get(k);
-                    double lengthPart = Math.pow(x * x + y * y + z * z, 0.5);
-                    double surfacepart = nodeList.get(i).getNodeData().getRadius().get(j) * 2 * lengthPart * 3.142 + nodeList.get(i).getNodeData().getRadius().get(j) * nodeList.get(i).getNodeData().getRadius().get(j) * 2 * 3.142;
-                    treeSurface = treeSurface + surfacepart;
-                }
-            }
-            for (int i = 0; i < nodeList.size(); i++) {
-                double surface = 0;
-                Node <NodeData> node = nodeList.get(i);
-                for (int j = 1; j < node.getNodeData().getPosX().size(); j++) {
-                    int k = j - 1;
-                    double x = nodeList.get(i).getNodeData().getPosX().get(j) - nodeList.get(i).getNodeData().getPosX().get(k);
-                    double y = nodeList.get(i).getNodeData().getPosY().get(j) - nodeList.get(i).getNodeData().getPosY().get(k);
-                    double z = nodeList.get(i).getNodeData().getPosZ().get(j) - nodeList.get(i).getNodeData().getPosZ().get(k);
-                    double lengthPart = Math.pow(x * x + y * y + z * z, 0.5);
-                    double surfacepart = nodeList.get(i).getNodeData().getRadius().get(j) * 2 * lengthPart * 3.142 + nodeList.get(i).getNodeData().getRadius().get(j) * nodeList.get(i).getNodeData().getRadius().get(j) * 2 * 3.142;
-                    surface = surface + surfacepart;
-                }
-                double surfaceRelation = surface / treeSurface;
-                node.getNodeData().setLabel(surfaceRelation);
-            }
+
+        if (label == 13) { // V_soma volume from t[i] to soma / volume of T
+            calculate_V_soma();
         }
-        if (label == 12) { //volume of a section
-            for (int i = 0; i < nodeList.size(); i++) {
-                double volume = 0;
-                Node <NodeData> node = nodeList.get(i);
-                for (int j = 1; j < node.getNodeData().getPosX().size(); j++) {
-                    int k = j - 1;
-                    double x = nodeList.get(i).getNodeData().getPosX().get(j) - nodeList.get(i).getNodeData().getPosX().get(k);
-                    double y = nodeList.get(i).getNodeData().getPosY().get(j) - nodeList.get(i).getNodeData().getPosY().get(k);
-                    double z = nodeList.get(i).getNodeData().getPosZ().get(j) - nodeList.get(i).getNodeData().getPosZ().get(k);
-                    double lengthPart = Math.pow(x * x + y * y + z * z, 0.5);
-                    volume = volume + (Math.pow(nodeList.get(i).getNodeData().getRadius().get(j), 2) * lengthPart * 3.142);
-                }
-                node.getNodeData().setLabel(volume);
-            }
+
+        if (label == 14) { // V_tree volume of T[i] / volume of T
+            calculate_V_tree();
         }
-        if (label == 13) { //approxvolume of a section
-            double approxlength = 0;
-            for (int i = 0; i < nodeList.size(); i++) {
-                double x = nodeList.get(i).getNodeData().getPosX().get(nodeList.get(i).getNodeData().getPosX().size() - 1) - nodeList.get(i).getNodeData().getPosX().get(0);
-                double y = nodeList.get(i).getNodeData().getPosY().get(nodeList.get(i).getNodeData().getPosY().size() - 1) - nodeList.get(i).getNodeData().getPosY().get(0);
-                double z = nodeList.get(i).getNodeData().getPosZ().get(nodeList.get(i).getNodeData().getPosZ().size() - 1) - nodeList.get(i).getNodeData().getPosZ().get(0);
-                approxlength = Math.pow(x * x + y * y + z * z, 0.5);
-                double avgR = 0;
-                for (int j = 0; j < nodeList.get(i).getNodeData().getRadius().size(); j++) {
-                    avgR = avgR + nodeList.get(i).getNodeData().getRadius().get(j);
-                }
-                avgR = avgR / nodeList.get(i).getNodeData().getRadius().size();
-                double approxVolume = approxlength * avgR * avgR * 3.142;
-                nodeList.get(i).getNodeData().setLabel(approxVolume);
-            }
+
+        if (label == 15) { // s_sec surface of t[i]
+            nodeList.forEach(node -> {
+                node.getNodeData().setLabel(calculate_s_sec(node));
+            });
         }
-        if (label == 14) { //volume of tree rooted at 1
-            double treeVolume = 0;
-            for (int i = 0; i < nodeList.size(); i++) {
-                Node <NodeData> node = nodeList.get(i);
-                for (int j = 1; j < node.getNodeData().getPosX().size(); j++) {
-                    int k = j - 1;
-                    double x = nodeList.get(i).getNodeData().getPosX().get(j) - nodeList.get(i).getNodeData().getPosX().get(k);
-                    double y = nodeList.get(i).getNodeData().getPosY().get(j) - nodeList.get(i).getNodeData().getPosY().get(k);
-                    double z = nodeList.get(i).getNodeData().getPosZ().get(j) - nodeList.get(i).getNodeData().getPosZ().get(k);
-                    double lengthPart = Math.pow(x * x + y * y + z * z, 0.5);
-                    treeVolume = treeVolume + (Math.pow(nodeList.get(i).getNodeData().getRadius().get(j), 2) * lengthPart * 3.142);
-                }
-            }
-            for (int i = 0; i < nodeList.size(); i++) {
-                Node < NodeData > node = nodeList.get(i);
-                node.getNodeData().setLabel(treeVolume);
-            }
+
+        // assumed first node in nodeList is root!
+        if (label == 16) { // s_soma surface from t[i] to soma
+            calculate_s_soma(nodeList.get(0));
         }
-        if (label == 15) { //volume of a section/volume of tree rooted at 1
-            double treeVolume = 0;
-            for (int i = 0; i < nodeList.size(); i++) {
-                Node <NodeData> node = nodeList.get(i);
-                for (int j = 1; j < node.getNodeData().getPosX().size(); j++) {
-                    int k = j - 1;
-                    double x = nodeList.get(i).getNodeData().getPosX().get(j) - nodeList.get(i).getNodeData().getPosX().get(k);
-                    double y = nodeList.get(i).getNodeData().getPosY().get(j) - nodeList.get(i).getNodeData().getPosY().get(k);
-                    double z = nodeList.get(i).getNodeData().getPosZ().get(j) - nodeList.get(i).getNodeData().getPosZ().get(k);
-                    double lengthPart = Math.pow(x * x + y * y + z * z, 0.5);
-                    treeVolume = treeVolume + (Math.pow(nodeList.get(i).getNodeData().getRadius().get(j), 2) * lengthPart * 3.142);
-                }
-            }
-            for (int i = 0; i < nodeList.size(); i++) {
-                double volume = 0;
-                Node <NodeData> node = nodeList.get(i);
-                for (int j = 1; j < node.getNodeData().getPosX().size(); j++) {
-                    int k = j - 1;
-                    double x = nodeList.get(i).getNodeData().getPosX().get(j) - nodeList.get(i).getNodeData().getPosX().get(k);
-                    double y = nodeList.get(i).getNodeData().getPosY().get(j) - nodeList.get(i).getNodeData().getPosY().get(k);
-                    double z = nodeList.get(i).getNodeData().getPosZ().get(j) - nodeList.get(i).getNodeData().getPosZ().get(k);
-                    double lengthPart = Math.pow(x * x + y * y + z * z, 0.5);
-                    volume = volume + (Math.pow(nodeList.get(i).getNodeData().getRadius().get(j), 2) * lengthPart * 3.142);
-                }
-                double volumeRelation = volume / treeVolume;
-                node.getNodeData().setLabel(volumeRelation);
-            }
+
+        if (label == 17) { // s_tree surface of T[i]
+            calculate_s_tree(nodeList.get(0));
         }
-        if (label > 15) {
+
+        if (label == 18) { // S_sec surface of t[i] / surface of T
+            calculate_S_sec();
+        }
+
+        if (label == 19) { // S_soma surface from t[i] to soma / surface of T
+            calculate_S_soma();
+        }
+
+        if (label == 20) { // S_tree surface of T[i] / surface of T
+            calculate_S_tree();
+        }
+/*
+        if (label == 21) { // vS_sec volume of t[i] / surface of T
+            calculate_vS_sec();
+        }
+
+        if (label == 22) { // a_sec angle between children of t[i]
+            calculate_a_sec();
+        }
+**/
+        if (label > 22) {
             System.out.println("Label nicht erkannt");
         }
     }
 
+    private double calculateEuclideanNormAtIndex(Node<NodeData> currentNode, int j) {
+        double x = currentNode.getNodeData().getPosX().get(j) - currentNode.getNodeData().getPosX().get(j-1);
+        double y = currentNode.getNodeData().getPosY().get(j) - currentNode.getNodeData().getPosY().get(j-1);
+        double z = currentNode.getNodeData().getPosZ().get(j) - currentNode.getNodeData().getPosZ().get(j-1);
+        return Math.pow(x * x + y * y + z * z, 0.5);
+    }
+
+    /**
+     * Calculates label l_sec for currentNode. Uses
+     * @param currentNode
+     * @return
+     */
     private double calculate_l_sec(Node<NodeData> currentNode) {
         double length = 0;
         for (int j = 1; j < currentNode.getNodeData().getPosX().size(); j++) {
-            double x = currentNode.getNodeData().getPosX().get(j) - currentNode.getNodeData().getPosX().get(j-1);
-            double y = currentNode.getNodeData().getPosY().get(j) - currentNode.getNodeData().getPosY().get(j-1);
-            double z = currentNode.getNodeData().getPosZ().get(j) - currentNode.getNodeData().getPosZ().get(j-1);
-            double lengthPart = Math.pow(x * x + y * y + z * z, 0.5);
-            length += lengthPart;
+            length += calculateEuclideanNormAtIndex(currentNode, j);
         }
         return length;
     }
@@ -394,7 +277,7 @@ public class TreeCreator implements InputParser <NodeData> , Serializable {
         }
     }
 
-    // calculate L_soma.
+    // calculate L_soma. can be optimized as lengthT could be calculated during calculate_l_soma call
     private void calculate_L_soma() {
         double lengthT = 0;
         for (Node<NodeData> currentNode: nodeList) {
@@ -412,6 +295,171 @@ public class TreeCreator implements InputParser <NodeData> , Serializable {
         double lengthT = nodeList.get(0).getNodeData().getLabel();
         for (Node<NodeData> currentNode: nodeList) {
             currentNode.getNodeData().setLabel(currentNode.getNodeData().getLabel()/lengthT);
+        }
+    }
+
+    /**
+     * Calculates label v_sec for currentNode.
+     * @param currentNode
+     * @return
+     */
+    private double calculate_v_sec(Node<NodeData> currentNode) {
+        double volume = 0;
+        for (int j = 1; j < currentNode.getNodeData().getPosX().size(); j++) {
+            double length = calculateEuclideanNormAtIndex(currentNode, j);
+            double r1 = currentNode.getNodeData().getRadius().get(j-1);
+            double r2 = currentNode.getNodeData().getRadius().get(j); // radius of node closer to leafs
+            double volumePart = length*Math.PI/3*(r1*r1+r1*r2+r2*r2);
+            volume += volumePart;
+        }
+        return volume;
+    }
+
+    // calculate v_soma. is called with parent node with own label already set, calculates v_soma for children then recursion
+    private void calculate_v_soma(Node<NodeData> parentNode) {
+        List<Node<NodeData>> childNodes = parentNode.getChildren();
+        if (childNodes.isEmpty()) {
+            return;
+        }
+        double parentLabel = parentNode.getNodeData().getLabel();
+        for (Node<NodeData> childNode: childNodes) {
+            childNode.getNodeData().setLabel(calculate_v_sec(childNode) + parentLabel);
+            calculate_v_soma(childNode);
+        }
+    }
+
+    // calculate v_tree. is called with parentNode, calculates v_tree bottom up in Postorder
+    private double calculate_v_tree(Node<NodeData> parentNode) {
+        List<Node<NodeData>> childNodes = parentNode.getChildren();
+        if (childNodes.isEmpty()) {
+            double v_sec = calculate_v_sec(parentNode);
+            parentNode.getNodeData().setLabel(v_sec);
+            return v_sec;
+        }
+        double v_tree = 0;
+        for (Node<NodeData> childNode: childNodes) {
+            v_tree += calculate_v_tree(childNode);
+        }
+        v_tree += calculate_v_sec(parentNode);
+        parentNode.getNodeData().setLabel(v_tree);
+        return v_tree;
+    }
+
+    // calculate V_sec. is called with parentNode, first calculates all v_sec and volumeT. Second V_sec
+    private void calculate_V_sec() {
+        double volumeT = 0;
+        for (Node<NodeData> currentNode: nodeList) {
+            double v_sec = calculate_v_sec(currentNode);
+            currentNode.getNodeData().setLabel(v_sec); // first set with v_sec later divide by volumeT
+            volumeT += v_sec;
+        }
+        for (Node<NodeData> currentNode: nodeList) {
+            currentNode.getNodeData().setLabel(currentNode.getNodeData().getLabel()/volumeT);
+        }
+    }
+
+    // calculate V_soma. can be optimized as volumeT could be calculated during calculate_v_soma call
+    private void calculate_V_soma() {
+        double volumeT = 0;
+        for (Node<NodeData> currentNode: nodeList) {
+            volumeT += calculate_v_sec(currentNode);
+        }
+        calculate_v_soma(nodeList.get(0));
+        for (Node<NodeData> currentNode: nodeList) {
+            currentNode.getNodeData().setLabel(currentNode.getNodeData().getLabel()/volumeT);
+        }
+    }
+
+    // calculate V_tree.
+    private void calculate_V_tree() {
+        calculate_v_tree(nodeList.get(0));
+        double volumeT = nodeList.get(0).getNodeData().getLabel();
+        for (Node<NodeData> currentNode: nodeList) {
+            currentNode.getNodeData().setLabel(currentNode.getNodeData().getLabel()/volumeT);
+        }
+    }
+
+    /**
+     * Calculates label s_sec for currentNode.
+     * @param currentNode
+     * @return
+     */
+    private double calculate_s_sec(Node<NodeData> currentNode) {
+        double surface = 0;
+        for (int j = 1; j < currentNode.getNodeData().getPosX().size(); j++) {
+            double length = calculateEuclideanNormAtIndex(currentNode, j);
+            double r1 = currentNode.getNodeData().getRadius().get(j-1); // radius of node closer to root
+            double r2 = currentNode.getNodeData().getRadius().get(j); // radius of node closer to leafs
+            double surfacePart = (r1+r2)*Math.PI*Math.sqrt(Math.pow(r1-r2,2)+Math.pow(length, 2));
+            surface += surfacePart;
+        }
+        return surface;
+    }
+
+    // calculate s_soma. is called with parent node with own label already set, calculates s_soma for children then recursion
+    private void calculate_s_soma(Node<NodeData> parentNode) {
+        List<Node<NodeData>> childNodes = parentNode.getChildren();
+        if (childNodes.isEmpty()) {
+            return;
+        }
+        double parentLabel = parentNode.getNodeData().getLabel();
+        for (Node<NodeData> childNode: childNodes) {
+            childNode.getNodeData().setLabel(calculate_s_sec(childNode) + parentLabel);
+            calculate_s_soma(childNode);
+        }
+    }
+
+    // calculate s_tree. is called with parentNode, calculates s_tree bottom up in Postorder
+    private double calculate_s_tree(Node<NodeData> parentNode) {
+        List<Node<NodeData>> childNodes = parentNode.getChildren();
+        if (childNodes.isEmpty()) {
+            double s_sec = calculate_s_sec(parentNode);
+            parentNode.getNodeData().setLabel(s_sec);
+            return s_sec;
+        }
+        double s_tree = 0;
+        for (Node<NodeData> childNode: childNodes) {
+            s_tree += calculate_s_tree(childNode);
+        }
+        s_tree += calculate_s_sec(parentNode);
+        parentNode.getNodeData().setLabel(s_tree);
+        return s_tree;
+    }
+
+    // calculate S_sec. is called with parentNode, first calculates all s_sec and surfaceT. Second S_sec
+    private void calculate_S_sec() {
+        double surfaceT = 0;
+        for (Node<NodeData> currentNode: nodeList) {
+            double s_sec = calculate_s_sec(currentNode);
+            currentNode.getNodeData().setLabel(s_sec); // first set with s_sec later divide by surfaceT
+            surfaceT += s_sec;
+            System.out.println(s_sec);
+        }
+        System.out.println(surfaceT);
+
+        for (Node<NodeData> currentNode: nodeList) {
+            currentNode.getNodeData().setLabel(currentNode.getNodeData().getLabel()/surfaceT);
+        }
+    }
+
+    // calculate S_soma. can be optimized as surfaceT could be calculated during calculate_s_soma call
+    private void calculate_S_soma() {
+        double surfaceT = 0;
+        for (Node<NodeData> currentNode: nodeList) {
+            surfaceT += calculate_s_sec(currentNode);
+        }
+        calculate_l_soma(nodeList.get(0));
+        for (Node<NodeData> currentNode: nodeList) {
+            currentNode.getNodeData().setLabel(currentNode.getNodeData().getLabel()/surfaceT);
+        }
+    }
+
+    // calculate S_tree.
+    private void calculate_S_tree() {
+        calculate_s_tree(nodeList.get(0));
+        double surfaceT = nodeList.get(0).getNodeData().getLabel();
+        for (Node<NodeData> currentNode: nodeList) {
+            currentNode.getNodeData().setLabel(currentNode.getNodeData().getLabel()/surfaceT);
         }
     }
 
