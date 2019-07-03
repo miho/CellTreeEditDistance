@@ -200,15 +200,15 @@ public class TreeCreator implements InputParser <NodeData> , Serializable {
         if (label == 20) { // S_tree surface of T[i] / surface of T
             calculate_S_tree();
         }
-/*
+
         if (label == 21) { // vS_sec volume of t[i] / surface of T
             calculate_vS_sec();
         }
 
         if (label == 22) { // a_sec angle between children of t[i]
-            calculate_a_sec();
+            calculate_a_sec(nodeList.get(0));
         }
-**/
+
         if (label > 22) {
             System.out.println("Label nicht erkannt");
         }
@@ -433,10 +433,7 @@ public class TreeCreator implements InputParser <NodeData> , Serializable {
             double s_sec = calculate_s_sec(currentNode);
             currentNode.getNodeData().setLabel(s_sec); // first set with s_sec later divide by surfaceT
             surfaceT += s_sec;
-            System.out.println(s_sec);
         }
-        System.out.println(surfaceT);
-
         for (Node<NodeData> currentNode: nodeList) {
             currentNode.getNodeData().setLabel(currentNode.getNodeData().getLabel()/surfaceT);
         }
@@ -448,7 +445,7 @@ public class TreeCreator implements InputParser <NodeData> , Serializable {
         for (Node<NodeData> currentNode: nodeList) {
             surfaceT += calculate_s_sec(currentNode);
         }
-        calculate_l_soma(nodeList.get(0));
+        calculate_s_soma(nodeList.get(0));
         for (Node<NodeData> currentNode: nodeList) {
             currentNode.getNodeData().setLabel(currentNode.getNodeData().getLabel()/surfaceT);
         }
@@ -461,6 +458,53 @@ public class TreeCreator implements InputParser <NodeData> , Serializable {
         for (Node<NodeData> currentNode: nodeList) {
             currentNode.getNodeData().setLabel(currentNode.getNodeData().getLabel()/surfaceT);
         }
+    }
+
+    // calculate vS_sec.
+    private void calculate_vS_sec() {
+        // first calculate surface of T and save it
+        calculate_s_tree(nodeList.get(0));
+        double surfaceT = nodeList.get(0).getNodeData().getLabel();
+        System.out.println(surfaceT);
+
+        nodeList.get(0).getNodeData().setLabel(0);
+        // second calculate volume of t[i] and divide with surfaceT
+        for (Node<NodeData> currentNode: nodeList) {
+            double v_sec = calculate_v_sec(currentNode);
+            System.out.println(v_sec);
+            currentNode.getNodeData().setLabel(v_sec/surfaceT);
+        }
+    }
+
+    // calculate S_tree.
+    private void calculate_a_sec(Node<NodeData> node) {
+        List<Node<NodeData>> childNodes = node.getChildren();
+        if (childNodes == null || childNodes.isEmpty()) {
+            node.getNodeData().setLabel(0);
+        }
+        // for each combination of children calculate the angle between their first nodes
+        double sum = 0;
+        for (int i = 0; i < childNodes.size(); i++) {
+            // PosX etc from NodeData contains value of parent -> get(1) - get(0)
+            NodeData nodeData1 = childNodes.get(i).getNodeData();
+            double x1 = nodeData1.getPosX().get(1) - nodeData1.getPosX().get(0);
+            double y1 = nodeData1.getPosY().get(1) - nodeData1.getPosY().get(0);
+            double z1 = nodeData1.getPosZ().get(1) - nodeData1.getPosZ().get(0);
+            for (int j = i + 1; j < childNodes.size(); j++) {
+                NodeData nodeData2 = childNodes.get(j).getNodeData();
+                double x2 = nodeData2.getPosX().get(1) - nodeData1.getPosX().get(0);
+                double y2 = nodeData2.getPosY().get(1) - nodeData1.getPosY().get(0);
+                double z2 = nodeData2.getPosZ().get(1) - nodeData1.getPosZ().get(0);
+                sum += Math.acos((x1 * x2 + y1 * y2 + z1 * z2) / (Math.sqrt(x1 * x1 + y1 * y1 + z1 * z1) * Math.sqrt(x2 * x2 + y2 * y2 + z2 * z2)));
+            }
+        }
+        // set label of current node
+        node.getNodeData().setLabel(sum / childNodes.size());
+        // recursively call children to set their labels
+        for (Node<NodeData> childNode : childNodes) {
+            calculate_a_sec(childNode);
+        }
+        // =(ACOS((C75*C76+D75*D76+E75*E76)/(SQRT(C75^2+D75^2+E75^2)*SQRT(C76^2+D76^2+E76^2)))+ACOS((C75*C82+D75*D82+E75*E82)/(SQRT(C75^2+D75^2+E75^2)*SQRT(C82^2+D82^2+E82^2)))+ACOS((C75*C89+D75*D89+E75*E89)/(SQRT(C75^2+D75^2+E75^2)*SQRT(C89^2+D89^2+E89^2))))/3
     }
 
 
