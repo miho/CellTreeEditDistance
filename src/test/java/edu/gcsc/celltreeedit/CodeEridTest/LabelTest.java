@@ -66,4 +66,15 @@ public class LabelTest {
         // index of last child
         return nodeIndex;
     }
+
+    @Test
+    public void checkLabelForSingleBranchNeuron() throws IOException {
+        for (int i = 1; i < 23; i++) {
+            FileInputStream f = new FileInputStream(new File("/media/exdisk/Sem06/BA/ProgramData/Data/Test/labelTest02.swc"));
+            TreeCreator t = new TreeCreator(f);
+            Node<NodeData> root = t.createTree(i);
+//            checkLabel(root, i, 0, labelDelta[i-1]);
+        }
+    }
+
 }

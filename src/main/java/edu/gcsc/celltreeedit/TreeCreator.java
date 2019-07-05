@@ -53,7 +53,7 @@ public class TreeCreator implements InputParser <NodeData> , Serializable {
     }
 
     public Node <NodeData> createTreeStructure(int segNr) { // bei 0 anfangen    mit Listennummerierung anzugeben
-        //Vaterknoten wird mitgenommen
+        // Vaterknoten wird mitgenommen
         List <Integer> Index = new ArrayList <> ();
         List <Double> PosX = new ArrayList <> ();
         List <Double> PosY = new ArrayList <> ();
@@ -63,7 +63,7 @@ public class TreeCreator implements InputParser <NodeData> , Serializable {
         int vaterID = swcSegments.get(segNr).getParent();
         // System.out.println("vaterseg: "+vaterID);
 
-        if (vaterID != -1) { //Vaterknoteninfos werden als erstes in die liste geschoben, dann die vom aufrufparameter
+        if (vaterID != -1) { // Vaterknoteninfos werden als erstes in die liste geschoben, dann die vom aufrufparameter
             Index.add(swcSegments.get(vaterID - 1).getIndex());
             //System.out.println(swcSegments.get(vaterID-1).getIndex());
             PosX.add(swcSegments.get(vaterID - 1).getPos().getX());
@@ -72,6 +72,7 @@ public class TreeCreator implements InputParser <NodeData> , Serializable {
             R.add(swcSegments.get(vaterID - 1).getR());
             Parent.add(swcSegments.get(vaterID - 1).getParent());
         }
+
         Index.add(swcSegments.get(segNr).getIndex());
         int type = swcSegments.get(segNr).getType();
         PosX.add(swcSegments.get(segNr).getPos().getX());
@@ -80,7 +81,7 @@ public class TreeCreator implements InputParser <NodeData> , Serializable {
         R.add(swcSegments.get(segNr).getR());
         Parent.add(swcSegments.get(segNr).getParent());
 
-        Node <NodeData> node = new Node <> (new NodeData(Index, type, PosX, PosY, PosZ, R, Parent));
+        Node<NodeData> node = new Node<> (new NodeData(Index, type, PosX, PosY, PosZ, R, Parent));
         nodeList.add(node); // vaterknoten wurde als erstes in die liste geschoben
         int nr = segNr + 1; // die echte segmentID
         while (!ifBranchOrEnd(nr)) { // mit Arraynummerierung anzugeben
@@ -126,7 +127,6 @@ public class TreeCreator implements InputParser <NodeData> , Serializable {
             });
         }
 
-        // assumed first node in nodeList is root!
         if (label == 4) { // l_soma length from t[i] to soma
             calculate_l_soma(nodeList.get(0));
         }
@@ -214,7 +214,7 @@ public class TreeCreator implements InputParser <NodeData> , Serializable {
         }
     }
 
-    private double calculateEuclideanNormAtIndex(Node<NodeData> currentNode, int j) {
+    private double calculateLengthAtIndex(Node<NodeData> currentNode, int j) {
         double x = currentNode.getNodeData().getPosX().get(j) - currentNode.getNodeData().getPosX().get(j-1);
         double y = currentNode.getNodeData().getPosY().get(j) - currentNode.getNodeData().getPosY().get(j-1);
         double z = currentNode.getNodeData().getPosZ().get(j) - currentNode.getNodeData().getPosZ().get(j-1);
@@ -222,14 +222,15 @@ public class TreeCreator implements InputParser <NodeData> , Serializable {
     }
 
     /**
-     * Calculates label l_sec for currentNode. Uses
+     * Calculates label l_sec for currentNode.
      * @param currentNode
      * @return
      */
     private double calculate_l_sec(Node<NodeData> currentNode) {
         double length = 0;
+        // j=1 --> parent node skipped
         for (int j = 1; j < currentNode.getNodeData().getPosX().size(); j++) {
-            length += calculateEuclideanNormAtIndex(currentNode, j);
+            length += calculateLengthAtIndex(currentNode, j);
         }
         return length;
     }
@@ -306,7 +307,7 @@ public class TreeCreator implements InputParser <NodeData> , Serializable {
     private double calculate_v_sec(Node<NodeData> currentNode) {
         double volume = 0;
         for (int j = 1; j < currentNode.getNodeData().getPosX().size(); j++) {
-            double length = calculateEuclideanNormAtIndex(currentNode, j);
+            double length = calculateLengthAtIndex(currentNode, j);
             double r1 = currentNode.getNodeData().getRadius().get(j-1); // radius of node closer to parent. node with index 0 is parent node
             double r2 = currentNode.getNodeData().getRadius().get(j); // radius of node closer to leafs
             double volumePart = length*Math.PI/3*(r1*r1+r1*r2+r2*r2);
@@ -387,7 +388,7 @@ public class TreeCreator implements InputParser <NodeData> , Serializable {
     private double calculate_s_sec(Node<NodeData> currentNode) {
         double surface = 0;
         for (int j = 1; j < currentNode.getNodeData().getPosX().size(); j++) {
-            double length = calculateEuclideanNormAtIndex(currentNode, j);
+            double length = calculateLengthAtIndex(currentNode, j);
             double r1 = currentNode.getNodeData().getRadius().get(j-1); // radius of node closer to root
             double r2 = currentNode.getNodeData().getRadius().get(j); // radius of node closer to leafs
             double surfacePart = (r1+r2)*Math.PI*Math.sqrt(Math.pow(r1-r2,2)+Math.pow(length, 2));
@@ -506,7 +507,6 @@ public class TreeCreator implements InputParser <NodeData> , Serializable {
         for (Node<NodeData> childNode : childNodes) {
             calculate_a_sec(childNode);
         }
-        // =(ACOS((C75*C76+D75*D76+E75*E76)/(SQRT(C75^2+D75^2+E75^2)*SQRT(C76^2+D76^2+E76^2)))+ACOS((C75*C82+D75*D82+E75*E82)/(SQRT(C75^2+D75^2+E75^2)*SQRT(C82^2+D82^2+E82^2)))+ACOS((C75*C89+D75*D89+E75*E89)/(SQRT(C75^2+D75^2+E75^2)*SQRT(C89^2+D89^2+E89^2))))/3
     }
 
 
