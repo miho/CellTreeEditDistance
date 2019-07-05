@@ -194,7 +194,7 @@ public class CellTreeEditDistance implements java.io.Serializable{
 
             ExecutorService pool = Executors.newWorkStealingPool();
 
-            System.out.println("* Progress *");
+//            System.out.println("* Progress *");
             for(int i=0; i<size-1;i++) {
 
                 for(int j=i+1; j<size;j++){
@@ -208,7 +208,7 @@ public class CellTreeEditDistance implements java.io.Serializable{
                     pool.execute(myTask);
 
                     progress++;
-                    System.out.println("* Progress....:"+progress+"/"+nrofCalculations);
+//                    System.out.println("* Progress....:"+progress+"/"+nrofCalculations);
                 }
             }
             System.out.println("*");

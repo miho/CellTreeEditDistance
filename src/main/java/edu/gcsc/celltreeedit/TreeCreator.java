@@ -109,8 +109,6 @@ public class TreeCreator implements InputParser <NodeData> , Serializable {
     }
 
     public void setNodeLabel(int label) {
-        // set label of root node 0 (needed for * to soma labels)
-        nodeList.get(0).getNodeData().setLabel(0);
 
         if (label == 1) { // top_1
             nodeList.forEach(t -> t.getNodeData().setLabel(1));
@@ -235,8 +233,13 @@ public class TreeCreator implements InputParser <NodeData> , Serializable {
         return length;
     }
 
-    // calculate l_soma. is called with parent node with own label already set, calculates l_soma for children then recursion
-    private void calculate_l_soma(Node<NodeData> parentNode) {
+    // calculate l_soma. is called with root node. calculates l_sec for root node then calls calculate_l_soma_rec()
+    private void calculate_l_soma(Node<NodeData> node) {
+        node.getNodeData().setLabel(calculate_l_sec(node));
+        calculate_l_soma_rec(node);
+    }
+
+    private void calculate_l_soma_rec(Node<NodeData> parentNode) {
         List<Node<NodeData>> childNodes = parentNode.getChildren();
         if (childNodes.isEmpty()) {
             return;
@@ -244,7 +247,7 @@ public class TreeCreator implements InputParser <NodeData> , Serializable {
         double parentLabel = parentNode.getNodeData().getLabel();
         for (Node<NodeData> childNode: childNodes) {
             childNode.getNodeData().setLabel(calculate_l_sec(childNode) + parentLabel);
-            calculate_l_soma(childNode);
+            calculate_l_soma_rec(childNode);
         }
     }
 
@@ -278,7 +281,7 @@ public class TreeCreator implements InputParser <NodeData> , Serializable {
         }
     }
 
-    // calculate L_soma. can be optimized as lengthT could be calculated during calculate_l_soma call
+    // calculate L_soma. could be optimized as lengthT could be calculated during calculate_l_soma call
     private void calculate_L_soma() {
         double lengthT = 0;
         for (Node<NodeData> currentNode: nodeList) {
@@ -316,8 +319,13 @@ public class TreeCreator implements InputParser <NodeData> , Serializable {
         return volume;
     }
 
-    // calculate v_soma. is called with parent node with own label already set, calculates v_soma for children then recursion
-    private void calculate_v_soma(Node<NodeData> parentNode) {
+    // calculate v_soma. is called with root node. calculates v_sec for root node then calls calculate_v_soma_rec()
+    private void calculate_v_soma(Node<NodeData> node) {
+        node.getNodeData().setLabel(calculate_v_sec(node));
+        calculate_v_soma_rec(node);
+    }
+
+    private void calculate_v_soma_rec(Node<NodeData> parentNode) {
         List<Node<NodeData>> childNodes = parentNode.getChildren();
         if (childNodes.isEmpty()) {
             return;
@@ -325,7 +333,7 @@ public class TreeCreator implements InputParser <NodeData> , Serializable {
         double parentLabel = parentNode.getNodeData().getLabel();
         for (Node<NodeData> childNode: childNodes) {
             childNode.getNodeData().setLabel(calculate_v_sec(childNode) + parentLabel);
-            calculate_v_soma(childNode);
+            calculate_v_soma_rec(childNode);
         }
     }
 
@@ -397,8 +405,13 @@ public class TreeCreator implements InputParser <NodeData> , Serializable {
         return surface;
     }
 
-    // calculate s_soma. is called with parent node with own label already set, calculates s_soma for children then recursion
-    private void calculate_s_soma(Node<NodeData> parentNode) {
+    // calculate s_soma. is called with root node. calculates s_sec for root node then calls calculate_s_soma_rec()
+    private void calculate_s_soma(Node<NodeData> node) {
+        node.getNodeData().setLabel(calculate_s_sec(node));
+        calculate_s_soma_rec(node);
+    }
+
+    private void calculate_s_soma_rec(Node<NodeData> parentNode) {
         List<Node<NodeData>> childNodes = parentNode.getChildren();
         if (childNodes.isEmpty()) {
             return;
@@ -406,7 +419,7 @@ public class TreeCreator implements InputParser <NodeData> , Serializable {
         double parentLabel = parentNode.getNodeData().getLabel();
         for (Node<NodeData> childNode: childNodes) {
             childNode.getNodeData().setLabel(calculate_s_sec(childNode) + parentLabel);
-            calculate_s_soma(childNode);
+            calculate_s_soma_rec(childNode);
         }
     }
 

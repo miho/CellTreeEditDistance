@@ -38,8 +38,8 @@ public class TreeCostModel implements CostModel<NodeData>, Serializable {
      */
     @Override
     public float ren(Node<NodeData> n1, Node<NodeData> n2) {
-        if(n1.getNodeData().getLabel()==n2.getNodeData().getLabel())
+        if(n1.getNodeData().getLabel() == n2.getNodeData().getLabel())
           return 0;
-        else return Math.abs((float) n1.getNodeData().getLabel()- (float) n2.getNodeData().getLabel());
+        else return Math.abs((float) n1.getNodeData().getLabel() - (float) n2.getNodeData().getLabel());
     }
 }

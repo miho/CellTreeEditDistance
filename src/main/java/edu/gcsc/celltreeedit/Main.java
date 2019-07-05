@@ -245,9 +245,9 @@ public class Main {
         Pair<double[][], String[]> result;
         // calculate distances of Selection of SWC-Files for every possible label
         Set<String> fileNames = JsonUtils.parseJsonToFileNames(new File("/media/exdisk/Sem06/BA/Testlaeufe/swcFiles_Selected_481_13Types_37Each.json"));
-        for (int i = 1; i < 16; i += 1) {
+        for (int i = 1; i < 23; i += 1) {
             Date date = new Date();
-            System.out.println(dateFormat.format(date) + " Selection Label " + i);
+            System.out.println(dateFormat.format(date) + " selected Label " + i);
             cellTreeEditDistance = new CellTreeEditDistance();
             result = cellTreeEditDistance.compareFilesFromFilenames(fileNames, appProperties.getSwcFileDirectory(), i);
             Utils.printToTxt(result.getKey(), result.getValue(), appProperties.getOutputDirectory(), "Matrix_Selected_481_13Types_37Each_Label" + i + ".txt");
