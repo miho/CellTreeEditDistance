@@ -307,7 +307,7 @@ public class TreeCreator implements InputParser <NodeData> , Serializable {
         double volume = 0;
         for (int j = 1; j < currentNode.getNodeData().getPosX().size(); j++) {
             double length = calculateEuclideanNormAtIndex(currentNode, j);
-            double r1 = currentNode.getNodeData().getRadius().get(j-1);
+            double r1 = currentNode.getNodeData().getRadius().get(j-1); // radius of node closer to parent. node with index 0 is parent node
             double r2 = currentNode.getNodeData().getRadius().get(j); // radius of node closer to leafs
             double volumePart = length*Math.PI/3*(r1*r1+r1*r2+r2*r2);
             volume += volumePart;
@@ -465,13 +465,11 @@ public class TreeCreator implements InputParser <NodeData> , Serializable {
         // first calculate surface of T and save it
         calculate_s_tree(nodeList.get(0));
         double surfaceT = nodeList.get(0).getNodeData().getLabel();
-        System.out.println(surfaceT);
 
         nodeList.get(0).getNodeData().setLabel(0);
         // second calculate volume of t[i] and divide with surfaceT
         for (Node<NodeData> currentNode: nodeList) {
             double v_sec = calculate_v_sec(currentNode);
-            System.out.println(v_sec);
             currentNode.getNodeData().setLabel(v_sec/surfaceT);
         }
     }
@@ -499,7 +497,11 @@ public class TreeCreator implements InputParser <NodeData> , Serializable {
             }
         }
         // set label of current node
-        node.getNodeData().setLabel(sum / childNodes.size());
+        if (childNodes.size() > 0) {
+            node.getNodeData().setLabel(sum / childNodes.size());
+        } else {
+            node.getNodeData().setLabel(0);
+        }
         // recursively call children to set their labels
         for (Node<NodeData> childNode : childNodes) {
             calculate_a_sec(childNode);
