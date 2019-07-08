@@ -12,6 +12,7 @@ import java.util.*;
  * */
 public class UniqueMetadata implements Comparable {
 
+    // stores all existing UniqueMetadata-Objects. used to check existence
     public static Map<UniqueMetadata, UniqueMetadata> uniqueMetadataMap = new HashMap<>();
     private static int count = 0;
 
@@ -24,7 +25,7 @@ public class UniqueMetadata implements Comparable {
     private int noOfNeurons;
     private int uniqueMetadataId;
 
-    public UniqueMetadata(Set<String> cellTypes, Set<String> brainRegion, String species, String neuronName, String archive) {
+    private UniqueMetadata(Set<String> cellTypes, Set<String> brainRegion, String species, String neuronName, String archive) {
         this.cellTypes = cellTypes;
         this.brainRegion = brainRegion;
         this.species = species;
@@ -36,12 +37,14 @@ public class UniqueMetadata implements Comparable {
     public static UniqueMetadata addNeuronMetadata(NeuronMetadataR neuronMetadataR) {
         UniqueMetadata oldUniqueMetadata;
         UniqueMetadata newUniqueMetadata;
+        // create new UniqueMetadata object
         newUniqueMetadata = new UniqueMetadata(
                 (neuronMetadataR.getCellType() != null) ? new HashSet<>(neuronMetadataR.getCellType()): new HashSet<>(),
                 (neuronMetadataR.getBrainRegion() != null) ? new HashSet<>(neuronMetadataR.getBrainRegion()): new HashSet<>(),
                 neuronMetadataR.getSpecies(),
                 neuronMetadataR.getNeuronName(),
                 neuronMetadataR.getArchive());
+        // check if uniqueMetadata already exists
         if (uniqueMetadataMap.containsKey(newUniqueMetadata)) {
             oldUniqueMetadata = uniqueMetadataMap.get(newUniqueMetadata);
             oldUniqueMetadata.neuronNames.add(neuronMetadataR.getNeuronName());

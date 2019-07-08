@@ -50,6 +50,9 @@ public class Main {
                 preprocessSWCDirectory(appProperties);
                 break;
             case 7:
+                analyzeClustering(appProperties);
+                break;
+            case 8:
                 doWhateverIsInMyFunctionBody(appProperties);
                 break;
             default:
@@ -66,7 +69,7 @@ public class Main {
         CellTreeEditDistance cellTreeEditDistance = new CellTreeEditDistance();
         Pair<double[][], String[]> result;
         if (appProperties.getJsonDirectory().getPath().equals("")) {
-            result = cellTreeEditDistance.compareFilesFromDirectory(appProperties.getSwcFileDirectory(), 9);
+            result = cellTreeEditDistance.compareFilesFromDirectory(appProperties.getSwcFileDirectory(), 2);
         } else {
             result = cellTreeEditDistance.compareFilesFromFilenames(JsonUtils.parseJsonToFileNames(appProperties.getJsonDirectory()), appProperties.getSwcFileDirectory(), 9);
         }
@@ -112,9 +115,67 @@ public class Main {
         Utils.printToTxt(result.getKey(), newFileNames, appProperties.getOutputDirectory(), "Matrix_fileNamesAdjusted.txt");
         // create cluster with matrix and adjusted names
         Clustering clustering = Clustering.getInstance();
-        Cluster cluster = clustering.createCluster(result.getKey(), newFileNames);
+        Cluster cluster = clustering.createCluster(result.getKey(), result.getValue());
         // generate dendrogram
-        clustering.showCluster(cluster);
+         clustering.showCluster(cluster);
+    }
+
+    private static void analyzeClustering(AppProperties appProperties) throws IOException {
+
+        Pair<double[][], String[]> result = Utils.readMatrixFromTxt();
+        double[][] matrix = result.getKey();
+        String[] fileNames = result.getValue();
+
+        // put metadata in hashMap
+        NeuronMetadataMapper neuronMetadataMapper = new NeuronMetadataMapper();
+        Map<String, NeuronMetadataRImpl> neuronMetadata = neuronMetadataMapper.mapFromDirectory(appProperties.getMetadataDirectory());
+
+        // Create uniqueMetadata from Filenames to know original clusters and their number
+        UniqueMetadata uniqueMetadata;
+        NeuronMetadataR neuronMetadataR;
+        // create unique metadata of filenames in matrix
+        for (int i = 0; i < fileNames.length; i++) {
+            neuronMetadataR = neuronMetadata.get(result.getValue()[i]);
+            uniqueMetadata = UniqueMetadata.addNeuronMetadata(neuronMetadataR);
+        }
+        int noOfUniqueMetadata = UniqueMetadata.getUniqueMetadataMap().size();
+
+        // Calculate Cluster
+        Clustering clustering = Clustering.getInstance();
+        Cluster cluster = clustering.createCluster(matrix, fileNames);
+        // get clusters according to uniqueMetadata
+        Set<Cluster> limitedClusters = limitClusterBySize(cluster, noOfUniqueMetadata);
+
+        // calculate partitioning error and match clusters to uniqueMetadata
+
+
+        // calculate relative partitioning errors
+        // calculate and show relative partitioning errors as CorrelationPlot
+
+    }
+
+    /**
+     * returns list of Cluster with number of Clusters limited by size-input. Function uses Cluster-number from name property as Clusternumbers are ordered by their creation.
+     * @param cluster
+     * @param size
+     * @return
+     */
+    private static Set<Cluster> limitClusterBySize(Cluster cluster, int size) {
+        TreeMap<Integer, Cluster> limitedClusters = new TreeMap<>();
+        limitedClusters.put(getClusterNumberFromName(cluster.getName()), cluster);
+
+        for (int numberOfClusters = 1; numberOfClusters < size; numberOfClusters++) {
+            int clusterNumber = limitedClusters.lastKey();
+            List<Cluster> childClusters = limitedClusters.lastEntry().getValue().getChildren();
+            limitedClusters.remove(clusterNumber);
+            limitedClusters.put(getClusterNumberFromName(childClusters.get(0).getName()), childClusters.get(0));
+            limitedClusters.put(getClusterNumberFromName(childClusters.get(1).getName()), childClusters.get(1));
+        }
+        return new HashSet<>(limitedClusters.values());
+    }
+
+    private static int getClusterNumberFromName(String name) {
+        return Integer.parseInt(name.replace("clstr#", ""));
     }
 
     private static void queryLucene(AppProperties appProperties) throws IOException {

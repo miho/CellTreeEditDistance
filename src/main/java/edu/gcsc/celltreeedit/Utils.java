@@ -133,7 +133,7 @@ public class Utils {
             splittedline = line.split(";");
             filenames[i] = splittedline[0];
             for (int j=1; j<splittedline.length; j++) {
-                matrix[0][j-1] = Double.parseDouble(splittedline[j]);
+                matrix[i][j-1] = Double.parseDouble(splittedline[j]);
             }
             i++;
         }
