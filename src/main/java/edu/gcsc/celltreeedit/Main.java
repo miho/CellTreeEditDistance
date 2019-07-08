@@ -9,6 +9,7 @@ import edu.gcsc.celltreeedit.Lucene.LuceneIndexWriter;
 import edu.gcsc.celltreeedit.NeuronMetadata.NeuronMetadataMapper;
 import edu.gcsc.celltreeedit.NeuronMetadata.NeuronMetadataR;
 import edu.gcsc.celltreeedit.NeuronMetadata.NeuronMetadataRImpl;
+import edu.gcsc.celltreeedit.PartitioningError.HungarianAlgorithm;
 import javafx.util.Pair;
 
 import java.io.File;
@@ -117,7 +118,7 @@ public class Main {
         Clustering clustering = Clustering.getInstance();
         Cluster cluster = clustering.createCluster(result.getKey(), result.getValue());
         // generate dendrogram
-         clustering.showCluster(cluster);
+        clustering.showCluster(cluster);
     }
 
     private static void analyzeClustering(AppProperties appProperties) throws IOException {
@@ -133,36 +134,76 @@ public class Main {
         // Create uniqueMetadata from Filenames to know original clusters and their number
         UniqueMetadata uniqueMetadata;
         NeuronMetadataR neuronMetadataR;
+        Map<String, UniqueMetadata> fileNamesUniqueMetadataMap = new HashMap<>();
         // create unique metadata of filenames in matrix
         for (int i = 0; i < fileNames.length; i++) {
-            neuronMetadataR = neuronMetadata.get(result.getValue()[i]);
+            neuronMetadataR = neuronMetadata.get(fileNames[i]);
             uniqueMetadata = UniqueMetadata.addNeuronMetadata(neuronMetadataR);
+            // save for later use
+            fileNamesUniqueMetadataMap.put(fileNames[i], uniqueMetadata);
         }
-        int noOfUniqueMetadata = UniqueMetadata.getUniqueMetadataMap().size();
+        List<UniqueMetadata> uniqueMetadataObjects = new ArrayList<>(UniqueMetadata.getUniqueMetadataMap().keySet());
+        int noOfUniqueMetadata = uniqueMetadataObjects.size();
 
         // Calculate Cluster
         Clustering clustering = Clustering.getInstance();
         Cluster cluster = clustering.createCluster(matrix, fileNames);
-        // get clusters according to uniqueMetadata
-        Set<Cluster> limitedClusters = limitClusterBySize(cluster, noOfUniqueMetadata);
+        // get clusters according to size of uniqueMetadata
+        List<Cluster> limitedClusters = limitClusterBySize(cluster, noOfUniqueMetadata);
 
         // calculate partitioning error and match clusters to uniqueMetadata
-        for (int i = 0; i < noOfUniqueMetadata; i++) {
-
-        }
+        // HungarianDouble takes DistanceMatrix of values
+        // go through each uniqueMetadataObject. Calculate partitioning error for all clusters
+        int[][] partitioningErrorMatrix = calculatePartitioningErrorMatrix(uniqueMetadataObjects, limitedClusters, fileNamesUniqueMetadataMap);
+        HungarianAlgorithm hungarian = new HungarianAlgorithm(partitioningErrorMatrix);
+        int[][] assignment = hungarian.findOptimalAssignment();
+        System.out.println("Donedonedonedone");
 
         // calculate relative partitioning errors
         // calculate and show relative partitioning errors as CorrelationPlot
 
     }
 
+    private static int[][] calculatePartitioningErrorMatrix(List<UniqueMetadata> uniqueMetadataObjects, List<Cluster> clusters, Map<String, UniqueMetadata> fileNamesUniqueMetadataMap) {
+        int noOfUniqueMetadata = uniqueMetadataObjects.size();
+        int[][] partitioningErrorMatrix = new int[noOfUniqueMetadata][noOfUniqueMetadata];
+        for (int i = 0; i < noOfUniqueMetadata; i++) {
+            List<Cluster> leafsOfCluster = findLeafsOfCluster(clusters.get(i));
+            for (int j = 0; j < noOfUniqueMetadata; j++) {
+                partitioningErrorMatrix[j][i] = calculatePartitioningError(uniqueMetadataObjects.get(j), leafsOfCluster, fileNamesUniqueMetadataMap);
+            }
+        }
+        return partitioningErrorMatrix;
+    }
+
+    private static int calculatePartitioningError(UniqueMetadata uniqueMetadata, List<Cluster> leafsOfCluster, Map<String, UniqueMetadata> fileNamesUniqueMetadataMap) {
+        int partitioningError = 0;
+        for (Cluster cluster: leafsOfCluster) {
+            if (!fileNamesUniqueMetadataMap.get(cluster.getName()).equals(uniqueMetadata)) {
+                partitioningError += 1;
+            }
+        }
+        return partitioningError;
+    }
+
+    private static List<Cluster> findLeafsOfCluster(Cluster cluster) {
+        if (cluster.isLeaf()) {
+            return new ArrayList<>(Arrays.asList(cluster));
+        } else {
+            List<Cluster> appendedClusters = new ArrayList<>(findLeafsOfCluster(cluster.getChildren().get(0)));
+            appendedClusters.addAll(findLeafsOfCluster(cluster.getChildren().get(1)));
+            return appendedClusters;
+        }
+    }
+
     /**
      * returns list of Cluster with number of Clusters limited by size-input. Function uses Cluster-number from name property as Clusternumbers are ordered by their creation.
+     *
      * @param cluster
      * @param size
      * @return
      */
-    private static Set<Cluster> limitClusterBySize(Cluster cluster, int size) {
+    private static List<Cluster> limitClusterBySize(Cluster cluster, int size) {
         TreeMap<Integer, Cluster> limitedClusters = new TreeMap<>();
         limitedClusters.put(getClusterNumberFromName(cluster.getName()), cluster);
 
@@ -173,7 +214,7 @@ public class Main {
             limitedClusters.put(getClusterNumberFromName(childClusters.get(0).getName()), childClusters.get(0));
             limitedClusters.put(getClusterNumberFromName(childClusters.get(1).getName()), childClusters.get(1));
         }
-        return new HashSet<>(limitedClusters.values());
+        return new ArrayList<>(limitedClusters.values());
     }
 
     private static int getClusterNumberFromName(String name) {
