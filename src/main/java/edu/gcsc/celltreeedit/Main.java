@@ -147,7 +147,9 @@ public class Main {
         Set<Cluster> limitedClusters = limitClusterBySize(cluster, noOfUniqueMetadata);
 
         // calculate partitioning error and match clusters to uniqueMetadata
+        for (int i = 0; i < noOfUniqueMetadata; i++) {
 
+        }
 
         // calculate relative partitioning errors
         // calculate and show relative partitioning errors as CorrelationPlot
