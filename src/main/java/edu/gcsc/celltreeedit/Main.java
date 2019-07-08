@@ -159,9 +159,9 @@ public class Main {
         int[][] assignment = hungarian.findOptimalAssignment();
         System.out.println("Donedonedonedone");
 
-        // calculate relative partitioning errors
-        // calculate and show relative partitioning errors as CorrelationPlot
-
+        // calculate absolute partitioning error
+        // calculate relative partitioning errors and save in lower left matrix
+        // display lower left matrix with javax Swing colorcoded as in heumann, wittum paper
     }
 
     private static int[][] calculatePartitioningErrorMatrix(List<UniqueMetadata> uniqueMetadataObjects, List<Cluster> clusters, Map<String, UniqueMetadata> fileNamesUniqueMetadataMap) {
