@@ -10,8 +10,10 @@ import edu.gcsc.celltreeedit.NeuronMetadata.NeuronMetadataMapper;
 import edu.gcsc.celltreeedit.NeuronMetadata.NeuronMetadataR;
 import edu.gcsc.celltreeedit.NeuronMetadata.NeuronMetadataRImpl;
 import edu.gcsc.celltreeedit.PartitioningError.HungarianAlgorithm;
+import edu.gcsc.celltreeedit.PartitioningError.RelPartitioningErrorTable;
 import javafx.util.Pair;
 
+import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
@@ -36,7 +38,7 @@ public class Main {
                 calculateMatrixOnly(appProperties);
                 break;
             case 2:
-                analyzeMatrix(appProperties);
+                analyzeMatrices(appProperties);
                 break;
             case 3:
                 queryLucene(appProperties);
@@ -93,75 +95,114 @@ public class Main {
         Utils.printToTxt(result.getKey(), result.getValue(), appProperties.getOutputDirectory(), appProperties.getMatrixExportName());
     }
 
-    private static void analyzeMatrix(AppProperties appProperties) throws IOException {
+    private static void analyzeMatrices(AppProperties appProperties) throws IOException {
 
-        Pair<double[][], String[]> result = Utils.readMatrixFromTxt();
+        List<Pair<double[][], String[]>> result = Utils.readMatricesFromTxt();
 
-        // put metadata in hashMap
-        NeuronMetadataMapper neuronMetadataMapper = new NeuronMetadataMapper();
-        Map<String, NeuronMetadataRImpl> neuronMetadata = neuronMetadataMapper.mapFromDirectory(appProperties.getMetadataDirectory());
+        for (Pair<double[][], String[]> currentResult : result) {
+            // put metadata in hashMap
+            NeuronMetadataMapper neuronMetadataMapper = new NeuronMetadataMapper();
+            Map<String, NeuronMetadataRImpl> neuronMetadata = neuronMetadataMapper.mapFromDirectory(appProperties.getMetadataDirectory());
 
-        String[] newFileNames = new String[result.getValue().length];
+            String[] newFileNames = new String[currentResult.getValue().length];
 
-        UniqueMetadata uniqueMetadata;
-        NeuronMetadataR neuronMetadataR;
-        // create unique metadata of files
-        for (int i = 0; i < result.getValue().length; i++) {
-            neuronMetadataR = neuronMetadata.get(result.getValue()[i]);
-            uniqueMetadata = UniqueMetadata.addNeuronMetadata(neuronMetadataR);
-            // uniqueMetadataId, archive, neuronId
-            newFileNames[i] = uniqueMetadata.getUniqueMetadataId() + ", " + neuronMetadataR.getArchive() + ", " + neuronMetadataR.getNeuronId();
+            UniqueMetadata uniqueMetadata;
+            NeuronMetadataR neuronMetadataR;
+            // create unique metadata of files
+            for (int i = 0; i < currentResult.getValue().length; i++) {
+                neuronMetadataR = neuronMetadata.get(currentResult.getValue()[i]);
+                uniqueMetadata = UniqueMetadata.addNeuronMetadata(neuronMetadataR);
+                // uniqueMetadataId, archive, neuronId
+                newFileNames[i] = uniqueMetadata.getUniqueMetadataId() + ", " + neuronMetadataR.getArchive() + ", " + neuronMetadataR.getNeuronId();
+            }
+
+            Utils.printToTxt(currentResult.getKey(), newFileNames, appProperties.getOutputDirectory(), "Matrix_fileNamesAdjusted.txt");
+            // create cluster with matrix and adjusted names
+            Clustering clustering = Clustering.getInstance();
+            Cluster cluster = clustering.createCluster(currentResult.getKey(), currentResult.getValue());
+            // generate dendrogram
+            clustering.showCluster(cluster);
         }
 
-        Utils.printToTxt(result.getKey(), newFileNames, appProperties.getOutputDirectory(), "Matrix_fileNamesAdjusted.txt");
-        // create cluster with matrix and adjusted names
-        Clustering clustering = Clustering.getInstance();
-        Cluster cluster = clustering.createCluster(result.getKey(), result.getValue());
-        // generate dendrogram
-        clustering.showCluster(cluster);
     }
 
+    /**
+     * Analyzes Clusterings of multiple labels and displays the results.
+     *
+     * @param appProperties
+     * @throws IOException
+     */
     private static void analyzeClustering(AppProperties appProperties) throws IOException {
 
-        Pair<double[][], String[]> result = Utils.readMatrixFromTxt();
-        double[][] matrix = result.getKey();
-        String[] fileNames = result.getValue();
+        List<Pair<double[][], String[]>> result = Utils.readMatricesFromTxt();
 
         // put metadata in hashMap
         NeuronMetadataMapper neuronMetadataMapper = new NeuronMetadataMapper();
         Map<String, NeuronMetadataRImpl> neuronMetadata = neuronMetadataMapper.mapFromDirectory(appProperties.getMetadataDirectory());
 
-        // Create uniqueMetadata from Filenames to know original clusters and their number
-        UniqueMetadata uniqueMetadata;
-        NeuronMetadataR neuronMetadataR;
-        Map<String, UniqueMetadata> fileNamesUniqueMetadataMap = new HashMap<>();
-        // create unique metadata of filenames in matrix
-        for (int i = 0; i < fileNames.length; i++) {
-            neuronMetadataR = neuronMetadata.get(fileNames[i]);
-            uniqueMetadata = UniqueMetadata.addNeuronMetadata(neuronMetadataR);
-            // save for later use
-            fileNamesUniqueMetadataMap.put(fileNames[i], uniqueMetadata);
+        for (Pair<double[][], String[]> currentResult : result) {
+            double[][] matrix = currentResult.getKey();
+            String[] fileNames = currentResult.getValue();
+
+            // Create uniqueMetadata from Filenames to know original clusters of filenames and their number
+            UniqueMetadata uniqueMetadata;
+            NeuronMetadataR neuronMetadataR;
+            Map<String, UniqueMetadata> fileNamesUniqueMetadataMap = new HashMap<>();
+            // create unique metadata of filenames in matrix
+            for (int i = 0; i < fileNames.length; i++) {
+                neuronMetadataR = neuronMetadata.get(fileNames[i]);
+                uniqueMetadata = UniqueMetadata.addNeuronMetadata(neuronMetadataR);
+                // save for later use
+                fileNamesUniqueMetadataMap.put(fileNames[i], uniqueMetadata);
+            }
+            // put in List for stiff ordering
+            List<UniqueMetadata> uniqueMetadataObjects = new ArrayList<>(UniqueMetadata.getUniqueMetadataMap().keySet());
+            int noOfUniqueMetadata = uniqueMetadataObjects.size();
+
+            // Calculate Cluster
+            Clustering clustering = Clustering.getInstance();
+            Cluster cluster = clustering.createCluster(matrix, fileNames);
+            // get clusters according to size of uniqueMetadata
+            List<Cluster> limitedClusters = limitClusterBySize(cluster, noOfUniqueMetadata);
+
+            // calculate partitioning error and match clusters to uniqueMetadata
+            // HungarianDouble takes DistanceMatrix of values
+            // go through each uniqueMetadataObject. Calculate partitioning error for all clusters
+            int[][] partitioningErrorMatrix = calculatePartitioningErrorMatrix(uniqueMetadataObjects, limitedClusters, fileNamesUniqueMetadataMap);
+            HungarianAlgorithm hungarian = new HungarianAlgorithm(partitioningErrorMatrix);
+            Map<Integer, Integer> assignment = putAssignmentInMap(hungarian.findOptimalAssignment());
+            System.out.println("Donedonedonedone");
+
+            // calculate overall absolute partitioning error
+            int overallAbsPartitioningError = calculateAbsPartitioningError(partitioningErrorMatrix, assignment);
+
+            // TODO: get number of Neurons with uniqueMetadata A and number of Neurons with uniqueMetadata B
+            // calculate relative partitioning errors and save in lower left matrix
+            float[][] relPartitioningErrors = calculateRelPartitioningErrors(partitioningErrorMatrix, assignment, uniqueMetadataObjects);
+
+            // display lower left matrix with javax Swing colorcoded as in heumann, wittum paper
+
+            showRelPartitioningErrors(relPartitioningErrors, uniqueMetadataObjects);
         }
-        List<UniqueMetadata> uniqueMetadataObjects = new ArrayList<>(UniqueMetadata.getUniqueMetadataMap().keySet());
-        int noOfUniqueMetadata = uniqueMetadataObjects.size();
+    }
 
-        // Calculate Cluster
-        Clustering clustering = Clustering.getInstance();
-        Cluster cluster = clustering.createCluster(matrix, fileNames);
-        // get clusters according to size of uniqueMetadata
-        List<Cluster> limitedClusters = limitClusterBySize(cluster, noOfUniqueMetadata);
+    private static void showRelPartitioningErrors(float[][] relPartitioningErrors, List<UniqueMetadata> uniqueMetadataObjects) {
+        JFrame frame = new JFrame();
+        RelPartitioningErrorTable relPartitioningErrorTable = new RelPartitioningErrorTable(relPartitioningErrors);
+        frame.add(relPartitioningErrorTable);
+        //labels.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(500,350);
+        frame.setVisible(true);
+        frame.setTitle("relative Partitioning Errors");
+        //    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
 
-        // calculate partitioning error and match clusters to uniqueMetadata
-        // HungarianDouble takes DistanceMatrix of values
-        // go through each uniqueMetadataObject. Calculate partitioning error for all clusters
-        int[][] partitioningErrorMatrix = calculatePartitioningErrorMatrix(uniqueMetadataObjects, limitedClusters, fileNamesUniqueMetadataMap);
-        HungarianAlgorithm hungarian = new HungarianAlgorithm(partitioningErrorMatrix);
-        int[][] assignment = hungarian.findOptimalAssignment();
-        System.out.println("Donedonedonedone");
-
-        // calculate absolute partitioning error
-        // calculate relative partitioning errors and save in lower left matrix
-        // display lower left matrix with javax Swing colorcoded as in heumann, wittum paper
+    private static Map<Integer, Integer> putAssignmentInMap(int[][] assignment) {
+        Map<Integer, Integer> result = new HashMap<>();
+        for (int i = 0; i < assignment.length; i++) {
+            result.put(i, assignment[i][1]);
+        }
+        return result;
     }
 
     private static int[][] calculatePartitioningErrorMatrix(List<UniqueMetadata> uniqueMetadataObjects, List<Cluster> clusters, Map<String, UniqueMetadata> fileNamesUniqueMetadataMap) {
@@ -178,7 +219,7 @@ public class Main {
 
     private static int calculatePartitioningError(UniqueMetadata uniqueMetadata, List<Cluster> leafsOfCluster, Map<String, UniqueMetadata> fileNamesUniqueMetadataMap) {
         int partitioningError = 0;
-        for (Cluster cluster: leafsOfCluster) {
+        for (Cluster cluster : leafsOfCluster) {
             if (!fileNamesUniqueMetadataMap.get(cluster.getName()).equals(uniqueMetadata)) {
                 partitioningError += 1;
             }
@@ -195,6 +236,30 @@ public class Main {
             return appendedClusters;
         }
     }
+
+    private static int calculateAbsPartitioningError(int[][] partitioningErrorMatrix, Map<Integer, Integer> assignment) {
+        int absPartitioningError = 0;
+        for (int i = 0; i < assignment.size(); i++) {
+            int j = assignment.get(i);
+            absPartitioningError += partitioningErrorMatrix[i][j];
+        }
+        return absPartitioningError;
+    }
+
+    private static float[][] calculateRelPartitioningErrors(int[][] partitioningErrorMatrix, Map<Integer, Integer> assignment, List<UniqueMetadata> uniqueMetadataObjects) {
+        int size = assignment.size() - 1;
+        float[][] relPartitioningErrors = new float[size][size];
+        // index of row-set
+        for (int i = 0; i < size; i++) {
+            // index of col-set
+            for (int j = 0; j <= i; j++) {
+                int row = i + 1;
+                relPartitioningErrors[i][j] = 2 * ((float) partitioningErrorMatrix[row][assignment.get(row)] + (float) partitioningErrorMatrix[j][assignment.get(j)]) / ((float) uniqueMetadataObjects.get(row).getNoOfNeurons() + (float) uniqueMetadataObjects.get(j).getNoOfNeurons());
+            }
+        }
+        return relPartitioningErrors;
+    }
+
 
     /**
      * returns list of Cluster with number of Clusters limited by size-input. Function uses Cluster-number from name property as Clusternumbers are ordered by their creation.
