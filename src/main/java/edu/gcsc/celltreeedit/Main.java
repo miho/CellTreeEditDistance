@@ -188,13 +188,13 @@ public class Main {
 
     private static void showRelPartitioningErrors(float[][] relPartitioningErrors, List<UniqueMetadata> uniqueMetadataObjects) {
         JFrame frame = new JFrame();
-        RelPartitioningErrorTable relPartitioningErrorTable = new RelPartitioningErrorTable(relPartitioningErrors);
+        RelPartitioningErrorTable relPartitioningErrorTable = new RelPartitioningErrorTable(relPartitioningErrors, uniqueMetadataObjects);
         frame.add(relPartitioningErrorTable);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         //labels.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(500,350);
         frame.setVisible(true);
         frame.setTitle("relative Partitioning Errors");
-        //    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
     private static Map<Integer, Integer> putAssignmentInMap(int[][] assignment) {
