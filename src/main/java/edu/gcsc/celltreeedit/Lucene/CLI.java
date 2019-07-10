@@ -29,7 +29,6 @@ public class CLI {
         final IndexSearcher indexSearcher = new IndexSearcher(indexReader);
         Analyzer analyzer = new CaseInsensitiveKeywordAnalyzer();
         QueryParser queryParser = new QueryParser("neuronId", analyzer);
-        Collector collector = new TotalHitCountCollector();
         String query = "";
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
