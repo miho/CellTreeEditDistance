@@ -31,26 +31,6 @@ public class CellTreeEditDistance implements java.io.Serializable{
     private List<String> foundFileNames = new ArrayList<>();
     private List<File> foundFiles = new ArrayList<>();
 
-    public static void showLabels(){
-        JFrame frame = new JFrame();
-        Tables labels= new Tables();
-        frame.add(labels);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(500,350);
-        frame.setVisible(true);
-        frame.setTitle("Labels");
-    }
-
-    public void compareFilesFromFileDialog(int choice) {
-        this.files= Utils.choose();
-        int size= files.length;
-        fileNames=new String[size];
-        for(int i=0;i<size;i++){
-            fileNames[i]=files[i].getName();
-        }
-        System.out.println(size + " Files were imported!");    // loggen?
-        this.compareFiles(choice);
-    }
 
     public Pair<double[][], String[]> compareFilesFromDirectory(File swcDirectory, int choice) {
 

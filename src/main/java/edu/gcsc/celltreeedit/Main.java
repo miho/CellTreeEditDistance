@@ -12,6 +12,7 @@ import edu.gcsc.celltreeedit.NeuronMetadata.NeuronMetadataR;
 import edu.gcsc.celltreeedit.NeuronMetadata.NeuronMetadataRImpl;
 import edu.gcsc.celltreeedit.ClusterAnalysis.HungarianAlgorithm;
 import edu.gcsc.celltreeedit.ClusterAnalysis.RelPartitioningErrorTable;
+import edu.gcsc.celltreeedit.NeuronMetadata.UniqueMetadata;
 import edu.gcsc.celltreeedit.TEDCalculation.CellTreeEditDistance;
 import javafx.util.Pair;
 
@@ -28,37 +29,40 @@ import java.util.stream.Collectors;
  */
 public class Main {
 
+    private static AppProperties appProperties;
+
     public static void main(String[] args) throws IOException {
 
-        AppProperties appProperties = CommandLineParsing.parseArguments(args);
+        CommandLineParsing.parseArguments(args);
+        appProperties = AppProperties.getInstance();
 
         switch (appProperties.getCalcType()) {
             case 0:
-                preprocessSWCDirectory(appProperties);
+                preprocessSWCDirectory();
                 break;
             case 1:
-                queryLucene(appProperties);
+                queryLucene();
                 break;
             case 2:
-                queryByFileDialog(appProperties);
+                queryByFileDialog();
                 break;
             case 3:
-                queryByUniqueMetadata(appProperties);
+                queryByUniqueMetadata();
                 break;
             case 4:
-                calculateTEDMatrixOnly(appProperties);
+                calculateTEDMatrixOnly();
                 break;
             case 5:
-                calculateTEDMatrixAndDendrogram(appProperties);
+                calculateTEDMatrixAndDendrogram();
                 break;
             case 6:
-                calculateDendrogramsForTEDMatrices(appProperties);
+                calculateDendrogramsForTEDMatrices();
                 break;
             case 7:
-                analyzeClusteringOfTEDMatrices(appProperties);
+                analyzeClusteringOfTEDMatrices();
                 break;
             case 8:
-                doWhateverIsInMyFunctionBody(appProperties);
+                doWhateverIsInMyFunctionBody();
                 break;
             default:
                 System.out.println("calcType not valid");
@@ -67,7 +71,7 @@ public class Main {
     }
 
 
-    private static Pair<double[][], String[]> calculateTEDMatrixOnly(AppProperties appProperties) throws IOException {
+    private static Pair<double[][], String[]> calculateTEDMatrixOnly() throws IOException {
         CellTreeEditDistance cellTreeEditDistance = new CellTreeEditDistance();
         Pair<double[][], String[]> result;
         if (appProperties.getJsonDirectory().getPath().equals("")) {
@@ -79,22 +83,22 @@ public class Main {
         return result;
     }
 
-    private static void calculateTEDMatrixAndDendrogram(AppProperties appProperties) throws IOException {
-        Pair<double[][], String[]> result = calculateTEDMatrixOnly(appProperties);
-        showDendrogram(appProperties, result);
+    private static void calculateTEDMatrixAndDendrogram() throws IOException {
+        Pair<double[][], String[]> result = calculateTEDMatrixOnly();
+        showDendrogram(result);
     }
 
-    private static void calculateDendrogramsForTEDMatrices(AppProperties appProperties) throws IOException {
+    private static void calculateDendrogramsForTEDMatrices() throws IOException {
 
         List<Pair<double[][], String[]>> results = Utils.readMatricesFromTxt();
         for (Pair<double[][], String[]> result : results) {
-            showDendrogram(appProperties, result);
+            showDendrogram(result);
         }
     }
 
-    private static void showDendrogram(AppProperties appProperties, Pair<double[][], String[]> result) throws IOException {
+    private static void showDendrogram(Pair<double[][], String[]> result) throws IOException {
         String[] oldFileNames = result.getValue();
-        String[] newFileNames = renameFileNamesToUniqueMetadataNames(oldFileNames, appProperties);
+        String[] newFileNames = renameFileNamesToUniqueMetadataNames(oldFileNames);
 //            Utils.printToTxt(currentResult.getKey(), newFileNames, appProperties.getOutputDirectory(), "Matrix_fileNamesAdjusted.txt");
         // create cluster with matrix and adjusted names
         Clustering clustering = Clustering.getInstance();
@@ -114,7 +118,7 @@ public class Main {
         frame.setTitle("FileName-Mapping");
     }
 
-    private static String[] renameFileNamesToUniqueMetadataNames(String[] oldFileNames, AppProperties appProperties) throws IOException {
+    private static String[] renameFileNamesToUniqueMetadataNames(String[] oldFileNames) throws IOException {
         String[] newFileNames = new String[oldFileNames.length];
         // put metadata in hashMap
         NeuronMetadataMapper neuronMetadataMapper = new NeuronMetadataMapper();
@@ -135,10 +139,9 @@ public class Main {
     /**
      * Analyzes Clusterings of multiple labels and displays the results.
      *
-     * @param appProperties
      * @throws IOException
      */
-    private static void analyzeClusteringOfTEDMatrices(AppProperties appProperties) throws IOException {
+    private static void analyzeClusteringOfTEDMatrices() throws IOException {
 
         List<Pair<double[][], String[]>> result = Utils.readMatricesFromTxt();
 
@@ -316,7 +319,7 @@ public class Main {
         return Integer.parseInt(name.replace("clstr#", ""));
     }
 
-    private static void queryLucene(AppProperties appProperties) throws IOException {
+    private static void queryLucene() throws IOException {
         // put metadata in hashMap
         NeuronMetadataMapper neuronMetadataMapper = new NeuronMetadataMapper();
         Map<String, NeuronMetadataRImpl> neuronMetadata = neuronMetadataMapper.mapFromDirectory(appProperties.getMetadataDirectory());
@@ -331,7 +334,7 @@ public class Main {
 
 
     // for querying the mostCommon neurontypes
-//    private static void queryByUniqueMetadata(AppProperties appProperties) throws IOException {
+//    private static void queryByUniqueMetadata() throws IOException {
 //        // TODO: put in AppProperties and make adjustable from commandline?
 //        int noOfTypes = 40;
 //        int noOfNeuronsPerType = 25;
@@ -365,7 +368,7 @@ public class Main {
 //    }
 
     // for querying a predefined combination
-    private static void queryByUniqueMetadata(AppProperties appProperties) throws IOException {
+    private static void queryByUniqueMetadata() throws IOException {
         System.out.println("inside queryByUniqueMetadata");
         int noOfNeuronsPerType = 37;
 
@@ -395,12 +398,10 @@ public class Main {
 
 //         select neurons depending on typeCount and input-variables
         List<String> selectedNeuronNames = new ArrayList<>();
-        int k = 1;
         for (UniqueMetadata uniqueMetadata : selectedUniqueMetadata) {
             // select noOfNeuronsPerType neurons randomly
             selectedNeuronNames.addAll(pickNRandom(UniqueMetadata.getUniqueMetadataMap().get(uniqueMetadata).getNeuronNames(), noOfNeuronsPerType));
             System.out.println(uniqueMetadata.getSpecies() + ";" + String.join(", ", uniqueMetadata.getBrainRegion()) + ";" + String.join(", ", uniqueMetadata.getCellTypes()) + ";" + uniqueMetadata.getNoOfNeurons() + ";" + uniqueMetadata.getArchives().size());
-            k += 1;
         }
 
         // write to json
@@ -413,7 +414,7 @@ public class Main {
         return n > copy.size() ? copy.subList(0, copy.size()) : copy.subList(0, n);
     }
 
-    private static void queryByFileDialog(AppProperties appProperties) throws IOException {
+    private static void queryByFileDialog() throws IOException {
         File[] files = Utils.choose();
         List<String> selectedNeuronNames = Arrays.stream(files).map(file -> Utils.removeSWCFileExtensions(file.getName())).collect(Collectors.toList());
 
@@ -421,7 +422,7 @@ public class Main {
         JsonUtils.writeJSON(selectedNeuronNames, appProperties.getOutputDirectory());
     }
 
-    private static void preprocessSWCDirectory(AppProperties appProperties) throws IOException {
+    private static void preprocessSWCDirectory() throws IOException {
         // put metadata in hashMap
         NeuronMetadataMapper neuronMetadataMapper = new NeuronMetadataMapper();
         Map<String, NeuronMetadataRImpl> neuronMetadata = neuronMetadataMapper.mapFromDirectory(appProperties.getMetadataDirectory());
@@ -434,7 +435,7 @@ public class Main {
 
 
     // method to do some custom things which program should not be able to do in the end
-    private static void doWhateverIsInMyFunctionBody(AppProperties appProperties) throws IOException {
+    private static void doWhateverIsInMyFunctionBody() throws IOException {
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         CellTreeEditDistance cellTreeEditDistance;
         Pair<double[][], String[]> result;

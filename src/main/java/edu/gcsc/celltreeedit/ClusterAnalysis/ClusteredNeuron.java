@@ -1,6 +1,6 @@
 package edu.gcsc.celltreeedit.ClusterAnalysis;
 
-import edu.gcsc.celltreeedit.UniqueMetadata;
+import edu.gcsc.celltreeedit.NeuronMetadata.UniqueMetadata;
 
 /**
  * TODO: use or delete

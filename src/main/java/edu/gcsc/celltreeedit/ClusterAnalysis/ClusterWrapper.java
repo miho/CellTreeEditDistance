@@ -1,7 +1,7 @@
 package edu.gcsc.celltreeedit.ClusterAnalysis;
 
 import com.apporiented.algorithm.clustering.Cluster;
-import edu.gcsc.celltreeedit.UniqueMetadata;
+import edu.gcsc.celltreeedit.NeuronMetadata.UniqueMetadata;
 
 /**
  * TODO: use or delete

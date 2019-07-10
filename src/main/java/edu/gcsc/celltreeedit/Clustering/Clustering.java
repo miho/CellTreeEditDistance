@@ -10,7 +10,7 @@ import javax.swing.*;
 
 public final class Clustering {
 
-    // Clustering is a Singleton
+    // Thread-save Singleton
     private static final Clustering INSTANCE = new Clustering();
 
     public static Clustering getInstance() {
@@ -35,7 +35,4 @@ public final class Clustering {
         frame.setVisible(true);
         frame.setTitle("Dendrogram");
     }
-
-
-
 }

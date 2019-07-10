@@ -5,7 +5,16 @@ import java.io.File;
 /**
  * Contains basic properties of the application like calcType, basedirectory of project, Directory of JsonFile etc
  */
-public class AppProperties {
+public final class AppProperties {
+
+    private static final AppProperties INSTANCE = new AppProperties();
+
+    public static AppProperties getInstance() {
+        return INSTANCE;
+    }
+
+    private AppProperties() { }
+
 
     // Ziel: mit defaultwerten füllen und evtl durch CommandlineArgumente ersetzen
     // Default-Values

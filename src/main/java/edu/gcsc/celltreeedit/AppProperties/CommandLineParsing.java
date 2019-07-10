@@ -17,7 +17,8 @@ public class CommandLineParsing {
                     parameter.hasArgs, parameter.helptext);
         }
 
-        final AppProperties properties = new AppProperties();
+        AppProperties properties = AppProperties.getInstance();
+
         try {
             // parse CommandLineArguments
             final CommandLineParser parser = new PosixParser();
