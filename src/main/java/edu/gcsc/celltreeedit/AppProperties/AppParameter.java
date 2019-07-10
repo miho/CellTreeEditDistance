@@ -1,5 +1,9 @@
 package edu.gcsc.celltreeedit.AppProperties;
 
+
+/**
+ * enum that defines commandline options
+ */
 enum AppParameter
 {
     CALC_TYPE("c", "calc", true, "define what program should do"),

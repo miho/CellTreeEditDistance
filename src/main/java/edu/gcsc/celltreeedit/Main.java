@@ -9,8 +9,9 @@ import edu.gcsc.celltreeedit.Lucene.LuceneIndexWriter;
 import edu.gcsc.celltreeedit.NeuronMetadata.NeuronMetadataMapper;
 import edu.gcsc.celltreeedit.NeuronMetadata.NeuronMetadataR;
 import edu.gcsc.celltreeedit.NeuronMetadata.NeuronMetadataRImpl;
-import edu.gcsc.celltreeedit.PartitioningError.HungarianAlgorithm;
-import edu.gcsc.celltreeedit.PartitioningError.RelPartitioningErrorTable;
+import edu.gcsc.celltreeedit.ClusterAnalysis.HungarianAlgorithm;
+import edu.gcsc.celltreeedit.ClusterAnalysis.RelPartitioningErrorTable;
+import edu.gcsc.celltreeedit.TEDCalculation.CellTreeEditDistance;
 import javafx.util.Pair;
 
 import javax.swing.*;

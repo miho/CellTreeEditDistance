@@ -4,6 +4,9 @@ package edu.gcsc.celltreeedit.AppProperties;
 import org.apache.commons.cli.*;
 import java.io.File;
 
+/**
+ * parses Arguments passed to application on start
+ */
 public class CommandLineParsing {
 
     public static AppProperties parseArguments(final String[] args) {

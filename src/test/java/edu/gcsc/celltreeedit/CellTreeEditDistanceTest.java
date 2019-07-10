@@ -1,5 +1,8 @@
 package edu.gcsc.celltreeedit;
 
+import edu.gcsc.celltreeedit.TEDCalculation.NodeData;
+import edu.gcsc.celltreeedit.TEDCalculation.TreeCostModel;
+import edu.gcsc.celltreeedit.TEDCalculation.TreeCreator;
 import org.junit.Test;
 
 import eu.mihosoft.ext.apted.distance.APTED;

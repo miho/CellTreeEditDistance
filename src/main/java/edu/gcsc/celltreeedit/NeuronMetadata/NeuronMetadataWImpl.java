@@ -54,6 +54,9 @@ import java.util.Objects;
         "_links"
 })
 
+/**
+ * Implementation for read and write neuronMetadata
+ */
 public class NeuronMetadataWImpl implements NeuronMetadataW {
 
     @JsonProperty("neuron_id")

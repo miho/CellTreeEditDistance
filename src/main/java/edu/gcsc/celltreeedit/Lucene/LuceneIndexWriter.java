@@ -14,6 +14,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
+/**
+ * Class used for writing the lucene index. the index is needed to enable lucene to query neuronMetadata fast.
+ */
 public class LuceneIndexWriter {
 
     private File indexDirectory;
@@ -29,6 +32,10 @@ public class LuceneIndexWriter {
         this.finish();
     }
 
+    /**
+     * opens Lucene index in FileSystem. also defines IndexWriter (how lucene parses data)
+     * @return
+     */
     private boolean openIndex() {
         try {
             Directory dir = FSDirectory.open(indexDirectory.toPath());
@@ -45,7 +52,7 @@ public class LuceneIndexWriter {
     }
 
     /**
-     * Add documents to the index
+     * Add documents to the index. one document per neuron.
      */
     private void addDocuments(Map<String, NeuronMetadataRImpl> neuronMetadataRMap) {
         NeuronMetadataRImpl neuronMetadataR;
@@ -87,6 +94,11 @@ public class LuceneIndexWriter {
         }
     }
 
+    /**
+     * adds neuronMetadata of one neuron to one document
+     * @param doc
+     * @param neuronMetadataR
+     */
     private void addDocumentsForNeuronMetadataObject(Document doc, NeuronMetadataRImpl neuronMetadataR) {
         // not allowed to be null values
         doc.add(new TextField("neuronId", neuronMetadataR.getNeuronId().toString(), Field.Store.YES));

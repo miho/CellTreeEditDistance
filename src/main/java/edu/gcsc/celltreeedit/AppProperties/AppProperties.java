@@ -2,6 +2,9 @@ package edu.gcsc.celltreeedit.AppProperties;
 
 import java.io.File;
 
+/**
+ * Contains basic properties of the application like calcType, basedirectory of project, Directory of JsonFile etc
+ */
 public class AppProperties {
 
     // Ziel: mit defaultwerten füllen und evtl durch CommandlineArgumente ersetzen

@@ -6,14 +6,14 @@ import java.util.*;
 
 
 /**
- * Class to get unique metadata combinations. metadata is considered unique if cellTypes, brainRegions and species are equal
+ * Class to get unique metadata combinations. metadata is considered unique if cellTypes, brainRegion and species are equal
  * equals()-method implements this constraint
  * compareTo()-method is not consistent with equals() as it sorts by number of Neurons having this unique metadata combination
  * */
-public class UniqueMetadata implements Comparable {
+public class UniqueMetadataOuter implements Comparable {
 
     // stores all existing UniqueMetadata-Objects. used to check existence
-    public static Map<UniqueMetadata, UniqueMetadata> uniqueMetadataMap = new HashMap<>();
+    public static Map<UniqueMetadataOuter, UniqueMetadataOuter> uniqueMetadataMap = new HashMap<>();
     private static int count = 0;
 
     private Set<String> cellTypes;
@@ -25,7 +25,7 @@ public class UniqueMetadata implements Comparable {
     private int noOfNeurons;
     private int uniqueMetadataId;
 
-    public UniqueMetadata(Set<String> cellTypes, Set<String> brainRegion, String species, String neuronName, String archive) {
+    public UniqueMetadataOuter(Set<String> cellTypes, Set<String> brainRegion, String species, String neuronName, String archive) {
         this.cellTypes = cellTypes;
         this.brainRegion = brainRegion;
         this.species = species;
@@ -34,11 +34,11 @@ public class UniqueMetadata implements Comparable {
         this.noOfNeurons = 1;
     }
 
-    public static UniqueMetadata addNeuronMetadata(NeuronMetadataR neuronMetadataR) {
-        UniqueMetadata oldUniqueMetadata;
-        UniqueMetadata newUniqueMetadata;
+    public static UniqueMetadataOuter addNeuronMetadata(NeuronMetadataR neuronMetadataR) {
+        UniqueMetadataOuter oldUniqueMetadata;
+        UniqueMetadataOuter newUniqueMetadata;
         // create new UniqueMetadata object
-        newUniqueMetadata = new UniqueMetadata(
+        newUniqueMetadata = new UniqueMetadataOuter(
                 (neuronMetadataR.getCellType() != null) ? new HashSet<>(neuronMetadataR.getCellType()): new HashSet<>(),
                 (neuronMetadataR.getBrainRegion() != null) ? new HashSet<>(neuronMetadataR.getBrainRegion()): new HashSet<>(),
                 neuronMetadataR.getSpecies(),
@@ -62,8 +62,8 @@ public class UniqueMetadata implements Comparable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof UniqueMetadata)) return false;
-        UniqueMetadata that = (UniqueMetadata) o;
+        if (!(o instanceof UniqueMetadataOuter)) return false;
+        UniqueMetadataOuter that = (UniqueMetadataOuter) o;
         return Objects.equals(getCellTypes(), that.getCellTypes()) &&
                 Objects.equals(getBrainRegion(), that.getBrainRegion()) &&
                 Objects.equals(getSpecies(), that.getSpecies());
@@ -76,7 +76,7 @@ public class UniqueMetadata implements Comparable {
 
     @Override
     public int compareTo(Object o) {
-        UniqueMetadata that = (UniqueMetadata) o;
+        UniqueMetadataOuter that = (UniqueMetadataOuter) o;
         return Integer.compare(this.getNoOfNeurons(), that.getNoOfNeurons())*(-1);
     }
 
@@ -109,7 +109,7 @@ public class UniqueMetadata implements Comparable {
     }
 
 
-    public static Map<UniqueMetadata, UniqueMetadata> getUniqueMetadataMap() {
+    public static Map<UniqueMetadataOuter, UniqueMetadataOuter> getUniqueMetadataMap() {
         return uniqueMetadataMap;
     }
 }

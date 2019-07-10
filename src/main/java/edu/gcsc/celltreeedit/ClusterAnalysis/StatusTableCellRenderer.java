@@ -1,10 +1,14 @@
-package edu.gcsc.celltreeedit.PartitioningError;
+package edu.gcsc.celltreeedit.ClusterAnalysis;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
+
+/**
+ * Renderer for JTable. Used to color table cells based on their value.
+ */
 public class StatusTableCellRenderer extends DefaultTableCellRenderer {
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col) {

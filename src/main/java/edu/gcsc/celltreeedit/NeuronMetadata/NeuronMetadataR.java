@@ -2,6 +2,9 @@ package edu.gcsc.celltreeedit.NeuronMetadata;
 
 import java.util.List;
 
+/**
+ * Interface for read-only neuronMetadata
+ */
 public interface NeuronMetadataR {
 
     Integer getNeuronId();

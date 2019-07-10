@@ -12,6 +12,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Used to create NeuronMetadata from given Json-Files
+ */
 public class NeuronMetadataMapper {
 
     private final FileFilter fileFilter = (final File file) -> file.getName().toLowerCase().endsWith(".json");

@@ -1,4 +1,4 @@
-package edu.gcsc.celltreeedit;
+package edu.gcsc.celltreeedit.TEDCalculation;
 
 import java.io.Serializable;
 import java.util.List;

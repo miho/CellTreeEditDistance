@@ -27,6 +27,7 @@ package edu.gcsc.celltreeedit;
  * or implied, of Michael Hoffer <info@michaelhoffer.de>.
  */
 
+import edu.gcsc.celltreeedit.TEDCalculation.CellTreeEditDistance;
 import eu.mihosoft.vrl.system.InitPluginAPI;
 import eu.mihosoft.vrl.system.PluginAPI;
 import eu.mihosoft.vrl.system.PluginIdentifier;

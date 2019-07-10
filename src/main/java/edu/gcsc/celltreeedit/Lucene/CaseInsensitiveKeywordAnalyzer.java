@@ -6,6 +6,9 @@ import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.Tokenizer;
 import org.apache.lucene.analysis.core.KeywordTokenizer;
 
+/**
+ * Defines how Keywords are parsed. Here: no Tokenizing and everything is converted to lowercase.
+ */
 public class CaseInsensitiveKeywordAnalyzer extends Analyzer {
 
     @Override

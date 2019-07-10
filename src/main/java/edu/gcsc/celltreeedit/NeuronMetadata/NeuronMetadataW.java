@@ -2,6 +2,9 @@ package edu.gcsc.celltreeedit.NeuronMetadata;
 
 import java.util.List;
 
+/**
+ * Interface for read and write neuronMetadata
+ */
 public interface NeuronMetadataW extends NeuronMetadataR {
 
     void setNeuronId(Integer neuronId);

@@ -17,6 +17,9 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Command Line Interface for querying NeuronMetadata using Lucene.
+ */
 public class CLI {
 
     public static void startCLI(File indexPath, File outputDirectory) throws IOException {
@@ -42,7 +45,7 @@ public class CLI {
             query = s;
 
             try {
-                // perform search
+                // perform search. results limited to 110000 entries
                 TopDocs topDocs = indexSearcher.search(queryParser.parse(query), 110000);
                 System.out.println("parsed Search: " + queryParser.parse(query).toString());
                 // output number of results
@@ -57,7 +60,6 @@ public class CLI {
                         break;
                     }
                 }
-
 
                 // restart
             } catch (ParseException ex) {

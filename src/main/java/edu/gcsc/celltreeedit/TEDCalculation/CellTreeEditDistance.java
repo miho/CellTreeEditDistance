@@ -1,5 +1,7 @@
-package edu.gcsc.celltreeedit;
+package edu.gcsc.celltreeedit.TEDCalculation;
 
+import edu.gcsc.celltreeedit.Tables;
+import edu.gcsc.celltreeedit.Utils;
 import eu.mihosoft.ext.apted.distance.APTED;
 import eu.mihosoft.ext.apted.node.Node;
 import eu.mihosoft.vrl.annotation.ComponentInfo;

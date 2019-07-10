@@ -1,9 +1,9 @@
-package edu.gcsc.celltreeedit.PartitioningError;
+package edu.gcsc.celltreeedit.ClusterAnalysis;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-/**
+/** TODO: deal with licence
  * An implemetation of the Kuhn–Munkres assignment algorithm of the year 1957.
  * https://en.wikipedia.org/wiki/Hungarian_algorithm
  *

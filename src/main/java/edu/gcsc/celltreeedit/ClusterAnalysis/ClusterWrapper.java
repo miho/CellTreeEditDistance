@@ -1,10 +1,11 @@
-package edu.gcsc.celltreeedit.PartitioningError;
+package edu.gcsc.celltreeedit.ClusterAnalysis;
 
 import com.apporiented.algorithm.clustering.Cluster;
 import edu.gcsc.celltreeedit.UniqueMetadata;
 
-import java.util.Map;
-
+/**
+ * TODO: use or delete
+ */
 public class ClusterWrapper {
     UniqueMetadata uniqueMetadata;
     Cluster cluster;

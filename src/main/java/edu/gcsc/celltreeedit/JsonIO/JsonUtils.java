@@ -11,8 +11,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Utility-Class for Json Input/Output Operations.
+ */
 public class JsonUtils {
-
 
     public static Set<String> parseJsonToFileNames(File jsonFile) throws IOException {
         String fileName;

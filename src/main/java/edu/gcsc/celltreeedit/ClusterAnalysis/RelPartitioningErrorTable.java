@@ -1,4 +1,4 @@
-package edu.gcsc.celltreeedit.PartitioningError;
+package edu.gcsc.celltreeedit.ClusterAnalysis;
 
 import edu.gcsc.celltreeedit.UniqueMetadata;
 
@@ -10,6 +10,9 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.List;
 
+/**
+ * Table for usage in JFrame. Displays relative Partitioning Errors of a Clustering
+ */
 public class RelPartitioningErrorTable extends JPanel implements Serializable {
 
     JTable table;

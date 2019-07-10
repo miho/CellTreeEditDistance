@@ -1,8 +1,8 @@
 package edu.gcsc.celltreeedit.CodeEridTest;
 
-import edu.gcsc.celltreeedit.NodeData;
-import edu.gcsc.celltreeedit.TreeCostModel;
-import edu.gcsc.celltreeedit.TreeCreator;
+import edu.gcsc.celltreeedit.TEDCalculation.NodeData;
+import edu.gcsc.celltreeedit.TEDCalculation.TreeCostModel;
+import edu.gcsc.celltreeedit.TEDCalculation.TreeCreator;
 import eu.mihosoft.ext.apted.distance.APTED;
 import eu.mihosoft.ext.apted.node.Node;
 import org.junit.Test;

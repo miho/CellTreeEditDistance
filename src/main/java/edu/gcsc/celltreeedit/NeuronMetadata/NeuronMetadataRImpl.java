@@ -57,6 +57,9 @@ import java.util.Objects;
         "_links"
 })
 
+/**
+ * Implementation for read-only neuronMetadata
+ */
 public class NeuronMetadataRImpl implements NeuronMetadataR {
 
     @JsonProperty("neuron_id")
