@@ -33,28 +33,28 @@ public class Main {
 
         switch (appProperties.getCalcType()) {
             case 0:
-                calculateCompletely(appProperties);
-                break;
-            case 1:
-                calculateMatrixOnly(appProperties);
-                break;
-            case 2:
-                analyzeMatrices(appProperties);
-                break;
-            case 3:
-                queryLucene(appProperties);
-                break;
-            case 4:
-                queryByTypeCombination(appProperties);
-                break;
-            case 5:
-                queryByFileDialog(appProperties);
-                break;
-            case 6:
                 preprocessSWCDirectory(appProperties);
                 break;
+            case 1:
+                queryLucene(appProperties);
+                break;
+            case 2:
+                queryByFileDialog(appProperties);
+                break;
+            case 3:
+                queryByUniqueMetadata(appProperties);
+                break;
+            case 4:
+                calculateTEDMatrixOnly(appProperties);
+                break;
+            case 5:
+                calculateTEDMatrixAndDendrogram(appProperties);
+                break;
+            case 6:
+                calculateDendrogramsForTEDMatrices(appProperties);
+                break;
             case 7:
-                analyzeClustering(appProperties);
+                analyzeClusteringOfTEDMatrices(appProperties);
                 break;
             case 8:
                 doWhateverIsInMyFunctionBody(appProperties);
@@ -65,7 +65,7 @@ public class Main {
         }
     }
 
-    private static void calculateCompletely(AppProperties appProperties) throws IOException {
+    private static void calculateTEDMatrixAndDendrogram(AppProperties appProperties) throws IOException {
         // put metadata in hashMap
         NeuronMetadataMapper neuronMetadataMapper = new NeuronMetadataMapper();
         Map<String, NeuronMetadataRImpl> neuronMetadata = neuronMetadataMapper.mapFromDirectory(appProperties.getMetadataDirectory());
@@ -85,7 +85,7 @@ public class Main {
         clustering.showCluster(cluster);
     }
 
-    private static void calculateMatrixOnly(AppProperties appProperties) throws IOException {
+    private static void calculateTEDMatrixOnly(AppProperties appProperties) throws IOException {
         CellTreeEditDistance cellTreeEditDistance = new CellTreeEditDistance();
         Pair<double[][], String[]> result;
         if (appProperties.getJsonDirectory().getPath().equals("")) {
@@ -96,7 +96,7 @@ public class Main {
         Utils.printToTxt(result.getKey(), result.getValue(), appProperties.getOutputDirectory(), appProperties.getMatrixExportName());
     }
 
-    private static void analyzeMatrices(AppProperties appProperties) throws IOException {
+    private static void calculateDendrogramsForTEDMatrices(AppProperties appProperties) throws IOException {
 
         List<Pair<double[][], String[]>> result = Utils.readMatricesFromTxt();
 
@@ -133,7 +133,7 @@ public class Main {
      * @param appProperties
      * @throws IOException
      */
-    private static void analyzeClustering(AppProperties appProperties) throws IOException {
+    private static void analyzeClusteringOfTEDMatrices(AppProperties appProperties) throws IOException {
 
         List<Pair<double[][], String[]>> result = Utils.readMatricesFromTxt();
 
@@ -326,7 +326,7 @@ public class Main {
 
 
     // for querying the mostCommon neurontypes
-//    private static void queryByTypeCombination(AppProperties appProperties) throws IOException {
+//    private static void queryByUniqueMetadata(AppProperties appProperties) throws IOException {
 //        // TODO: put in AppProperties and make adjustable from commandline?
 //        int noOfTypes = 40;
 //        int noOfNeuronsPerType = 25;
@@ -360,8 +360,8 @@ public class Main {
 //    }
 
     // for querying a predefined combination
-    private static void queryByTypeCombination(AppProperties appProperties) throws IOException {
-        System.out.println("inside queryByTypeCombination");
+    private static void queryByUniqueMetadata(AppProperties appProperties) throws IOException {
+        System.out.println("inside queryByUniqueMetadata");
         int noOfNeuronsPerType = 37;
 
         // define which uniqueMetadata Types shall be used
