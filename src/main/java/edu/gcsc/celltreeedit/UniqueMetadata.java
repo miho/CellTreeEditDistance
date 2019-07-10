@@ -25,7 +25,7 @@ public class UniqueMetadata implements Comparable {
     private int noOfNeurons;
     private int uniqueMetadataId;
 
-    private UniqueMetadata(Set<String> cellTypes, Set<String> brainRegion, String species, String neuronName, String archive) {
+    public UniqueMetadata(Set<String> cellTypes, Set<String> brainRegion, String species, String neuronName, String archive) {
         this.cellTypes = cellTypes;
         this.brainRegion = brainRegion;
         this.species = species;

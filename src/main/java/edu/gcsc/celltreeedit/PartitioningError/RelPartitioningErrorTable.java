@@ -4,7 +4,6 @@ import edu.gcsc.celltreeedit.UniqueMetadata;
 
 import javax.swing.*;
 import javax.swing.table.TableColumn;
-import javax.swing.text.TableView;
 import java.awt.*;
 import java.io.Serializable;
 import java.math.RoundingMode;

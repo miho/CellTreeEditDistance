@@ -270,14 +270,38 @@ public class Main {
      */
     private static List<Cluster> limitClusterBySize(Cluster cluster, int size) {
         TreeMap<Integer, Cluster> limitedClusters = new TreeMap<>();
-        limitedClusters.put(getClusterNumberFromName(cluster.getName()), cluster);
+
+        // i is used for leaf-clusters. leafs have keys below 0 thus they are sorted at the beginning of limitedClusters
+        int i = -1;
+        if (cluster.isLeaf()) {
+            limitedClusters.put(i, cluster);
+            i--;
+        } else {
+            limitedClusters.put(getClusterNumberFromName(cluster.getName()), cluster);
+        }
 
         for (int numberOfClusters = 1; numberOfClusters < size; numberOfClusters++) {
             int clusterNumber = limitedClusters.lastKey();
-            List<Cluster> childClusters = limitedClusters.lastEntry().getValue().getChildren();
-            limitedClusters.remove(clusterNumber);
-            limitedClusters.put(getClusterNumberFromName(childClusters.get(0).getName()), childClusters.get(0));
-            limitedClusters.put(getClusterNumberFromName(childClusters.get(1).getName()), childClusters.get(1));
+            if (!limitedClusters.get(clusterNumber).isLeaf()) {
+                List<Cluster> childClusters = limitedClusters.lastEntry().getValue().getChildren();
+                limitedClusters.remove(clusterNumber);
+                // check if child 0 is leaf
+                if (childClusters.get(0).isLeaf()) {
+                    limitedClusters.put(i, childClusters.get(0));
+                    i--;
+                } else {
+                    limitedClusters.put(getClusterNumberFromName(childClusters.get(0).getName()), childClusters.get(0));
+                }
+                // check if child 1 is leaf
+                if (childClusters.get(1).isLeaf()) {
+                    limitedClusters.put(i, childClusters.get(1));
+                    i--;
+                } else {
+                    limitedClusters.put(getClusterNumberFromName(childClusters.get(1).getName()), childClusters.get(1));
+                }
+            } else {
+                throw new RuntimeException("Not enough clusters available to get desired number of clusters.");
+            }
         }
         return new ArrayList<>(limitedClusters.values());
     }
@@ -301,60 +325,10 @@ public class Main {
 
 
     // for querying the mostCommon neurontypes
-    private static void queryByTypeCombination(AppProperties appProperties) throws IOException {
-        // TODO: put in AppProperties and make adjustable from commandline?
-        int noOfTypes = 40;
-        int noOfNeuronsPerType = 25;
-
-        // put metadata in hashMap
-        NeuronMetadataMapper neuronMetadataMapper = new NeuronMetadataMapper();
-        Map<String, NeuronMetadataRImpl> neuronMetadata = neuronMetadataMapper.mapFromDirectory(appProperties.getMetadataDirectory());
-        // add all metadata to UniqueMetadata
-        for (String neuronMetadataRKey : neuronMetadata.keySet()) {
-            UniqueMetadata.addNeuronMetadata(neuronMetadata.get(neuronMetadataRKey));
-        }
-        List<UniqueMetadata> sortedUniqueMetadata = new ArrayList<>(UniqueMetadata.getUniqueMetadataMap().keySet());
-//         sort uniqueMetadata
-        sortedUniqueMetadata.sort(Comparator.comparingInt(UniqueMetadata::getNoOfNeurons).reversed());
-
-//         select neurons depending on typeCount and input-variables
-        List<String> selectedNeuronNames = new ArrayList<>();
-        int k = 1;
-        for (UniqueMetadata uniqueMetadata : sortedUniqueMetadata) {
-            if (k > noOfTypes) {
-                break;
-            }
-            // select noOfNeuronsPerType neurons randomly
-            selectedNeuronNames.addAll(pickNRandom(uniqueMetadata.getNeuronNames(), noOfNeuronsPerType));
-            System.out.println(uniqueMetadata.getSpecies() + ";" + String.join(", ", uniqueMetadata.getBrainRegion()) + ";" + String.join(", ", uniqueMetadata.getCellTypes()) + ";" + uniqueMetadata.getNoOfNeurons() + ";" + uniqueMetadata.getArchives().size());
-            k += 1;
-        }
-
-        // write to json
-        JsonUtils.writeJSON(selectedNeuronNames, appProperties.getOutputDirectory());
-    }
-
-    // for querying a predefined combination
 //    private static void queryByTypeCombination(AppProperties appProperties) throws IOException {
-//        System.out.println("inside queryByTypeCombination");
+//        // TODO: put in AppProperties and make adjustable from commandline?
 //        int noOfTypes = 40;
-//        int noOfNeuronsPerType = 37;
-//
-//        // define which uniqueMetadata Types shall be used
-//        Set<UniqueMetadata> selectedUniqueMetadata = new HashSet<>();
-//        selectedUniqueMetadata.add(new UniqueMetadata(new HashSet<>(Arrays.asList("principal cell", "pyramidal")), new HashSet<>(Arrays.asList("CA1", "hippocampus")), "rat", "", ""));
-//        selectedUniqueMetadata.add(new UniqueMetadata(new HashSet<>(Arrays.asList("principal cell", "pyramidal")), new HashSet<>(Arrays.asList("CA3", "hippocampus")), "rat", "", ""));
-//        selectedUniqueMetadata.add(new UniqueMetadata(new HashSet<>(Arrays.asList("principal cell", "granule")), new HashSet<>(Arrays.asList("dentate gyrus", "hippocampus")), "rat", "", ""));
-//        selectedUniqueMetadata.add(new UniqueMetadata(new HashSet<>(Arrays.asList("Glia", "astrocyte")), new HashSet<>(Arrays.asList("CA3", "hippocampus")), "rat", "", ""));
-//        selectedUniqueMetadata.add(new UniqueMetadata(new HashSet<>(Arrays.asList("Glia", "astrocyte")), new HashSet<>(Arrays.asList("CA1", "hippocampus")), "rat", "", ""));
-//        selectedUniqueMetadata.add(new UniqueMetadata(new HashSet<>(Arrays.asList("principal cell", "pyramidal")), new HashSet<>(Arrays.asList("somatosensory", "neocortex", "layer 4")), "rat", "", ""));
-//        selectedUniqueMetadata.add(new UniqueMetadata(new HashSet<>(Arrays.asList("stellate", "interneuron")), new HashSet<>(Arrays.asList("amygdala", "basolateral amygdala complex")), "rat", "", ""));
-//        selectedUniqueMetadata.add(new UniqueMetadata(new HashSet<>(Arrays.asList("principal cell", "pyramidal")), new HashSet<>(Arrays.asList("somatosensory", "neocortex", "layer 2")), "rat", "", ""));
-//        selectedUniqueMetadata.add(new UniqueMetadata(new HashSet<>(Arrays.asList("principal cell", "pyramidal")), new HashSet<>(Arrays.asList("somatosensory", "neocortex", "layer 3")), "rat", "", ""));
-//        selectedUniqueMetadata.add(new UniqueMetadata(new HashSet<>(Arrays.asList("principal cell", "pyramidal")), new HashSet<>(Arrays.asList("somatosensory", "neocortex", "layer 5a")), "rat", "", ""));
-//        selectedUniqueMetadata.add(new UniqueMetadata(new HashSet<>(Arrays.asList("principal cell", "pyramidal")), new HashSet<>(Arrays.asList("somatosensory", "neocortex", "layer 5b")), "rat", "", ""));
-//        selectedUniqueMetadata.add(new UniqueMetadata(new HashSet<>(Arrays.asList("Horizontal", "interneuron", "neurogliaform")), new HashSet<>(Arrays.asList("somatosensory", "neocortex", "layer 1")), "rat", "", ""));
-//        selectedUniqueMetadata.add(new UniqueMetadata(new HashSet<>(Arrays.asList("Star", "pyramidal", "interneuron")), new HashSet<>(Arrays.asList("somatosensory", "neocortex", "layer 4")), "rat", "", ""));
+//        int noOfNeuronsPerType = 25;
 //
 //        // put metadata in hashMap
 //        NeuronMetadataMapper neuronMetadataMapper = new NeuronMetadataMapper();
@@ -363,16 +337,19 @@ public class Main {
 //        for (String neuronMetadataRKey : neuronMetadata.keySet()) {
 //            UniqueMetadata.addNeuronMetadata(neuronMetadata.get(neuronMetadataRKey));
 //        }
+//        List<UniqueMetadata> sortedUniqueMetadata = new ArrayList<>(UniqueMetadata.getUniqueMetadataMap().keySet());
+////         sort uniqueMetadata
+//        sortedUniqueMetadata.sort(Comparator.comparingInt(UniqueMetadata::getNoOfNeurons).reversed());
 //
 ////         select neurons depending on typeCount and input-variables
 //        List<String> selectedNeuronNames = new ArrayList<>();
 //        int k = 1;
-//        for (UniqueMetadata uniqueMetadata : selectedUniqueMetadata) {
+//        for (UniqueMetadata uniqueMetadata : sortedUniqueMetadata) {
 //            if (k > noOfTypes) {
 //                break;
 //            }
 //            // select noOfNeuronsPerType neurons randomly
-//            selectedNeuronNames.addAll(pickNRandom(UniqueMetadata.getUniqueMetadataMap().get(uniqueMetadata).getNeuronNames(), noOfNeuronsPerType));
+//            selectedNeuronNames.addAll(pickNRandom(uniqueMetadata.getNeuronNames(), noOfNeuronsPerType));
 //            System.out.println(uniqueMetadata.getSpecies() + ";" + String.join(", ", uniqueMetadata.getBrainRegion()) + ";" + String.join(", ", uniqueMetadata.getCellTypes()) + ";" + uniqueMetadata.getNoOfNeurons() + ";" + uniqueMetadata.getArchives().size());
 //            k += 1;
 //        }
@@ -380,6 +357,49 @@ public class Main {
 //        // write to json
 //        JsonUtils.writeJSON(selectedNeuronNames, appProperties.getOutputDirectory());
 //    }
+
+    // for querying a predefined combination
+    private static void queryByTypeCombination(AppProperties appProperties) throws IOException {
+        System.out.println("inside queryByTypeCombination");
+        int noOfNeuronsPerType = 37;
+
+        // define which uniqueMetadata Types shall be used
+        Set<UniqueMetadata> selectedUniqueMetadata = new HashSet<>();
+        selectedUniqueMetadata.add(new UniqueMetadata(new HashSet<>(Arrays.asList("principal cell", "pyramidal")), new HashSet<>(Arrays.asList("CA1", "hippocampus")), "rat", "", ""));
+        selectedUniqueMetadata.add(new UniqueMetadata(new HashSet<>(Arrays.asList("principal cell", "pyramidal")), new HashSet<>(Arrays.asList("CA3", "hippocampus")), "rat", "", ""));
+        selectedUniqueMetadata.add(new UniqueMetadata(new HashSet<>(Arrays.asList("principal cell", "granule")), new HashSet<>(Arrays.asList("dentate gyrus", "hippocampus")), "rat", "", ""));
+        selectedUniqueMetadata.add(new UniqueMetadata(new HashSet<>(Arrays.asList("Glia", "astrocyte")), new HashSet<>(Arrays.asList("CA3", "hippocampus")), "rat", "", ""));
+        selectedUniqueMetadata.add(new UniqueMetadata(new HashSet<>(Arrays.asList("Glia", "astrocyte")), new HashSet<>(Arrays.asList("CA1", "hippocampus")), "rat", "", ""));
+        selectedUniqueMetadata.add(new UniqueMetadata(new HashSet<>(Arrays.asList("principal cell", "pyramidal")), new HashSet<>(Arrays.asList("somatosensory", "neocortex", "layer 4")), "rat", "", ""));
+        selectedUniqueMetadata.add(new UniqueMetadata(new HashSet<>(Arrays.asList("stellate", "interneuron")), new HashSet<>(Arrays.asList("amygdala", "basolateral amygdala complex")), "rat", "", ""));
+        selectedUniqueMetadata.add(new UniqueMetadata(new HashSet<>(Arrays.asList("principal cell", "pyramidal")), new HashSet<>(Arrays.asList("somatosensory", "neocortex", "layer 2")), "rat", "", ""));
+        selectedUniqueMetadata.add(new UniqueMetadata(new HashSet<>(Arrays.asList("principal cell", "pyramidal")), new HashSet<>(Arrays.asList("somatosensory", "neocortex", "layer 3")), "rat", "", ""));
+        selectedUniqueMetadata.add(new UniqueMetadata(new HashSet<>(Arrays.asList("principal cell", "pyramidal")), new HashSet<>(Arrays.asList("somatosensory", "neocortex", "layer 5a")), "rat", "", ""));
+        selectedUniqueMetadata.add(new UniqueMetadata(new HashSet<>(Arrays.asList("principal cell", "pyramidal")), new HashSet<>(Arrays.asList("somatosensory", "neocortex", "layer 5b")), "rat", "", ""));
+        selectedUniqueMetadata.add(new UniqueMetadata(new HashSet<>(Arrays.asList("Horizontal", "interneuron", "neurogliaform")), new HashSet<>(Arrays.asList("somatosensory", "neocortex", "layer 1")), "rat", "", ""));
+        selectedUniqueMetadata.add(new UniqueMetadata(new HashSet<>(Arrays.asList("Star", "pyramidal", "interneuron")), new HashSet<>(Arrays.asList("somatosensory", "neocortex", "layer 4")), "rat", "", ""));
+
+        // put metadata in hashMap
+        NeuronMetadataMapper neuronMetadataMapper = new NeuronMetadataMapper();
+        Map<String, NeuronMetadataRImpl> neuronMetadata = neuronMetadataMapper.mapFromDirectory(appProperties.getMetadataDirectory());
+        // add all metadata to UniqueMetadata
+        for (String neuronMetadataRKey : neuronMetadata.keySet()) {
+            UniqueMetadata.addNeuronMetadata(neuronMetadata.get(neuronMetadataRKey));
+        }
+
+//         select neurons depending on typeCount and input-variables
+        List<String> selectedNeuronNames = new ArrayList<>();
+        int k = 1;
+        for (UniqueMetadata uniqueMetadata : selectedUniqueMetadata) {
+            // select noOfNeuronsPerType neurons randomly
+            selectedNeuronNames.addAll(pickNRandom(UniqueMetadata.getUniqueMetadataMap().get(uniqueMetadata).getNeuronNames(), noOfNeuronsPerType));
+            System.out.println(uniqueMetadata.getSpecies() + ";" + String.join(", ", uniqueMetadata.getBrainRegion()) + ";" + String.join(", ", uniqueMetadata.getCellTypes()) + ";" + uniqueMetadata.getNoOfNeurons() + ";" + uniqueMetadata.getArchives().size());
+            k += 1;
+        }
+
+        // write to json
+        JsonUtils.writeJSON(selectedNeuronNames, appProperties.getOutputDirectory());
+    }
 
     public static List<String> pickNRandom(List<String> lst, int n) {
         List<String> copy = new LinkedList<>(lst);
