@@ -1,6 +1,5 @@
 package edu.gcsc.celltreeedit.TEDCalculation;
 
-import edu.gcsc.celltreeedit.Tables;
 import edu.gcsc.celltreeedit.Utils;
 import eu.mihosoft.ext.apted.distance.APTED;
 import eu.mihosoft.ext.apted.node.Node;
@@ -8,7 +7,6 @@ import eu.mihosoft.vrl.annotation.ComponentInfo;
 import eu.mihosoft.vrl.annotation.ParamInfo;
 import javafx.util.Pair;
 
-import javax.swing.*;
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.ExecutorService;

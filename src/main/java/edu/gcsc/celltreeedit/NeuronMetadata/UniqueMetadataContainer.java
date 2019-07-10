@@ -56,12 +56,17 @@ public class UniqueMetadataContainer {
         }
     }
 
+    public UniqueMetadata createUniqueMetadataObject(Set<String> cellTypes, Set<String> brainRegion, String species, String neuronName, String archive) {
+        return new UniqueMetadata(cellTypes, brainRegion, species, neuronName, archive);
+    }
+
+
     /**
      * Class to get unique metadata combinations. metadata is considered unique if cellTypes, brainRegion and species are equal
      * equals()-method implements this constraint
      * compareTo()-method is not consistent with equals() as it sorts by number of Neurons having this unique metadata combination
      * */
-    private class UniqueMetadata implements Comparable {
+    public class UniqueMetadata implements Comparable {
         private Set<String> cellTypes;
         private Set<String> brainRegion;
         private String species;

@@ -1,11 +1,11 @@
 package edu.gcsc.celltreeedit.ClusterAnalysis;
 
-import edu.gcsc.celltreeedit.NeuronMetadata.UniqueMetadata;
+import edu.gcsc.celltreeedit.NeuronMetadata.UniqueMetadataContainer;
 
 /**
  * TODO: use or delete
  */
 public class ClusteredNeuron {
-    UniqueMetadata originalUniqueMetadata;
+    UniqueMetadataContainer.UniqueMetadata originalUniqueMetadata;
     ClusterWrapper clusteredUniqueMetadata;
 }

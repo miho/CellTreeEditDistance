@@ -1,6 +1,6 @@
 package edu.gcsc.celltreeedit;
 
-import edu.gcsc.celltreeedit.NeuronMetadata.NeuronMetadataRImpl;
+import edu.gcsc.celltreeedit.NeuronMetadata.NeuronMetadataR;
 import eu.mihosoft.vswcreader.SWCSegment;
 
 import java.io.File;
@@ -22,9 +22,9 @@ public class SWCPreprocessing {
 
     private File swcDirectory;
     private Set<String> alreadyReadFilenames = new HashSet<>();
-    private Map<String, NeuronMetadataRImpl> neuronMetadata;
+    private Map<String, NeuronMetadataR> neuronMetadata;
 
-    public void preprocessSWCDirectory(Map<String, NeuronMetadataRImpl> neuronMetadata, File swcDirectory) {
+    public void preprocessSWCDirectory(Map<String, NeuronMetadataR> neuronMetadata, File swcDirectory) {
 
         try {
             this.swcDirectory = new File(swcDirectory.getCanonicalPath());

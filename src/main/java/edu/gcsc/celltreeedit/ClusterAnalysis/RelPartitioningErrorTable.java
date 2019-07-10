@@ -1,6 +1,6 @@
 package edu.gcsc.celltreeedit.ClusterAnalysis;
 
-import edu.gcsc.celltreeedit.NeuronMetadata.UniqueMetadata;
+import edu.gcsc.celltreeedit.NeuronMetadata.UniqueMetadataContainer;
 
 import javax.swing.*;
 import javax.swing.table.TableColumn;
@@ -17,7 +17,7 @@ public class RelPartitioningErrorTable extends JPanel implements Serializable {
 
     JTable table;
 
-    public RelPartitioningErrorTable(float[][] relPartitioningErrors, List<UniqueMetadata> uniqueMetadata) {
+    public RelPartitioningErrorTable(float[][] relPartitioningErrors, List<UniqueMetadataContainer.UniqueMetadata> uniqueMetadata) {
 
         // fill table with values and leave upper right half blank
         DecimalFormat df = new DecimalFormat("#.##");

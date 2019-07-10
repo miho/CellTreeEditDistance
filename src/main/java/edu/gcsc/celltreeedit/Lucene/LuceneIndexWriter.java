@@ -1,6 +1,6 @@
 package edu.gcsc.celltreeedit.Lucene;
 
-import edu.gcsc.celltreeedit.NeuronMetadata.NeuronMetadataRImpl;
+import edu.gcsc.celltreeedit.NeuronMetadata.NeuronMetadataR;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
@@ -26,7 +26,7 @@ public class LuceneIndexWriter {
         this.indexDirectory = indexDirectory;
     }
 
-    public void createIndex(Map<String, NeuronMetadataRImpl> neuronMetadataRMap) {
+    public void createIndex(Map<String, NeuronMetadataR> neuronMetadataRMap) {
         this.openIndex();
         this.addDocuments(neuronMetadataRMap);
         this.finish();
@@ -54,8 +54,8 @@ public class LuceneIndexWriter {
     /**
      * Add documents to the index. one document per neuron.
      */
-    private void addDocuments(Map<String, NeuronMetadataRImpl> neuronMetadataRMap) {
-        NeuronMetadataRImpl neuronMetadataR;
+    private void addDocuments(Map<String, NeuronMetadataR> neuronMetadataRMap) {
+        NeuronMetadataR neuronMetadataR;
         for (String neuronMetadataKey: neuronMetadataRMap.keySet()) {
             Document doc = new Document();
             neuronMetadataR = neuronMetadataRMap.get(neuronMetadataKey);
@@ -99,7 +99,7 @@ public class LuceneIndexWriter {
      * @param doc
      * @param neuronMetadataR
      */
-    private void addDocumentsForNeuronMetadataObject(Document doc, NeuronMetadataRImpl neuronMetadataR) {
+    private void addDocumentsForNeuronMetadataObject(Document doc, NeuronMetadataR neuronMetadataR) {
         // not allowed to be null values
         doc.add(new TextField("neuronId", neuronMetadataR.getNeuronId().toString(), Field.Store.YES));
         doc.add(new TextField("neuronName", neuronMetadataR.getNeuronName(), Field.Store.YES));

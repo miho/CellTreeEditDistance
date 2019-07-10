@@ -19,13 +19,13 @@ public class NeuronMetadataMapper {
 
     private final FileFilter fileFilter = (final File file) -> file.getName().toLowerCase().endsWith(".json");
 
-    public Map<String, NeuronMetadataRImpl> mapFromChooseJSON() throws IOException {
+    public Map<String, NeuronMetadataR> mapFromChooseJSON() throws IOException {
         // select jsonFiles from disk
         File[] files = Utils.chooseJson();
         return this.mapFromJsonFiles(files);
     }
 
-    public Map<String, NeuronMetadataRImpl> mapFromDirectory(File directory) throws IOException {
+    public Map<String, NeuronMetadataR> mapFromDirectory(File directory) throws IOException {
         if (directory.isFile() && directory.getName().toLowerCase().endsWith(".json")) {
             return this.mapFromJsonFiles(new File[] {directory});
         }
@@ -37,10 +37,10 @@ public class NeuronMetadataMapper {
     }
 
 
-    public Map<String, NeuronMetadataRImpl> mapFromJsonFiles(File[] files) throws IOException {
+    public Map<String, NeuronMetadataR> mapFromJsonFiles(File[] files) throws IOException {
 
         NeuronMetadataRImpl neuronMetadataPOJO;
-        Map<String, NeuronMetadataRImpl> neuronMetadata = new HashMap<>();
+        Map<String, NeuronMetadataR> neuronMetadata = new HashMap<>();
 
         // maps jsonObjects to javaObjects
         ObjectMapper objectMapper = new ObjectMapper();
