@@ -3,6 +3,7 @@ package edu.gcsc.celltreeedit;
 import com.apporiented.algorithm.clustering.Cluster;
 import edu.gcsc.celltreeedit.AppProperties.AppProperties;
 import edu.gcsc.celltreeedit.AppProperties.CommandLineParsing;
+import edu.gcsc.celltreeedit.Clustering.Clustering;
 import edu.gcsc.celltreeedit.JsonIO.JsonUtils;
 import edu.gcsc.celltreeedit.Lucene.CLI;
 import edu.gcsc.celltreeedit.Lucene.LuceneIndexWriter;
@@ -65,27 +66,8 @@ public class Main {
         }
     }
 
-    private static void calculateTEDMatrixAndDendrogram(AppProperties appProperties) throws IOException {
-        // put metadata in hashMap
-        NeuronMetadataMapper neuronMetadataMapper = new NeuronMetadataMapper();
-        Map<String, NeuronMetadataRImpl> neuronMetadata = neuronMetadataMapper.mapFromDirectory(appProperties.getMetadataDirectory());
 
-        CellTreeEditDistance cellTreeEditDistance = new CellTreeEditDistance();
-        Pair<double[][], String[]> result;
-        if (appProperties.getJsonDirectory().getPath().equals("")) {
-            result = cellTreeEditDistance.compareFilesFromDirectory(appProperties.getSwcFileDirectory(), 2);
-        } else {
-            result = cellTreeEditDistance.compareFilesFromFilenames(JsonUtils.parseJsonToFileNames(appProperties.getJsonDirectory()), appProperties.getSwcFileDirectory(), 9);
-        }
-        Utils.printToTxt(result.getKey(), result.getValue(), appProperties.getOutputDirectory(), appProperties.getMatrixExportName());
-        // calculate clustering
-        Clustering clustering = Clustering.getInstance();
-        Cluster cluster = clustering.createCluster(result.getKey(), result.getValue());
-        // generate dendrogram
-        clustering.showCluster(cluster);
-    }
-
-    private static void calculateTEDMatrixOnly(AppProperties appProperties) throws IOException {
+    private static Pair<double[][], String[]> calculateTEDMatrixOnly(AppProperties appProperties) throws IOException {
         CellTreeEditDistance cellTreeEditDistance = new CellTreeEditDistance();
         Pair<double[][], String[]> result;
         if (appProperties.getJsonDirectory().getPath().equals("")) {
@@ -94,37 +76,60 @@ public class Main {
             result = cellTreeEditDistance.compareFilesFromFilenames(JsonUtils.parseJsonToFileNames(appProperties.getJsonDirectory()), appProperties.getSwcFileDirectory(), 9);
         }
         Utils.printToTxt(result.getKey(), result.getValue(), appProperties.getOutputDirectory(), appProperties.getMatrixExportName());
+        return result;
+    }
+
+    private static void calculateTEDMatrixAndDendrogram(AppProperties appProperties) throws IOException {
+        Pair<double[][], String[]> result = calculateTEDMatrixOnly(appProperties);
+        showDendrogram(appProperties, result);
     }
 
     private static void calculateDendrogramsForTEDMatrices(AppProperties appProperties) throws IOException {
 
-        List<Pair<double[][], String[]>> result = Utils.readMatricesFromTxt();
-
-        for (Pair<double[][], String[]> currentResult : result) {
-            // put metadata in hashMap
-            NeuronMetadataMapper neuronMetadataMapper = new NeuronMetadataMapper();
-            Map<String, NeuronMetadataRImpl> neuronMetadata = neuronMetadataMapper.mapFromDirectory(appProperties.getMetadataDirectory());
-
-            String[] newFileNames = new String[currentResult.getValue().length];
-
-            UniqueMetadata uniqueMetadata;
-            NeuronMetadataR neuronMetadataR;
-            // create unique metadata of files
-            for (int i = 0; i < currentResult.getValue().length; i++) {
-                neuronMetadataR = neuronMetadata.get(currentResult.getValue()[i]);
-                uniqueMetadata = UniqueMetadata.addNeuronMetadata(neuronMetadataR);
-                // uniqueMetadataId, archive, neuronId
-                newFileNames[i] = uniqueMetadata.getUniqueMetadataId() + ", " + neuronMetadataR.getArchive() + ", " + neuronMetadataR.getNeuronId();
-            }
-
-            Utils.printToTxt(currentResult.getKey(), newFileNames, appProperties.getOutputDirectory(), "Matrix_fileNamesAdjusted.txt");
-            // create cluster with matrix and adjusted names
-            Clustering clustering = Clustering.getInstance();
-            Cluster cluster = clustering.createCluster(currentResult.getKey(), currentResult.getValue());
-            // generate dendrogram
-            clustering.showCluster(cluster);
+        List<Pair<double[][], String[]>> results = Utils.readMatricesFromTxt();
+        for (Pair<double[][], String[]> result : results) {
+            showDendrogram(appProperties, result);
         }
+    }
 
+    private static void showDendrogram(AppProperties appProperties, Pair<double[][], String[]> result) throws IOException {
+        String[] oldFileNames = result.getValue();
+        String[] newFileNames = renameFileNamesToUniqueMetadataNames(oldFileNames, appProperties);
+//            Utils.printToTxt(currentResult.getKey(), newFileNames, appProperties.getOutputDirectory(), "Matrix_fileNamesAdjusted.txt");
+        // create cluster with matrix and adjusted names
+        Clustering clustering = Clustering.getInstance();
+        Cluster cluster = clustering.createCluster(result.getKey(), newFileNames);
+        // generate dendrogram
+        clustering.showCluster(cluster);
+        showFileNameMapping(oldFileNames, newFileNames);
+    }
+
+    private static void showFileNameMapping(String[] oldFileNames, String[] newFileNames) {
+        JFrame frame = new JFrame();
+        Tables fileNameMapping = new Tables(newFileNames, oldFileNames, new String[]{"Names", "original FileNames"});
+        frame.add(fileNameMapping);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(500,350);
+        frame.setVisible(true);
+        frame.setTitle("FileName-Mapping");
+    }
+
+    private static String[] renameFileNamesToUniqueMetadataNames(String[] oldFileNames, AppProperties appProperties) throws IOException {
+        String[] newFileNames = new String[oldFileNames.length];
+        // put metadata in hashMap
+        NeuronMetadataMapper neuronMetadataMapper = new NeuronMetadataMapper();
+        Map<String, NeuronMetadataRImpl> neuronMetadata = neuronMetadataMapper.mapFromDirectory(appProperties.getMetadataDirectory());
+
+        UniqueMetadata uniqueMetadata;
+        NeuronMetadataR neuronMetadataR;
+        // create unique metadata of files
+        for (int i = 0; i < oldFileNames.length; i++) {
+            neuronMetadataR = neuronMetadata.get(oldFileNames[i]);
+            uniqueMetadata = UniqueMetadata.addNeuronMetadata(neuronMetadataR);
+            // uniqueMetadataId, archive, neuronId
+            newFileNames[i] = uniqueMetadata.getUniqueMetadataId() + ", " + neuronMetadataR.getArchive() + ", " + neuronMetadataR.getNeuronId();
+        }
+        return newFileNames;
     }
 
     /**

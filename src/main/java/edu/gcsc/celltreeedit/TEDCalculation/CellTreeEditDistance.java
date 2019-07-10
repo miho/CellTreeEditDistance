@@ -35,12 +35,10 @@ public class CellTreeEditDistance implements java.io.Serializable{
         JFrame frame = new JFrame();
         Tables labels= new Tables();
         frame.add(labels);
-        //labels.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(500,350);
         frame.setVisible(true);
         frame.setTitle("Labels");
-        //    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
     }
 
     public void compareFilesFromFileDialog(int choice) {

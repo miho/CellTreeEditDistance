@@ -1,4 +1,4 @@
-package edu.gcsc.celltreeedit;
+package edu.gcsc.celltreeedit.Clustering;
 
 import com.apporiented.algorithm.clustering.AverageLinkageStrategy;
 import com.apporiented.algorithm.clustering.Cluster;
@@ -10,6 +10,7 @@ import javax.swing.*;
 
 public final class Clustering {
 
+    // Clustering is a Singleton
     private static final Clustering INSTANCE = new Clustering();
 
     public static Clustering getInstance() {

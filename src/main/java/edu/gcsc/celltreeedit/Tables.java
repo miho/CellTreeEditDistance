@@ -1,6 +1,7 @@
 package edu.gcsc.celltreeedit;
 
 import javax.swing.*;
+import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.io.Serializable;
 
@@ -65,6 +66,26 @@ public class Tables extends JPanel implements Serializable{
         table.setValueAt("approxVolume of t[i]",13,1);
         table.setValueAt("volume of T",14,1);
         table.setValueAt("volume of t[i] / Volume of T",15,1);
+
+        JScrollPane pane= new JScrollPane(table);
+        add(pane);
+    }
+
+    public Tables(String[] firstColumn, String[] secondColumn, String[] columnNames){
+        int rowSize = firstColumn.length;
+        int colSize = columnNames.length;
+
+        table = new JTable(rowSize, colSize);
+
+        TableColumn tc;
+        for (int i = 0; i < colSize; i++) {
+            tc = table.getColumnModel().getColumn(i);
+            tc.setHeaderValue(columnNames[i]);
+        }
+        for (int i = 0; i < rowSize; i++) {
+            table.setValueAt(firstColumn[i], i, 0);
+            table.setValueAt(secondColumn[i], i, 1);
+        }
 
         JScrollPane pane= new JScrollPane(table);
         add(pane);
