@@ -2,6 +2,7 @@ package edu.gcsc.celltreeedit;
 
 import edu.gcsc.celltreeedit.AppProperties.AppProperties;
 import javafx.util.Pair;
+import org.apache.commons.io.FilenameUtils;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -81,10 +82,16 @@ public class Utils {
 //        save.showSaveDialog(null);
 //        String path=save.getSelectedFile().getAbsolutePath();
         exportDirectory.mkdirs();
-        String path = exportDirectory.getAbsolutePath() + "/" + fileName;
+
+        File file = new File(exportDirectory.getAbsolutePath() + "/" + fileName);
+        int count = 1;
+        while (file.exists()) {
+            file = new File(exportDirectory.getAbsolutePath() + "/" + FilenameUtils.removeExtension(fileName) + count + "." + FilenameUtils.getExtension(fileName));
+            count++;
+        }
 
         try {
-            FileWriter export = new FileWriter(path);
+            FileWriter export = new FileWriter(file.getPath());
             BufferedWriter br = new BufferedWriter(export);
             // br.write("#;");
             //for(int i=0;i<results.length;i++){                              //kopfzeile
@@ -109,7 +116,7 @@ public class Utils {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.print("Done!");
+        System.out.print("Matrix saved to: " + file.getPath());
     }
 
 
