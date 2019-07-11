@@ -73,17 +73,10 @@ public class Utils {
     }
 
     public static void printToTxt(double[][] results, String[] filenames, File exportDirectory, String fileName) {
-//        System.out.println("Please choose the directory where you want to save the file");
-//        JFileChooser save= new JFileChooser();
-//        save.setFileSelectionMode(JFileChooser.FILES_ONLY);
-//        FileNameExtensionFilter text = new FileNameExtensionFilter("Text file (*.txt)","txt");
-//        save.addChoosableFileFilter(text);
-//        save.setAcceptAllFileFilterUsed(false);
-//        save.showSaveDialog(null);
-//        String path=save.getSelectedFile().getAbsolutePath();
         exportDirectory.mkdirs();
-
         File file = new File(exportDirectory.getAbsolutePath() + "/" + fileName);
+
+        // increment fileName if necessary
         int count = 1;
         while (file.exists()) {
             file = new File(exportDirectory.getAbsolutePath() + "/" + FilenameUtils.removeExtension(fileName) + count + "." + FilenameUtils.getExtension(fileName));
@@ -93,14 +86,7 @@ public class Utils {
         try {
             FileWriter export = new FileWriter(file.getPath());
             BufferedWriter br = new BufferedWriter(export);
-            // br.write("#;");
-            //for(int i=0;i<results.length;i++){                              //kopfzeile
-            //  if(i<results.length-1)
-            //    br.write(filenames[i]+";");
-            //else
-            //  br.write(filenames[i]);
-            //}
-            //br.newLine();
+
             for (int i = 0; i < results.length; i++) {
                 br.write(filenames[i] + ";");
                 for (int j = 0; j < results.length; j++) {
@@ -111,7 +97,6 @@ public class Utils {
                 }
                 br.newLine();
             }
-
             br.close();
         } catch (IOException e) {
             e.printStackTrace();
