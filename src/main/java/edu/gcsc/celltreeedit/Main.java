@@ -75,7 +75,7 @@ public class Main {
         CellTreeEditDistance cellTreeEditDistance = new CellTreeEditDistance();
         File[] files = JsonUtils.parseJsonToFiles(appProperties.getJsonPath());
         Pair<double[][], String[]> result = cellTreeEditDistance.compareFilesFromFiles(files, 9);
-        Utils.printToTxt(result.getKey(), result.getValue(), appProperties.getOutputDirectory(), appProperties.getMatrixExportName());
+        Utils.printMatrixToTxt(result.getKey(), result.getValue(), appProperties.getOutputDirectory(), appProperties.getMatrixExportName());
         return result;
     }
 
@@ -208,7 +208,7 @@ public class Main {
     }
 
     private static void queryByFileDialog() throws IOException {
-        File[] files = Utils.choose();
+        File[] files = Utils.chooseSWCFiles();
         List<String> selectedNeuronNames = Arrays.stream(files).map(file -> Utils.removeSWCFileExtensions(file.getName())).collect(Collectors.toList());
 
         List<File> selectedNeuronFiles = Utils.getFilesForNeuronNames(selectedNeuronNames);
@@ -240,7 +240,7 @@ public class Main {
             System.out.println(dateFormat.format(date) + " selected Label " + i);
             cellTreeEditDistance = new CellTreeEditDistance();
             result = cellTreeEditDistance.compareFilesFromFiles(files, i);
-            Utils.printToTxt(result.getKey(), result.getValue(), appProperties.getOutputDirectory(), "Matrix_Selected_481_13Types_37Each_Label" + i + ".txt");
+            Utils.printMatrixToTxt(result.getKey(), result.getValue(), appProperties.getOutputDirectory(), "Matrix_Selected_481_13Types_37Each_Label" + i + ".txt");
         }
 
         // calculate distances of 1000 of these SWC-Files
@@ -248,6 +248,6 @@ public class Main {
         System.out.println(dateFormat.format(date) + " 1000 mostCommon");
         cellTreeEditDistance = new CellTreeEditDistance();
         result = cellTreeEditDistance.compareFilesFromFiles(JsonUtils.parseJsonToFiles(new File("/media/exdisk/Sem06/BA/Testlaeufe/swcFiles_mostCommon_1000_40Types_25Each.json")), 9);
-        Utils.printToTxt(result.getKey(), result.getValue(), appProperties.getOutputDirectory(), "Matrix_mostCommon_1000_40Types_25Each.txt");
+        Utils.printMatrixToTxt(result.getKey(), result.getValue(), appProperties.getOutputDirectory(), "Matrix_mostCommon_1000_40Types_25Each.txt");
     }
 }

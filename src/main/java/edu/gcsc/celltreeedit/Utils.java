@@ -23,7 +23,7 @@ public class Utils {
     /**
      * @return a list of files which were selected
      */
-    public static File[] choose() {
+    public static File[] chooseSWCFiles() {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES); //accept files and directories as input
         FileNameExtensionFilter swc = new FileNameExtensionFilter("SWC", "SWC");
@@ -49,7 +49,7 @@ public class Utils {
     /**
      * @return a list of json-files which were selected
      */
-    public static File[] chooseJson() {
+    public static File[] chooseJSONFiles() {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES); //accept files and directories as input
         FileNameExtensionFilter json = new FileNameExtensionFilter("json", "json");
@@ -72,7 +72,7 @@ public class Utils {
         }
     }
 
-    public static void printToTxt(double[][] results, String[] filenames, File exportDirectory, String fileName) {
+    public static void printMatrixToTxt(double[][] results, String[] filenames, File exportDirectory, String fileName) {
         exportDirectory.mkdirs();
         File file = new File(exportDirectory.getAbsolutePath() + "/" + fileName);
 
@@ -107,7 +107,7 @@ public class Utils {
 
     public static List<Pair<double[][], String[]>> readMatricesFromTxt() throws IOException {
         // choose distancematrix files
-        File[] matrixFiles = chooseTxt();
+        File[] matrixFiles = chooseTXTFiles();
 
         List<Pair<double[][], String[]>> result = new ArrayList<>();
         for (File matrixFile: matrixFiles) {
@@ -143,7 +143,7 @@ public class Utils {
     /**
      * @return a txt-file
      */
-    public static File[] chooseTxt() {
+    private static File[] chooseTXTFiles() {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY); //accept files and directories as input
         FileNameExtensionFilter json = new FileNameExtensionFilter("txt", "txt");

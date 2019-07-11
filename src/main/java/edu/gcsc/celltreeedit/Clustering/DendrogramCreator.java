@@ -19,7 +19,7 @@ public class DendrogramCreator {
     public static void showDendrogram(Pair<double[][], String[]> result) throws IOException {
         String[] oldFileNames = result.getValue();
         String[] newFileNames = renameFileNamesToUniqueMetadataNames(oldFileNames);
-//            Utils.printToTxt(currentResult.getKey(), newFileNames, appProperties.getOutputDirectory(), "Matrix_fileNamesAdjusted.txt");
+//            Utils.printMatrixToTxt(currentResult.getKey(), newFileNames, appProperties.getOutputDirectory(), "Matrix_fileNamesAdjusted.txt");
         // create cluster with matrix and adjusted names
         Clustering clustering = Clustering.getInstance();
         Cluster cluster = clustering.createCluster(result.getKey(), newFileNames);
