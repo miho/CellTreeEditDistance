@@ -29,6 +29,9 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
 
+        File file = new File("/media/exdisk/ABC/swcFileName.swc");
+        System.out.println(file.getName());
+
         CommandLineParsing.parseArguments(args);
         appProperties = AppProperties.getInstance();
 
@@ -154,7 +157,7 @@ public class Main {
 //        }
 //
 //        // write to json
-//        JsonUtils.writeJSON(selectedNeuronNames, appProperties.getOutputDirectory());
+//        JsonUtils.writeToJSON(selectedNeuronNames, appProperties.getOutputDirectory());
 //    }
 
     // for querying a predefined combination
@@ -198,7 +201,7 @@ public class Main {
         }
 
         // write to json
-        JsonUtils.writeJSON(selectedNeuronNames, appProperties.getOutputDirectory());
+//        JsonUtils.writeToJSON(selectedNeuronNames, appProperties.getOutputDirectory());
     }
 
     private static List<String> pickNRandom(List<String> lst, int n) {
@@ -212,7 +215,7 @@ public class Main {
         List<String> selectedNeuronNames = Arrays.stream(files).map(file -> Utils.removeSWCFileExtensions(file.getName())).collect(Collectors.toList());
 
         // write to json
-        JsonUtils.writeJSON(selectedNeuronNames, appProperties.getOutputDirectory());
+//        JsonUtils.writeToJSON(selectedNeuronNames, appProperties.getOutputDirectory());
     }
 
     private static void preprocessSWCDirectory() throws IOException {

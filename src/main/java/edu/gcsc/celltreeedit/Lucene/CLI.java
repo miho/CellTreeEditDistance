@@ -73,7 +73,7 @@ public class CLI {
             for (ScoreDoc scoreDoc : topDocs.scoreDocs) {
                 neuronNames.add(indexSearcher.doc(scoreDoc.doc).getField("neuronName").stringValue());
             }
-            JsonUtils.writeJSON(neuronNames, outputDirectory);
+//            JsonUtils.writeToJSON(neuronNames, outputDirectory);
         } catch (IOException ex) {
             ex.printStackTrace();
         }
