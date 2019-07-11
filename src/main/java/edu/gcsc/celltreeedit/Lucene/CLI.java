@@ -1,6 +1,8 @@
 package edu.gcsc.celltreeedit.Lucene;
 
 import edu.gcsc.celltreeedit.JsonIO.JsonUtils;
+import edu.gcsc.celltreeedit.JsonIO.PathType;
+import edu.gcsc.celltreeedit.Utils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
@@ -73,7 +75,9 @@ public class CLI {
             for (ScoreDoc scoreDoc : topDocs.scoreDocs) {
                 neuronNames.add(indexSearcher.doc(scoreDoc.doc).getField("neuronName").stringValue());
             }
-//            JsonUtils.writeToJSON(neuronNames, outputDirectory);
+            List<File> selectedNeuronFiles = Utils.getFilesForNeuronNames(neuronNames);
+            // write to json
+            JsonUtils.writeToJSON(selectedNeuronFiles, PathType.RELATIVE_TO_BASE_DIRECTORY);
         } catch (IOException ex) {
             ex.printStackTrace();
         }

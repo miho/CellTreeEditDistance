@@ -20,7 +20,7 @@ public final class AppProperties {
     // Default-Values
     int calcType = 0;
     File baseDirectory = new File("/media/exdisk/Sem06/BA/ProgramData");
-    File jsonDirectory = new File("/media/exdisk/Sem06/BA/ProgramData/swcFiles.json");
+    File jsonPath = new File("/media/exdisk/Sem06/BA/ProgramData/swcFiles.json");
     boolean show = true;
     String matrixExportName = "DistanceMatrix.txt";
 
@@ -51,8 +51,8 @@ public final class AppProperties {
         return new File(baseDirectory.getPath() + "/Output");
     }
 
-    public File getJsonDirectory() {
-        return jsonDirectory;
+    public File getJsonPath() {
+        return jsonPath;
     }
 
     public boolean isShow() {

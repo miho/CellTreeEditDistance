@@ -42,7 +42,7 @@ public class DendrogramCreator {
         String[] newFileNames = new String[oldFileNames.length];
         // put metadata in hashMap
         NeuronMetadataMapper neuronMetadataMapper = new NeuronMetadataMapper();
-        Map<String, NeuronMetadataR> neuronMetadata = neuronMetadataMapper.mapFromDirectory(appProperties.getMetadataDirectory());
+        Map<String, NeuronMetadataR> neuronMetadata = neuronMetadataMapper.mapAllFromMetadataDirectory();
 
         UniqueMetadataContainer uniqueMetadataContainer = new UniqueMetadataContainer();
         UniqueMetadataContainer.UniqueMetadata uniqueMetadata;

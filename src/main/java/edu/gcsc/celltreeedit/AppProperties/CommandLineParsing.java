@@ -35,7 +35,7 @@ public class CommandLineParsing {
                 properties.baseDirectory = extractFile(line, AppParameter.BASE_DIRECTORY);
             }
             if (hasOption(line, AppParameter.JSON_DIRECTORY)) {
-                properties.jsonDirectory = extractFile(line, AppParameter.JSON_DIRECTORY);
+                properties.jsonPath = extractFile(line, AppParameter.JSON_DIRECTORY);
             }
             if (hasOption(line, AppParameter.SHOW)) {
                 properties.show = extractBoolean(line, AppParameter.SHOW);

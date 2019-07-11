@@ -17,9 +17,8 @@ public class JsonUtils {
 
     private static AppProperties appProperties;
 
-    public static Set<String> parseJsonToFileNames(File jsonFile) throws IOException {
-        String fileName;
-        Set<String> fileNames = new HashSet<>();
+    public static File[] parseJsonToFiles(File jsonFile) throws IOException {
+        List<File> files = new ArrayList<>();
         // maps jsonObjects to javaObjects
         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -33,32 +32,28 @@ public class JsonUtils {
         while (jsonParser.nextToken() != JsonToken.END_OBJECT) {
 
             // only map jsonObjects inside JsonArray 'neuronResources'
-            if ("neuronNames".equals(jsonParser.getCurrentName())) {
+            if ("neuronFiles".equals(jsonParser.getCurrentName())) {
                 if (jsonParser.nextToken() != JsonToken.START_ARRAY) {
                     throw new IllegalStateException("Expected a JsonArray");
                 }
                 // loop through all neurons from JsonArray and add them to HashSet
                 while (jsonParser.nextToken() != JsonToken.END_ARRAY) {
-                    fileName = objectMapper.readValue(jsonParser, String.class);
-                    fileNames.add(fileName);
+                    files.add(new File(objectMapper.readValue(jsonParser, String.class)));
                 }
             }
         }
-        return fileNames;
+        return files.toArray(new File[1]);
     }
 
     public static void writeToJSON(List<File> files, PathType pathType) throws IOException {
         appProperties = AppProperties.getInstance();
-
-        // gets map with fileName as key and Filedirectory as File
-        // remove
 
         // differentiate between pathTypes
         switch (pathType) {
             case ABSOLUTE_PATH: // for SWC-Files independent of Neuromorpho-DB lying in BaseDirectory
                 break;
             case RELATIVE_TO_BASE_DIRECTORY: // for SWC-Files in Neuromorpho-DB lying in BaseDirectory
-                removeBaseDirectoryFromPaths(files);
+                files = removeBaseDirectoryFromPaths(files);
         }
 
         NeuronFilesWrapper neuronFilesWrapper = new NeuronFilesWrapper();
@@ -73,6 +68,6 @@ public class JsonUtils {
         for (File file : files) {
             newFiles.add(new File(file.getPath().replace(appProperties.getBaseDirectory().getPath(), "")));
         }
-        return files;
+        return newFiles;
     }
 }

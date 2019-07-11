@@ -1,13 +1,12 @@
 package edu.gcsc.celltreeedit;
 
+import edu.gcsc.celltreeedit.AppProperties.AppProperties;
 import javafx.util.Pair;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 
 /**
@@ -16,6 +15,9 @@ import java.util.Scanner;
  * The class implements a file chooser, which can choose a number of Swc-files to compare or a whole folder.
  */
 public class Utils {
+
+    private static List<File> swcFiles;
+    private static AppProperties appProperties = AppProperties.getInstance();
 
     /**
      * @return a list of files which were selected
@@ -179,5 +181,41 @@ public class Utils {
             System.out.println("wrong fileending: " + filename);
         }
         return filename;
+    }
+
+    public static List<File> getFilesForNeuronNames(List<String> selectedNeuronNames) {
+        swcFiles = new ArrayList<>();
+        Set<String> neuronNamesToFind = new HashSet<>(selectedNeuronNames);
+        getFilesForNeuronNamesRec(appProperties.getSwcFileDirectory(), neuronNamesToFind);
+        return swcFiles;
+    }
+
+    private static void getFilesForNeuronNamesRec(File directory, Set<String> neuronNamesToFind) {
+        File[] subFiles = directory.listFiles();
+        if (subFiles == null) {
+            return;
+        }
+        for (File subFile : subFiles) {
+            if (subFile.isFile()) {
+                String fileNameWithoutSWCFileExtension = Utils.removeSWCFileExtensions(subFile.getName());
+                if (neuronNamesToFind.contains(fileNameWithoutSWCFileExtension)) {
+                    swcFiles.add(subFile);
+                }
+            } else {
+                if (subFile.getName().equals("00_Ignore")) {
+                    continue;
+                }
+                // recursively check next directory
+                getFilesForNeuronNamesRec(subFile, neuronNamesToFind);
+            }
+        }
+    }
+
+    public static String[] getNeuronNamesForFiles(File[] files) {
+        String[] fileNames = new String[files.length];
+        for (int i = 0; i < files.length; i++) {
+            fileNames[i] = removeSWCFileExtensions(files[i].getName());
+        }
+        return fileNames;
     }
 }
