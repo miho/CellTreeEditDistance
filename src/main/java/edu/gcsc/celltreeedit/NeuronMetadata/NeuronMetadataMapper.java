@@ -22,6 +22,7 @@ public class NeuronMetadataMapper {
 
     private final FileFilter fileFilter = (final File file) -> file.getName().toLowerCase().endsWith(".json");
 
+    // TODO: TESTEN
     public Map<String, NeuronMetadataR> mapAllFromMetadataDirectory(File metadataDirectory) throws IOException {
         File[] files = metadataDirectory.listFiles(fileFilter);
         if (files == null) {
@@ -31,6 +32,7 @@ public class NeuronMetadataMapper {
         return neuronMetadataAll;
     }
 
+    // TODO: TESTEN
     public Map<String, NeuronMetadataR> mapExistingFromMetadataDirectory(File metadataDirectory, File swcFileDirectory) throws IOException {
         File[] files = metadataDirectory.listFiles(fileFilter);
         if (files == null) {

@@ -109,7 +109,7 @@ public class Utils {
 
     public static List<Pair<double[][], String[]>> readMatricesFromTxt() throws IOException {
         // choose distancematrix files
-        File[] matrixFiles = chooseTXTFiles();
+        File[] matrixFiles = chooseTxtFiles();
 
         List<Pair<double[][], String[]>> result = new ArrayList<>();
         for (File matrixFile: matrixFiles) {
@@ -145,7 +145,7 @@ public class Utils {
     /**
      * @return a txt-file
      */
-    private static File[] chooseTXTFiles() {
+    private static File[] chooseTxtFiles() {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY); //accept files and directories as input
         FileNameExtensionFilter json = new FileNameExtensionFilter("txt", "txt");
@@ -177,6 +177,7 @@ public class Utils {
         return filename;
     }
 
+    // TODO: TESTEN
     public static List<File> getFilesForNeuronNames(List<String> selectedNeuronNames, File swcFileDirectory) {
         swcFiles = new ArrayList<>();
         Set<String> neuronNamesToFind = new HashSet<>(selectedNeuronNames);
