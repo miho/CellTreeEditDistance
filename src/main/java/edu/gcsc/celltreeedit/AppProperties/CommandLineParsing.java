@@ -21,7 +21,7 @@ public class CommandLineParsing {
 
         try {
             // parse CommandLineArguments
-            final CommandLineParser parser = new PosixParser();
+            final CommandLineParser parser = new DefaultParser(); // new PosixParser();
             final CommandLine line = parser.parse(allowedOptions, args);
 
             // check if option is used

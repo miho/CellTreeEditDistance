@@ -62,7 +62,7 @@ public class NeuronMetadataMapper {
 
         // loop through files
         for (File file: files) {
-            jsonParser = jsonFactory.createJsonParser(file);
+            jsonParser = jsonFactory.createParser(file);
 
             // as long as the end of the file is not reached
             while (jsonParser.nextToken() != JsonToken.END_OBJECT) {

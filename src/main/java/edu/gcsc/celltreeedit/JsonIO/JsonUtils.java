@@ -26,7 +26,7 @@ public class JsonUtils {
         JsonFactory jsonFactory = new JsonFactory();
         JsonParser jsonParser;
 
-        jsonParser = jsonFactory.createJsonParser(jsonFile);
+        jsonParser = jsonFactory.createParser(jsonFile);
 
         // as long as the end of the file is not reached
         while (jsonParser.nextToken() != JsonToken.END_OBJECT) {
