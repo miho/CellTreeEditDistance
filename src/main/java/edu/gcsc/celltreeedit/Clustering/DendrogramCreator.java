@@ -8,14 +8,15 @@ import edu.gcsc.celltreeedit.Tables;
 import javafx.util.Pair;
 
 import javax.swing.*;
+import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
 public class DendrogramCreator {
 
-    public static void showDendrogram(Pair<double[][], String[]> result) throws IOException {
+    public static void showDendrogram(Pair<double[][], String[]> result, File metadataDirectory) throws IOException {
         String[] oldFileNames = result.getValue();
-        String[] newFileNames = renameFileNamesToUniqueMetadataNames(oldFileNames);
+        String[] newFileNames = renameFileNamesToUniqueMetadataNames(oldFileNames, metadataDirectory);
 
         // create cluster with matrix and adjusted names
         Clustering clustering = Clustering.getInstance();
@@ -35,11 +36,11 @@ public class DendrogramCreator {
         frame.setTitle("FileName-Mapping");
     }
 
-    private static String[] renameFileNamesToUniqueMetadataNames(String[] oldFileNames) throws IOException {
+    private static String[] renameFileNamesToUniqueMetadataNames(String[] oldFileNames, File metadataDirectory) throws IOException {
         String[] newFileNames = new String[oldFileNames.length];
         // put metadata in hashMap
         NeuronMetadataMapper neuronMetadataMapper = new NeuronMetadataMapper();
-        Map<String, NeuronMetadataR> neuronMetadata = neuronMetadataMapper.mapAllFromMetadataDirectory();
+        Map<String, NeuronMetadataR> neuronMetadata = neuronMetadataMapper.mapAllFromMetadataDirectory(metadataDirectory);
 
         UniqueMetadataContainer uniqueMetadataContainer = new UniqueMetadataContainer();
         UniqueMetadataContainer.UniqueMetadata uniqueMetadata;

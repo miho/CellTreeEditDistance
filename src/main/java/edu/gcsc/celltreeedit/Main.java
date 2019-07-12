@@ -13,6 +13,7 @@ import edu.gcsc.celltreeedit.NeuronMetadata.NeuronMetadataR;
 import edu.gcsc.celltreeedit.NeuronMetadata.UniqueMetadataContainer;
 import edu.gcsc.celltreeedit.TEDCalculation.CellTreeEditDistance;
 import javafx.util.Pair;
+import org.apache.commons.cli.ParseException;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,7 +29,7 @@ public class Main {
 
     private static AppProperties appProperties = AppProperties.getInstance();
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, ParseException {
 
         CommandLineParsing.parseArguments(args);
 
@@ -77,13 +78,13 @@ public class Main {
 
     private static void calculateTEDMatrixAndDendrogram() throws IOException {
         Pair<double[][], String[]> result = calculateTEDMatrix();
-        DendrogramCreator.showDendrogram(result);
+        DendrogramCreator.showDendrogram(result, appProperties.getMetadataDirectory());
     }
 
     private static void calculateDendrogramsForTEDMatrices() throws IOException {
         List<Pair<double[][], String[]>> results = Utils.readMatricesFromTxt();
         for (Pair<double[][], String[]> result : results) {
-            DendrogramCreator.showDendrogram(result);
+            DendrogramCreator.showDendrogram(result, appProperties.getMetadataDirectory());
         }
     }
 
@@ -218,9 +219,8 @@ public class Main {
         Map<String, NeuronMetadataR> neuronMetadata = neuronMetadataMapper.mapAllFromMetadataDirectory(appProperties.getMetadataDirectory());
 
         // preprocess SWC-Directory
-        File swcDirectory = new File("/media/exdisk/Sem06/BA/Data/SWC-Files/00_All");
         SWCPreprocessing swcPreprocessing = new SWCPreprocessing();
-        swcPreprocessing.preprocessSWCDirectory(neuronMetadata, swcDirectory);
+        swcPreprocessing.preprocessSWCDirectory(neuronMetadata, appProperties.getSwcFileDirectory());
     }
 
 

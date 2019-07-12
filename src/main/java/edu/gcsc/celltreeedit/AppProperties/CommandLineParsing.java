@@ -13,7 +13,7 @@ public class CommandLineParsing {
 
     private static final AppProperties properties = AppProperties.getInstance();
 
-    public static void parseArguments(final String[] args) {
+    public static void parseArguments(final String[] args) throws ParseException {
         final Options allowedOptions = new Options();
         // Add all options defined in AppParameter to Options-Object
         for (final AppParameter parameter : AppParameter.values()) {
@@ -52,6 +52,9 @@ public class CommandLineParsing {
             }
         } catch (final ParseException exp) {
             printHelp(allowedOptions);
+            System.out.flush();
+            System.err.flush();
+            throw new RuntimeException(exp);
         }
     }
 

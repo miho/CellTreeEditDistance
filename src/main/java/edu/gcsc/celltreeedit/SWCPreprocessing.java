@@ -26,16 +26,12 @@ public class SWCPreprocessing {
 
     public void preprocessSWCDirectory(Map<String, NeuronMetadataR> neuronMetadata, File swcDirectory) {
 
-        try {
-            this.swcDirectory = new File(swcDirectory.getCanonicalPath());
-            System.out.println(this.swcDirectory);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-
+        this.swcDirectory = swcDirectory;
+        System.out.println("> Preprocessing the following directory: " + swcDirectory.getAbsolutePath() + "\n");
         this.neuronMetadata = neuronMetadata;
         this.moveNonCNGDirectories(swcDirectory);
         this.moveDuplicatesAndNonMetadataAndErrorFiles(swcDirectory);
+        System.out.println("\n> Preprocessing finished");
     }
 
     private void moveNonCNGDirectories(File directory) {
@@ -114,7 +110,7 @@ public class SWCPreprocessing {
             new File(newFileDir).mkdirs();
             // move file to defined directory
             Files.move(Paths.get(file.getCanonicalPath()), Paths.get(newFileDir + file.getName()), StandardCopyOption.REPLACE_EXISTING);
-            System.out.println("File: " + file.getCanonicalPath() + " is moved to " + newFileDir + file.getName());
+            System.out.println("File: " + file.getCanonicalPath() + "   moved to   " + newFileDir + file.getName());
         } catch (IOException ex) {
             ex.printStackTrace();
         }
