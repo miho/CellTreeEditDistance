@@ -68,7 +68,7 @@ public class Main {
     }
 
     /**
-     * Initiates preprocessing of SWCDirectory
+     * Starts preprocessing of SWCDirectory
      * @throws IOException if no json-files containing neuronMetadata are found
      */
     private static void preprocessSWCDirectory() throws IOException {
@@ -96,6 +96,17 @@ public class Main {
         LuceneIndexWriter luceneIndexWriter = new LuceneIndexWriter(indexDirectory);
         luceneIndexWriter.createIndex(neuronMetadata);
         CLI.startCLI(indexDirectory, appProperties.getBaseDirectory(), appProperties.getOutputDirectory(), appProperties.getSwcFileDirectory(), appProperties.getJsonName());
+    }
+
+    /**
+     * Lets User choose either a directory containing swc-Files or multiple swc-Files. SWC-File-paths are written to json-File.
+     * @throws IOException if json-file could not be written to hard drive
+     */
+    private static void queryByFileDialog() throws IOException {
+        System.out.println("> Starting file dialog");
+        List<File> files = Utils.chooseSWCFiles();
+        // write to json
+        JsonUtils.writeToJSON(files, appProperties.getDestinationDirectory(), appProperties.getJsonName());
     }
 
     private static Pair<double[][], String[]> calculateTEDMatrix() throws IOException {
@@ -219,15 +230,6 @@ public class Main {
         List<String> copy = new LinkedList<>(lst);
         Collections.shuffle(copy);
         return n > copy.size() ? copy.subList(0, copy.size()) : copy.subList(0, n);
-    }
-
-    private static void queryByFileDialog() throws IOException {
-        File[] files = Utils.chooseSWCFiles();
-        List<String> selectedNeuronNames = Arrays.stream(files).map(file -> Utils.removeSWCFileExtensions(file.getName())).collect(Collectors.toList());
-
-        List<File> selectedNeuronFiles = Utils.getFilesForNeuronNames(selectedNeuronNames, appProperties.getSwcFileDirectory());
-        // write to json
-        JsonUtils.writeToJSON(selectedNeuronFiles, appProperties.getDestinationDirectory(), appProperties.getJsonName());
     }
 
     // method to do some custom things which program should not be able to do in the end

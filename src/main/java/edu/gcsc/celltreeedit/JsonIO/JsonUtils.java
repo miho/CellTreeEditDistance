@@ -5,10 +5,12 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.gcsc.celltreeedit.Utils;
+import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Utility-Class for Json Input/Output Operations.
@@ -50,9 +52,9 @@ public class JsonUtils {
 
     public static void writeToJSON(List<File> files, File destinationDirectory, String jsonName) throws IOException {
         NeuronFilesWrapper neuronFilesWrapper = new NeuronFilesWrapper();
-        neuronFilesWrapper.setNeuronFiles(files);
+        neuronFilesWrapper.setNeuronFiles(files.stream().map(File::getName).collect(Collectors.toList()));
         ObjectMapper mapper = new ObjectMapper();
-        File file = Utils.incrementFileNameIfNecessary(destinationDirectory, jsonName);
+        File file = Utils.incrementFileNameIfNecessary(destinationDirectory, FilenameUtils.removeExtension(jsonName) + ".json");
         mapper.writeValue(file, neuronFilesWrapper);
         System.out.println("File saved to: " + file.getAbsolutePath());
     }

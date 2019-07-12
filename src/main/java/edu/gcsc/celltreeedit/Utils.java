@@ -21,7 +21,7 @@ public class Utils {
     /**
      * @return a list of files which were selected
      */
-    public static File[] chooseSWCFiles() {
+    public static List<File> chooseSWCFiles() {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES); //accept files and directories as input
         FileNameExtensionFilter swc = new FileNameExtensionFilter("SWC", "SWC");
@@ -30,17 +30,20 @@ public class Utils {
         fileChooser.setMultiSelectionEnabled(true);                       // accept multiple files as input
         fileChooser.showOpenDialog(null);
 
+        File[] chosenFiles;
+
         if (fileChooser.getSelectedFile().isFile())
-            return fileChooser.getSelectedFiles();
+            chosenFiles = fileChooser.getSelectedFiles();
         else {
             File folder = new File(fileChooser.getSelectedFile().getAbsolutePath());
-            return folder.listFiles(new FilenameFilter() {              // return only swc files
+            chosenFiles = folder.listFiles(new FilenameFilter() {              // return only swc files
                 @Override
                 public boolean accept(File dir, String name) {
                     return name.endsWith(".swc");
                 }
             });
         }
+        return (chosenFiles != null) ? Arrays.asList(chosenFiles) : new ArrayList<>();
     }
 
     /**
@@ -81,7 +84,7 @@ public class Utils {
     }
 
     public static void printMatrixToTxt(double[][] results, String[] filenames, File outputDirectory, String matrixName) {
-        File file = incrementFileNameIfNecessary(outputDirectory, matrixName);
+        File file = incrementFileNameIfNecessary(outputDirectory, FilenameUtils.removeExtension(matrixName) + ".txt");
         try {
             FileWriter export = new FileWriter(file.getPath());
             BufferedWriter br = new BufferedWriter(export);

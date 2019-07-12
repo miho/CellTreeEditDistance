@@ -11,13 +11,13 @@ import java.util.List;
 public class NeuronFilesWrapper {
 
     @JsonProperty
-    private List<File> neuronFiles;
+    private List<String> neuronFiles;
 
-    public List<File> getNeuronFiles() {
+    public List<String> getNeuronFiles() {
         return neuronFiles;
     }
 
-    public void setNeuronFiles(List<File> neuronFiles) {
+    public void setNeuronFiles(List<String> neuronFiles) {
         this.neuronFiles = neuronFiles;
     }
 }
