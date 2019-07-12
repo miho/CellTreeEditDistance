@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.io.FilenameUtils;
+import edu.gcsc.celltreeedit.Utils;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,9 +43,8 @@ public class JsonUtils {
         return files.toArray(new File[1]);
     }
 
-    public static void writeToJSON(List<File> files, File baseDirectory, File outputDirectory, String jsonName) throws IOException {
-        outputDirectory.mkdirs();
-        files = removeBaseDirectoryFromPaths(files, baseDirectory);
+    public static void writeToJSON(List<File> files, File swcFileDirectory, File outputDirectory, String jsonName) throws IOException {
+        files = removeBaseDirectoryFromPaths(files, swcFileDirectory);
         writeToJSON(files, outputDirectory, jsonName);
     }
 
@@ -53,15 +52,9 @@ public class JsonUtils {
         NeuronFilesWrapper neuronFilesWrapper = new NeuronFilesWrapper();
         neuronFilesWrapper.setNeuronFiles(files);
         ObjectMapper mapper = new ObjectMapper();
-
-        // increment fileName if necessary
-        File file = new File(destinationDirectory.getPath() + jsonName);
-        int count = 1;
-        while (file.exists()) {
-            file = new File(destinationDirectory.getAbsolutePath() + "/" + FilenameUtils.removeExtension(jsonName) + count + "." + FilenameUtils.getExtension(jsonName));
-            count++;
-        }
+        File file = Utils.incrementFileNameIfNecessary(destinationDirectory, jsonName);
         mapper.writeValue(file, neuronFilesWrapper);
+        System.out.println("File saved to: " + file.getAbsolutePath());
     }
 
     private static List<File> removeBaseDirectoryFromPaths(List<File> files, File baseDirectory) {

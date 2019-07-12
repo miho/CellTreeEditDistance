@@ -48,14 +48,14 @@ public class CLI {
             try {
                 // perform search. results limited to 110000 entries
                 TopDocs topDocs = indexSearcher.search(queryParser.parse(query), 110000);
-                System.out.println("parsed Search: " + queryParser.parse(query).toString());
+                System.out.println("Parsed query: " + queryParser.parse(query).toString());
                 // output number of results
                 // save to file?
                 while (true) {
                     System.out.println("Search produced " + topDocs.totalHits.value + " results. Save result? (y/n)");
                     s = br.readLine();
                     if (s.toLowerCase().equals("y")) {
-                        exportNamesToJson(indexSearcher, topDocs, baseDirectory, outputDirectory, swcFileDirectory, jsonName);
+                        exportNamesToJson(indexSearcher, topDocs, outputDirectory, swcFileDirectory, jsonName);
                         break;
                     } else if (s.toLowerCase().equals("n")) {
                         break;
@@ -69,7 +69,7 @@ public class CLI {
         }
     }
 
-    private static void exportNamesToJson(IndexSearcher indexSearcher, TopDocs topDocs, File baseDirectory, File outputDirectory, File swcFileDirectory, String jsonName) {
+    private static void exportNamesToJson(IndexSearcher indexSearcher, TopDocs topDocs, File outputDirectory, File swcFileDirectory, String jsonName) {
         List<String> neuronNames = new ArrayList<>();
         try {
             for (ScoreDoc scoreDoc : topDocs.scoreDocs) {
@@ -77,7 +77,7 @@ public class CLI {
             }
             List<File> selectedNeuronFiles = Utils.getFilesForNeuronNames(neuronNames, swcFileDirectory);
             // write to json
-            JsonUtils.writeToJSON(selectedNeuronFiles, baseDirectory, outputDirectory, jsonName);
+            JsonUtils.writeToJSON(selectedNeuronFiles, swcFileDirectory, outputDirectory, jsonName);
         } catch (IOException ex) {
             ex.printStackTrace();
         }

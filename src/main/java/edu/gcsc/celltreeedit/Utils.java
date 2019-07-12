@@ -68,17 +68,20 @@ public class Utils {
         }
     }
 
-    public static void printMatrixToTxt(double[][] results, String[] filenames, File outputDirectory, String matrixName) {
-        outputDirectory.mkdirs();
-        File file = new File(outputDirectory.getAbsolutePath() + "/" + matrixName);
-
+    public static File incrementFileNameIfNecessary(File destinationDirectory, String fileName) {
+        destinationDirectory.mkdirs();
+        File file = new File(destinationDirectory.getAbsolutePath() + "/" + fileName);
         // increment fileName if necessary
         int count = 1;
         while (file.exists()) {
-            file = new File(outputDirectory.getAbsolutePath() + "/" + FilenameUtils.removeExtension(matrixName) + count + "." + FilenameUtils.getExtension(matrixName));
+            file = new File(destinationDirectory.getAbsolutePath() + "/" + FilenameUtils.removeExtension(fileName) + count + "." + FilenameUtils.getExtension(fileName));
             count++;
         }
+        return file;
+    }
 
+    public static void printMatrixToTxt(double[][] results, String[] filenames, File outputDirectory, String matrixName) {
+        File file = incrementFileNameIfNecessary(outputDirectory, matrixName);
         try {
             FileWriter export = new FileWriter(file.getPath());
             BufferedWriter br = new BufferedWriter(export);

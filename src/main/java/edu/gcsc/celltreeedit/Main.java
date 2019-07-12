@@ -72,6 +72,7 @@ public class Main {
      * @throws IOException if no json-files containing neuronMetadata are found
      */
     private static void preprocessSWCDirectory() throws IOException {
+        System.out.println("> Starting preprocessing \n");
         // put metadata in hashMap
         NeuronMetadataMapper neuronMetadataMapper = new NeuronMetadataMapper();
         Map<String, NeuronMetadataR> neuronMetadata = neuronMetadataMapper.mapAllFromMetadataDirectory(appProperties.getMetadataDirectory());
@@ -86,6 +87,7 @@ public class Main {
      * @throws IOException if no json-files containing neuronMetadata are found
      */
     private static void queryLucene() throws IOException {
+        System.out.println("> Starting Lucene");
         // put metadata in hashMap
         NeuronMetadataMapper neuronMetadataMapper = new NeuronMetadataMapper();
         Map<String, NeuronMetadataR> neuronMetadata = neuronMetadataMapper.mapExistingFromMetadataDirectory(appProperties.getMetadataDirectory(), appProperties.getSwcFileDirectory());
@@ -210,7 +212,7 @@ public class Main {
 
         List<File> selectedNeuronFiles = Utils.getFilesForNeuronNames(selectedNeuronNames, appProperties.getSwcFileDirectory());
         // write to json
-        JsonUtils.writeToJSON(selectedNeuronFiles, appProperties.getBaseDirectory(), appProperties.getOutputDirectory(), appProperties.getJsonName());
+        JsonUtils.writeToJSON(selectedNeuronFiles, appProperties.getSwcFileDirectory(), appProperties.getOutputDirectory(), appProperties.getJsonName());
     }
 
     private static List<String> pickNRandom(List<String> lst, int n) {
