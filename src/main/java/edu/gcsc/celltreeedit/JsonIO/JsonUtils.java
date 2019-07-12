@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,7 +43,7 @@ public class JsonUtils {
         return files.toArray(new File[1]);
     }
 
-    public static void writeToJSON(List<File> files, PathType pathType, File baseDirectory, File outputDirectory) throws IOException {
+    public static void writeToJSON(List<File> files, PathType pathType, File baseDirectory, File outputDirectory, String jsonName) throws IOException {
         outputDirectory.mkdirs();
         // differentiate between pathTypes
         switch (pathType) {
@@ -56,7 +57,14 @@ public class JsonUtils {
         neuronFilesWrapper.setNeuronFiles(files);
         ObjectMapper mapper = new ObjectMapper();
 
-        mapper.writeValue(new File(outputDirectory.getPath() + "/swcFiles.json"), neuronFilesWrapper);
+        // increment fileName if necessary
+        File file = new File(outputDirectory.getPath() + jsonName);
+        int count = 1;
+        while (file.exists()) {
+            file = new File(outputDirectory.getAbsolutePath() + "/" + FilenameUtils.removeExtension(jsonName) + count + "." + FilenameUtils.getExtension(jsonName));
+            count++;
+        }
+        mapper.writeValue(file, neuronFilesWrapper);
     }
 
     private static List<File> removeBaseDirectoryFromPaths(List<File> files, File baseDirectory) {

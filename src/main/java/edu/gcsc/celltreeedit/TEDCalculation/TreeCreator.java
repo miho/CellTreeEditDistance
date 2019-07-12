@@ -493,49 +493,48 @@ public class TreeCreator implements InputParser <NodeData> , Serializable {
         List<Node<NodeData>> childNodes = node.getChildren();
         if (childNodes == null || childNodes.isEmpty()) {
             node.getNodeData().setLabel(0);
+            return;
         }
+        int noOfChildNodes = childNodes.size();
         // for each combination of children calculate the angle between their first nodes
         double sum = 0;
-        for (int i = 0; i < childNodes.size(); i++) {
-            // PosX etc from NodeData contains value of parent -> get(1) - get(0)
-            NodeData nodeData1 = childNodes.get(i).getNodeData();
-            double x1 = nodeData1.getPosX().get(1) - nodeData1.getPosX().get(0);
-            double y1 = nodeData1.getPosY().get(1) - nodeData1.getPosY().get(0);
-            double z1 = nodeData1.getPosZ().get(1) - nodeData1.getPosZ().get(0);
-            for (int j = i + 1; j < childNodes.size(); j++) {
-                NodeData nodeData2 = childNodes.get(j).getNodeData();
-                double x2 = nodeData2.getPosX().get(1) - nodeData1.getPosX().get(0);
-                double y2 = nodeData2.getPosY().get(1) - nodeData1.getPosY().get(0);
-                double z2 = nodeData2.getPosZ().get(1) - nodeData1.getPosZ().get(0);
-                sum += Math.acos((x1 * x2 + y1 * y2 + z1 * z2) / (Math.sqrt(x1 * x1 + y1 * y1 + z1 * z1) * Math.sqrt(x2 * x2 + y2 * y2 + z2 * z2)));
+        double[] v1;
+        double[] v2;
+        for (int i = 0; i < noOfChildNodes; i++) {
+            v1 = getVectorOfChild(childNodes.get(i));
+            for (int j = i + 1; j < noOfChildNodes; j++) {
+                v2 = getVectorOfChild(childNodes.get(j));
+                sum += Math.acos((v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2]) / (Math.sqrt(v1[0] * v1[0] + v1[1] * v1[1] + v1[2] * v1[2]) * Math.sqrt(v2[0] * v2[0] + v2[1] * v2[1] + v2[2] * v2[2])));
             }
         }
         // set label of current node
-        if (childNodes.size() > 0) {
-            node.getNodeData().setLabel(sum / childNodes.size());
-        } else {
-            node.getNodeData().setLabel(0);
-        }
+        node.getNodeData().setLabel(sum / noOfChildNodes);
         // recursively call children to set their labels
         for (Node<NodeData> childNode : childNodes) {
             calculate_a_sec(childNode);
         }
     }
 
-
-    public boolean ifBranchOrEnd(int index) {
-        if (this.getChildren(index).size() == 1)
-            return false;
-        else
-            return true;
+    private double[] getVectorOfChild(Node<NodeData> childNode) {
+        double[] v = new double[3];
+        // PosX etc from NodeData contains value of parent -> get(last) - get(0)
+        NodeData nodeData = childNode.getNodeData();
+        int last = nodeData.getPosX().size() - 1;
+        v[0] = nodeData.getPosX().get(last) - nodeData.getPosX().get(0);
+        v[1] = nodeData.getPosY().get(last) - nodeData.getPosY().get(0);
+        v[2] = nodeData.getPosZ().get(last) - nodeData.getPosZ().get(0);
+        return v;
     }
 
-    public Vector <Integer> getChildren(int nodeNr) {
+
+    private boolean ifBranchOrEnd(int index) {
+        return (this.getChildren(index).size() != 1);
+    }
+
+    private Vector <Integer> getChildren(int nodeNr) {
         int first = this.firstChild[nodeNr];
         Vector vector = new Vector();
-        if (first == -1) {
-
-        } else {
+        if (first != -1) {
             vector.add(first);
             while (this.nextSibling[first] != -1) {
                 vector.add(nextSibling[first]);

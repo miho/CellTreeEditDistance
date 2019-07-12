@@ -24,7 +24,7 @@ import java.util.List;
  */
 public class CLI {
 
-    public static void startCLI(File indexPath, File outputDirectory) throws IOException {
+    public static void startCLI(File indexPath, File baseDirectory, File outputDirectory, File swcFileDirectory, String jsonName) throws IOException {
         // preparation for queryparsing
         Directory indexDirectory = FSDirectory.open(indexPath.toPath());
         IndexReader indexReader = DirectoryReader.open(indexDirectory);
@@ -52,10 +52,10 @@ public class CLI {
                 // output number of results
                 // save to file?
                 while (true) {
-                    System.out.println("Search produced " + topDocs.totalHits.value + " results. Save result to ... ? (y/n)");
+                    System.out.println("Search produced " + topDocs.totalHits.value + " results. Save result? (y/n)");
                     s = br.readLine();
                     if (s.toLowerCase().equals("y")) {
-                        exportNamesToJson(indexSearcher, topDocs, outputDirectory);
+                        exportNamesToJson(indexSearcher, topDocs, baseDirectory, outputDirectory, swcFileDirectory, jsonName);
                         break;
                     } else if (s.toLowerCase().equals("n")) {
                         break;
@@ -69,15 +69,15 @@ public class CLI {
         }
     }
 
-    private static void exportNamesToJson(IndexSearcher indexSearcher, TopDocs topDocs, File outputDirectory) {
+    private static void exportNamesToJson(IndexSearcher indexSearcher, TopDocs topDocs, File baseDirectory, File outputDirectory, File swcFileDirectory, String jsonName) {
         List<String> neuronNames = new ArrayList<>();
         try {
             for (ScoreDoc scoreDoc : topDocs.scoreDocs) {
                 neuronNames.add(indexSearcher.doc(scoreDoc.doc).getField("neuronName").stringValue());
             }
-            List<File> selectedNeuronFiles = Utils.getFilesForNeuronNames(neuronNames);
+            List<File> selectedNeuronFiles = Utils.getFilesForNeuronNames(neuronNames, swcFileDirectory);
             // write to json
-            JsonUtils.writeToJSON(selectedNeuronFiles, PathType.RELATIVE_TO_BASE_DIRECTORY);
+            JsonUtils.writeToJSON(selectedNeuronFiles, PathType.RELATIVE_TO_BASE_DIRECTORY, baseDirectory, outputDirectory, jsonName);
         } catch (IOException ex) {
             ex.printStackTrace();
         }
