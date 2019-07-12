@@ -2,6 +2,8 @@ package edu.gcsc.celltreeedit.AppProperties;
 
 
 import org.apache.commons.cli.*;
+import org.apache.commons.io.FilenameUtils;
+
 import java.io.File;
 
 /**
@@ -9,15 +11,15 @@ import java.io.File;
  */
 public class CommandLineParsing {
 
-    public static AppProperties parseArguments(final String[] args) {
+    private static final AppProperties properties = AppProperties.getInstance();
+
+    public static void parseArguments(final String[] args) {
         final Options allowedOptions = new Options();
         // Add all options defined in AppParameter to Options-Object
         for (final AppParameter parameter : AppParameter.values()) {
             allowedOptions.addOption(parameter.shortname, parameter.name,
                     parameter.hasArgs, parameter.helptext);
         }
-
-        AppProperties properties = AppProperties.getInstance();
 
         try {
             // parse CommandLineArguments
@@ -33,12 +35,14 @@ public class CommandLineParsing {
 
             if (hasOption(line, AppParameter.BASE_DIRECTORY)) {
                 properties.baseDirectory = extractFile(line, AppParameter.BASE_DIRECTORY);
+                setDirectoriesAccordingToBaseDirectory(properties.baseDirectory.getAbsolutePath());
             }
             if (hasOption(line, AppParameter.DESTINATION_DIRECTORY)) {
                 properties.destinationDirectory = extractFile(line, AppParameter.DESTINATION_DIRECTORY);
             }
             if (hasOption(line, AppParameter.JSON_FILE)) {
                 properties.jsonFile = extractFile(line, AppParameter.JSON_FILE);
+                setDirectoriesAccordingToBaseDirectory(FilenameUtils.getPath(properties.jsonFile.getAbsolutePath()));
             }
             if (hasOption(line, AppParameter.JSON_NAME)) {
                 properties.jsonName = extractString(line, AppParameter.JSON_NAME);
@@ -49,9 +53,14 @@ public class CommandLineParsing {
         } catch (final ParseException exp) {
             printHelp(allowedOptions);
         }
-        return properties;
     }
 
+    private static void setDirectoriesAccordingToBaseDirectory(String baseDirectory) {
+        properties.metadataDirectory = new File(baseDirectory + "/Data/Metadata");
+        properties.swcFileDirectory = new File(baseDirectory + "/Data/SWCFiles");
+        properties.workingDirectory = new File(baseDirectory + "/WorkingDir");
+        properties.outputDirectory = new File(baseDirectory + "/Output");
+    }
 
     private static boolean hasOption(final CommandLine line, final AppParameter parameter) {
         return line.hasOption(parameter.name);

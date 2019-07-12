@@ -194,7 +194,7 @@ public class Main {
 
         List<File> selectedNeuronFiles = Utils.getFilesForNeuronNames(selectedNeuronNames, appProperties.getSwcFileDirectory());
         // write to json
-        JsonUtils.writeToJSON(selectedNeuronFiles, PathType.RELATIVE_TO_BASE_DIRECTORY, appProperties.getBaseDirectory(), appProperties.getOutputDirectory(), appProperties.getJsonName());
+        JsonUtils.writeToJSON(selectedNeuronFiles, appProperties.getBaseDirectory(), appProperties.getOutputDirectory(), appProperties.getJsonName());
     }
 
     private static List<String> pickNRandom(List<String> lst, int n) {
@@ -209,7 +209,7 @@ public class Main {
 
         List<File> selectedNeuronFiles = Utils.getFilesForNeuronNames(selectedNeuronNames, appProperties.getSwcFileDirectory());
         // write to json
-        JsonUtils.writeToJSON(selectedNeuronFiles, PathType.ABSOLUTE_PATH, appProperties.getBaseDirectory(), appProperties.getOutputDirectory(), appProperties.getJsonName());
+        JsonUtils.writeToJSON(selectedNeuronFiles, appProperties.getDestinationDirectory(), appProperties.getJsonName());
     }
 
     private static void preprocessSWCDirectory() throws IOException {

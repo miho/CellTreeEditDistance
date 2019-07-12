@@ -77,7 +77,7 @@ public class CLI {
             }
             List<File> selectedNeuronFiles = Utils.getFilesForNeuronNames(neuronNames, swcFileDirectory);
             // write to json
-            JsonUtils.writeToJSON(selectedNeuronFiles, PathType.RELATIVE_TO_BASE_DIRECTORY, baseDirectory, outputDirectory, jsonName);
+            JsonUtils.writeToJSON(selectedNeuronFiles, baseDirectory, outputDirectory, jsonName);
         } catch (IOException ex) {
             ex.printStackTrace();
         }

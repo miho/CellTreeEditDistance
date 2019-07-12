@@ -17,6 +17,10 @@ public final class AppProperties {
     // Default-Values, might get replaced by CommandLineArguments
     int calcType;
     File baseDirectory = new File("");
+    File metadataDirectory = new File("");
+    File swcFileDirectory = new File("");
+    File workingDirectory = new File("");
+    File outputDirectory = new File("");
     File destinationDirectory = new File("");
     File jsonFile = new File("");
     String jsonName = "swcFiles.json";
@@ -31,24 +35,20 @@ public final class AppProperties {
         return baseDirectory;
     }
 
-    public File getDataDirectory() {
-        return (baseDirectory.getPath().equals("")) ? new File(baseDirectory.getPath() + "/Data") : new File("");
-    }
-
     public File getMetadataDirectory() {
-        return (baseDirectory.getPath().equals("")) ? new File(baseDirectory.getPath() + "/Data/Metadata") : new File("");
+        return metadataDirectory;
     }
 
     public File getSwcFileDirectory() {
-        return (baseDirectory.getPath().equals("")) ? new File(baseDirectory.getPath() + "/Data/SWCFiles") : new File("");
+        return swcFileDirectory;
     }
 
     public File getWorkingDirectory() {
-        return (baseDirectory.getPath().equals("")) ? new File(baseDirectory.getPath() + "/WorkingDir") : new File("");
+        return workingDirectory;
     }
 
     public File getOutputDirectory() {
-        return (baseDirectory.getPath().equals("")) ? new File(baseDirectory.getPath() + "/Output") : new File("");
+        return outputDirectory;
     }
 
     public File getDestinationDirectory() { return destinationDirectory; }

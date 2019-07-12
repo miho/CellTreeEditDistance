@@ -43,25 +43,22 @@ public class JsonUtils {
         return files.toArray(new File[1]);
     }
 
-    public static void writeToJSON(List<File> files, PathType pathType, File baseDirectory, File outputDirectory, String jsonName) throws IOException {
+    public static void writeToJSON(List<File> files, File baseDirectory, File outputDirectory, String jsonName) throws IOException {
         outputDirectory.mkdirs();
-        // differentiate between pathTypes
-        switch (pathType) {
-            case ABSOLUTE_PATH:
-                break;
-            case RELATIVE_TO_BASE_DIRECTORY:
-                files = removeBaseDirectoryFromPaths(files, baseDirectory);
-        }
+        files = removeBaseDirectoryFromPaths(files, baseDirectory);
+        writeToJSON(files, outputDirectory, jsonName);
+    }
 
+    public static void writeToJSON(List<File> files, File destinationDirectory, String jsonName) throws IOException {
         NeuronFilesWrapper neuronFilesWrapper = new NeuronFilesWrapper();
         neuronFilesWrapper.setNeuronFiles(files);
         ObjectMapper mapper = new ObjectMapper();
 
         // increment fileName if necessary
-        File file = new File(outputDirectory.getPath() + jsonName);
+        File file = new File(destinationDirectory.getPath() + jsonName);
         int count = 1;
         while (file.exists()) {
-            file = new File(outputDirectory.getAbsolutePath() + "/" + FilenameUtils.removeExtension(jsonName) + count + "." + FilenameUtils.getExtension(jsonName));
+            file = new File(destinationDirectory.getAbsolutePath() + "/" + FilenameUtils.removeExtension(jsonName) + count + "." + FilenameUtils.getExtension(jsonName));
             count++;
         }
         mapper.writeValue(file, neuronFilesWrapper);
