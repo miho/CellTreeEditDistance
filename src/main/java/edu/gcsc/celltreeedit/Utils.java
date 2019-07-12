@@ -1,6 +1,5 @@
 package edu.gcsc.celltreeedit;
 
-import edu.gcsc.celltreeedit.AppProperties.AppProperties;
 import javafx.util.Pair;
 import org.apache.commons.io.FilenameUtils;
 
@@ -18,7 +17,6 @@ import java.util.*;
 public class Utils {
 
     private static List<File> swcFiles;
-    private static AppProperties appProperties = AppProperties.getInstance();
 
     /**
      * @return a list of files which were selected
@@ -36,13 +34,12 @@ public class Utils {
             return fileChooser.getSelectedFiles();
         else {
             File folder = new File(fileChooser.getSelectedFile().getAbsolutePath());
-            File[] selectedFiles = folder.listFiles(new FilenameFilter() {              // return only swc files
+            return folder.listFiles(new FilenameFilter() {              // return only swc files
                 @Override
                 public boolean accept(File dir, String name) {
                     return name.endsWith(".swc");
                 }
             });
-            return selectedFiles;
         }
     }
 
@@ -62,24 +59,23 @@ public class Utils {
             return fileChooser.getSelectedFiles();
         else {
             File folder = new File(fileChooser.getSelectedFile().getAbsolutePath());
-            File[] selectedFiles = folder.listFiles(new FilenameFilter() {              // return only swc files
+            return folder.listFiles(new FilenameFilter() {              // return only swc files
                 @Override
                 public boolean accept(File dir, String name) {
                     return name.endsWith(".json");
                 }
             });
-            return selectedFiles;
         }
     }
 
-    public static void printMatrixToTxt(double[][] results, String[] filenames, File exportDirectory, String fileName) {
-        exportDirectory.mkdirs();
-        File file = new File(exportDirectory.getAbsolutePath() + "/" + fileName);
+    public static void printMatrixToTxt(double[][] results, String[] filenames, File outputDirectory, String matrixName) {
+        outputDirectory.mkdirs();
+        File file = new File(outputDirectory.getAbsolutePath() + "/" + matrixName);
 
         // increment fileName if necessary
         int count = 1;
         while (file.exists()) {
-            file = new File(exportDirectory.getAbsolutePath() + "/" + FilenameUtils.removeExtension(fileName) + count + "." + FilenameUtils.getExtension(fileName));
+            file = new File(outputDirectory.getAbsolutePath() + "/" + FilenameUtils.removeExtension(matrixName) + count + "." + FilenameUtils.getExtension(matrixName));
             count++;
         }
 
@@ -175,10 +171,10 @@ public class Utils {
         return filename;
     }
 
-    public static List<File> getFilesForNeuronNames(List<String> selectedNeuronNames) {
+    public static List<File> getFilesForNeuronNames(List<String> selectedNeuronNames, File swcFileDirectory) {
         swcFiles = new ArrayList<>();
         Set<String> neuronNamesToFind = new HashSet<>(selectedNeuronNames);
-        getFilesForNeuronNamesRec(appProperties.getSwcFileDirectory(), neuronNamesToFind);
+        getFilesForNeuronNamesRec(swcFileDirectory, neuronNamesToFind);
         return swcFiles;
     }
 

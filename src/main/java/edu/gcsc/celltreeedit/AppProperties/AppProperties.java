@@ -8,21 +8,19 @@ import java.io.File;
 public final class AppProperties {
 
     private static final AppProperties INSTANCE = new AppProperties();
-
     public static AppProperties getInstance() {
         return INSTANCE;
     }
 
     private AppProperties() { }
 
-
-    // Ziel: mit defaultwerten füllen und evtl durch CommandlineArgumente ersetzen
-    // Default-Values
-    int calcType = 0;
-    File baseDirectory = new File("/media/exdisk/Sem06/BA/ProgramData");
-    File jsonPath = new File("/media/exdisk/Sem06/BA/ProgramData/swcFiles.json");
-    boolean show = true;
-    String matrixExportName = "DistanceMatrix.txt";
+    // Default-Values, might get replaced by CommandLineArguments
+    int calcType;
+    File baseDirectory = new File("");
+    File destinationDirectory = new File("");
+    File jsonFile = new File("");
+    String jsonName = "swcFiles.json";
+    String matrixName = "DistanceMatrix.txt";
 
     // nur getter, keine setter um nachträgliche änderung zu verhindern. getter für dataDirectory etc aber keine variable -> im getter zusammenbasteln. package-private machen! --> einfaches ändern in CommandLineParsing
     public int getCalcType() {
@@ -34,34 +32,34 @@ public final class AppProperties {
     }
 
     public File getDataDirectory() {
-        return new File(baseDirectory.getPath() + "/Data");
+        return (baseDirectory.getPath().equals("")) ? new File(baseDirectory.getPath() + "/Data") : new File("");
     }
 
     public File getMetadataDirectory() {
-        return new File(baseDirectory.getPath() + "/Data/Metadata");
+        return (baseDirectory.getPath().equals("")) ? new File(baseDirectory.getPath() + "/Data/Metadata") : new File("");
     }
 
     public File getSwcFileDirectory() {
-        return new File(baseDirectory.getPath() + "/Data/SWCFiles");
+        return (baseDirectory.getPath().equals("")) ? new File(baseDirectory.getPath() + "/Data/SWCFiles") : new File("");
     }
 
-    public File getWorkingDirectory() { return new File(baseDirectory.getPath() + "/WorkingDir"); }
+    public File getWorkingDirectory() {
+        return (baseDirectory.getPath().equals("")) ? new File(baseDirectory.getPath() + "/WorkingDir") : new File("");
+    }
 
     public File getOutputDirectory() {
-        return new File(baseDirectory.getPath() + "/Output");
+        return (baseDirectory.getPath().equals("")) ? new File(baseDirectory.getPath() + "/Output") : new File("");
     }
 
-    public File getJsonPath() {
-        return jsonPath;
+    public File getDestinationDirectory() { return destinationDirectory; }
+
+    public File getJsonFile() {
+        return jsonFile;
     }
 
-    public boolean isShow() {
-        return show;
-    }
+    public String getJsonName() { return jsonName; }
 
-    public String getMatrixExportName() {
-        return matrixExportName;
-    }
+    public String getMatrixName() { return matrixName; }
 }
 
 

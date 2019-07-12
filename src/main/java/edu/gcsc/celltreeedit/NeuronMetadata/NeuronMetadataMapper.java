@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.gcsc.celltreeedit.AppProperties.AppProperties;
 import edu.gcsc.celltreeedit.Utils;
 
 import java.io.File;
@@ -18,16 +17,13 @@ import java.util.Map;
  */
 public class NeuronMetadataMapper {
 
-    private static AppProperties appProperties = AppProperties.getInstance();
-
     private Map<String, NeuronMetadataR> neuronMetadataAll;
     private Map<String, NeuronMetadataR> neuronMetadataExisting;
 
     private final FileFilter fileFilter = (final File file) -> file.getName().toLowerCase().endsWith(".json");
 
-    public Map<String, NeuronMetadataR> mapAllFromMetadataDirectory() throws IOException {
-        File directory = appProperties.getMetadataDirectory();
-        File[] files = directory.listFiles(fileFilter);
+    public Map<String, NeuronMetadataR> mapAllFromMetadataDirectory(File metadataDirectory) throws IOException {
+        File[] files = metadataDirectory.listFiles(fileFilter);
         if (files == null) {
             throw new IOException("No json-Files for NeuronMetadata available");
         }
@@ -35,15 +31,14 @@ public class NeuronMetadataMapper {
         return neuronMetadataAll;
     }
 
-    public Map<String, NeuronMetadataR> mapExistingFromMetadataDirectory() throws IOException {
-        File directory = appProperties.getMetadataDirectory();
-        File[] files = directory.listFiles(fileFilter);
+    public Map<String, NeuronMetadataR> mapExistingFromMetadataDirectory(File metadataDirectory, File swcFileDirectory) throws IOException {
+        File[] files = metadataDirectory.listFiles(fileFilter);
         if (files == null) {
             throw new IOException("No json-Files for NeuronMetadata available");
         }
         this.mapFromJsonFiles(files);
         this.neuronMetadataExisting = new HashMap<>();
-        this.updateNeuronMetadataExisting(appProperties.getSwcFileDirectory());
+        this.updateNeuronMetadataExisting(swcFileDirectory);
         return this.neuronMetadataExisting;
     }
 

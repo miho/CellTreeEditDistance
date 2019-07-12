@@ -1,7 +1,6 @@
 package edu.gcsc.celltreeedit.Clustering;
 
 import com.apporiented.algorithm.clustering.Cluster;
-import edu.gcsc.celltreeedit.AppProperties.AppProperties;
 import edu.gcsc.celltreeedit.NeuronMetadata.NeuronMetadataMapper;
 import edu.gcsc.celltreeedit.NeuronMetadata.NeuronMetadataR;
 import edu.gcsc.celltreeedit.NeuronMetadata.UniqueMetadataContainer;
@@ -14,12 +13,10 @@ import java.util.Map;
 
 public class DendrogramCreator {
 
-    private static AppProperties appProperties = AppProperties.getInstance();
-
     public static void showDendrogram(Pair<double[][], String[]> result) throws IOException {
         String[] oldFileNames = result.getValue();
         String[] newFileNames = renameFileNamesToUniqueMetadataNames(oldFileNames);
-//            Utils.printMatrixToTxt(currentResult.getKey(), newFileNames, appProperties.getOutputDirectory(), "Matrix_fileNamesAdjusted.txt");
+
         // create cluster with matrix and adjusted names
         Clustering clustering = Clustering.getInstance();
         Cluster cluster = clustering.createCluster(result.getKey(), newFileNames);

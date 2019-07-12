@@ -26,33 +26,29 @@ import java.util.stream.Collectors;
  */
 public class Main {
 
-    private static AppProperties appProperties;
+    private static AppProperties appProperties = AppProperties.getInstance();
 
     public static void main(String[] args) throws IOException {
 
-        File file = new File("/media/exdisk/ABC/swcFileName.swc");
-        System.out.println(file.getName());
-
         CommandLineParsing.parseArguments(args);
-        appProperties = AppProperties.getInstance();
 
         switch (appProperties.getCalcType()) {
-            case 0:
+            case 0: // baseDirectory
                 preprocessSWCDirectory();
                 break;
-            case 1:
+            case 1: // baseDirectory, nameOfSWCFile
                 queryLucene();
                 break;
-            case 2:
+            case 2: // outputDirectory, nameOfSWCFile
                 queryByFileDialog();
                 break;
-            case 3:
+            case 3: // baseDirectory, nameOfSWCFile
                 queryByUniqueMetadata();
                 break;
-            case 4:
+            case 4: // directoryOfSWCFile, nameOfOutputMatrix
                 calculateTEDMatrix();
                 break;
-            case 5:
+            case 5: // directoryOfSWCFile, nameOfOutputMatrix
                 calculateTEDMatrixAndDendrogram();
                 break;
             case 6:
@@ -73,9 +69,9 @@ public class Main {
 
     private static Pair<double[][], String[]> calculateTEDMatrix() throws IOException {
         CellTreeEditDistance cellTreeEditDistance = new CellTreeEditDistance();
-        File[] files = JsonUtils.parseJsonToFiles(appProperties.getJsonPath());
+        File[] files = JsonUtils.parseJsonToFiles(appProperties.getJsonFile());
         Pair<double[][], String[]> result = cellTreeEditDistance.compareFilesFromFiles(files, 9);
-        Utils.printMatrixToTxt(result.getKey(), result.getValue(), appProperties.getOutputDirectory(), appProperties.getMatrixExportName());
+        Utils.printMatrixToTxt(result.getKey(), result.getValue(), appProperties.getOutputDirectory(), appProperties.getMatrixName());
         return result;
     }
 
@@ -102,7 +98,7 @@ public class Main {
 
         // put metadata in hashMap
         NeuronMetadataMapper neuronMetadataMapper = new NeuronMetadataMapper();
-        Map<String, NeuronMetadataR> neuronMetadata = neuronMetadataMapper.mapAllFromMetadataDirectory();
+        Map<String, NeuronMetadataR> neuronMetadata = neuronMetadataMapper.mapAllFromMetadataDirectory(appProperties.getMetadataDirectory());
 
         for (Pair<double[][], String[]> result : results) {
             ClusteringAnalyzer.analyzeClusteringOfTEDResult(result, neuronMetadata);
@@ -112,7 +108,7 @@ public class Main {
     private static void queryLucene() throws IOException {
         // put metadata in hashMap
         NeuronMetadataMapper neuronMetadataMapper = new NeuronMetadataMapper();
-        Map<String, NeuronMetadataR> neuronMetadata = neuronMetadataMapper.mapExistingFromMetadataDirectory();
+        Map<String, NeuronMetadataR> neuronMetadata = neuronMetadataMapper.mapExistingFromMetadataDirectory(appProperties.getMetadataDirectory(), appProperties.getSwcFileDirectory());
 
         File indexDirectory = new File(appProperties.getWorkingDirectory() + "/LuceneIndex");
         LuceneIndexWriter luceneIndexWriter = new LuceneIndexWriter(indexDirectory);
@@ -180,7 +176,7 @@ public class Main {
 
         // put metadata in hashMap
         NeuronMetadataMapper neuronMetadataMapper = new NeuronMetadataMapper();
-        Map<String, NeuronMetadataR> neuronMetadata = neuronMetadataMapper.mapExistingFromMetadataDirectory();
+        Map<String, NeuronMetadataR> neuronMetadata = neuronMetadataMapper.mapExistingFromMetadataDirectory(appProperties.getMetadataDirectory(), appProperties.getSwcFileDirectory());
 
         UniqueMetadataContainer uniqueMetadataContainer = new UniqueMetadataContainer();
         // add all metadata to UniqueMetadata
@@ -196,9 +192,9 @@ public class Main {
             System.out.println(uniqueMetadata.getSpecies() + ";" + String.join(", ", uniqueMetadata.getBrainRegion()) + ";" + String.join(", ", uniqueMetadata.getCellTypes()) + ";" + uniqueMetadata.getNoOfNeurons() + ";" + uniqueMetadata.getArchives().size());
         }
 
-        List<File> selectedNeuronFiles = Utils.getFilesForNeuronNames(selectedNeuronNames);
+        List<File> selectedNeuronFiles = Utils.getFilesForNeuronNames(selectedNeuronNames, appProperties.getSwcFileDirectory());
         // write to json
-        JsonUtils.writeToJSON(selectedNeuronFiles, PathType.RELATIVE_TO_BASE_DIRECTORY);
+        JsonUtils.writeToJSON(selectedNeuronFiles, PathType.RELATIVE_TO_BASE_DIRECTORY, appProperties.getBaseDirectory(), appProperties.getOutputDirectory());
     }
 
     private static List<String> pickNRandom(List<String> lst, int n) {
@@ -211,15 +207,15 @@ public class Main {
         File[] files = Utils.chooseSWCFiles();
         List<String> selectedNeuronNames = Arrays.stream(files).map(file -> Utils.removeSWCFileExtensions(file.getName())).collect(Collectors.toList());
 
-        List<File> selectedNeuronFiles = Utils.getFilesForNeuronNames(selectedNeuronNames);
+        List<File> selectedNeuronFiles = Utils.getFilesForNeuronNames(selectedNeuronNames, appProperties.getSwcFileDirectory());
         // write to json
-        JsonUtils.writeToJSON(selectedNeuronFiles, PathType.ABSOLUTE_PATH);
+        JsonUtils.writeToJSON(selectedNeuronFiles, PathType.ABSOLUTE_PATH, appProperties.getBaseDirectory(), appProperties.getOutputDirectory());
     }
 
     private static void preprocessSWCDirectory() throws IOException {
         // put metadata in hashMap
         NeuronMetadataMapper neuronMetadataMapper = new NeuronMetadataMapper();
-        Map<String, NeuronMetadataR> neuronMetadata = neuronMetadataMapper.mapAllFromMetadataDirectory();
+        Map<String, NeuronMetadataR> neuronMetadata = neuronMetadataMapper.mapAllFromMetadataDirectory(appProperties.getMetadataDirectory());
 
         // preprocess SWC-Directory
         File swcDirectory = new File("/media/exdisk/Sem06/BA/Data/SWC-Files/00_All");

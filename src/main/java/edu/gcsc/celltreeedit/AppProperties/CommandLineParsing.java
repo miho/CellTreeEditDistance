@@ -34,17 +34,24 @@ public class CommandLineParsing {
             if (hasOption(line, AppParameter.BASE_DIRECTORY)) {
                 properties.baseDirectory = extractFile(line, AppParameter.BASE_DIRECTORY);
             }
-            if (hasOption(line, AppParameter.JSON_DIRECTORY)) {
-                properties.jsonPath = extractFile(line, AppParameter.JSON_DIRECTORY);
+            if (hasOption(line, AppParameter.DESTINATION_DIRECTORY)) {
+                properties.destinationDirectory = extractFile(line, AppParameter.DESTINATION_DIRECTORY);
             }
-            if (hasOption(line, AppParameter.SHOW)) {
-                properties.show = extractBoolean(line, AppParameter.SHOW);
+            if (hasOption(line, AppParameter.JSON_FILE)) {
+                properties.jsonFile = extractFile(line, AppParameter.JSON_FILE);
+            }
+            if (hasOption(line, AppParameter.JSON_NAME)) {
+                properties.jsonName = extractString(line, AppParameter.JSON_NAME);
+            }
+            if (hasOption(line, AppParameter.MATRIX_NAME)) {
+                properties.matrixName = extractString(line, AppParameter.MATRIX_NAME);
             }
         } catch (final ParseException exp) {
             printHelp(allowedOptions);
         }
         return properties;
     }
+
 
     private static boolean hasOption(final CommandLine line, final AppParameter parameter) {
         return line.hasOption(parameter.name);
@@ -62,6 +69,10 @@ public class CommandLineParsing {
         return new File(line.getOptionValue(parameter.name));
     }
 
+    private static String extractString(final CommandLine line, final AppParameter parameter) {
+        return line.getOptionValue(parameter.name);
+    }
+
     private static void printHelp(final Options allowedOptions) {
         final HelpFormatter formatter = new HelpFormatter();
         formatter.printHelp("CellTreeEditDistance.jar", allowedOptions);
@@ -70,20 +81,47 @@ public class CommandLineParsing {
     private static void validateCommandLineArguments(CommandLine line, int calcType) throws ParseException {
         switch (calcType) {
             case 0:
-                break;
+                if (!hasOption(line, AppParameter.BASE_DIRECTORY) || hasOption(line, AppParameter.DESTINATION_DIRECTORY) || hasOption(line, AppParameter.JSON_FILE) || hasOption(line, AppParameter.JSON_NAME) || hasOption(line, AppParameter.MATRIX_NAME)) {
+                    throw new ParseException("calc=0: Argument 'base' needed. All others not allowed.");
+                }
             case 1:
-                if (hasOption(line, AppParameter.SHOW)) {
-                    throw new ParseException("Argument 'show' not allowed for calc=1");
+                if (!hasOption(line, AppParameter.BASE_DIRECTORY) || hasOption(line, AppParameter.DESTINATION_DIRECTORY) || hasOption(line, AppParameter.JSON_FILE) || hasOption(line, AppParameter.MATRIX_NAME)) {
+                    throw new ParseException("calc=1: Argument 'base' needed. Argument 'jsonname' optional. All others not allowed.");
                 }
                 break;
             case 2:
-                if (hasOption(line, AppParameter.BASE_DIRECTORY) || hasOption(line, AppParameter.JSON_DIRECTORY) || hasOption(line, AppParameter.SHOW)) {
-                    throw new ParseException("No other arguments allowed for calc=2");
+                if (!hasOption(line, AppParameter.DESTINATION_DIRECTORY) || hasOption(line, AppParameter.BASE_DIRECTORY) || hasOption(line, AppParameter.JSON_FILE) || hasOption(line, AppParameter.MATRIX_NAME)) {
+                    throw new ParseException("calc=2: Argument 'destination' needed. Argument 'jsonname' optional. All others not allowed.");
                 }
                 break;
             case 3:
-                if (hasOption(line, AppParameter.JSON_DIRECTORY) || hasOption(line, AppParameter.SHOW)) {
-                    throw new ParseException("Combination of arguments not allowed for calc=3");
+                if (!hasOption(line, AppParameter.BASE_DIRECTORY) || hasOption(line, AppParameter.DESTINATION_DIRECTORY) || hasOption(line, AppParameter.JSON_FILE) || hasOption(line, AppParameter.MATRIX_NAME)) {
+                    throw new ParseException("calc=3: Argument 'base' needed. Argument 'jsonname' optional. All others not allowed.");
+                }
+                break;
+            case 4:
+                if (!hasOption(line, AppParameter.JSON_FILE) || hasOption(line, AppParameter.DESTINATION_DIRECTORY) || hasOption(line, AppParameter.BASE_DIRECTORY) || hasOption(line, AppParameter.JSON_NAME) || hasOption(line, AppParameter.MATRIX_NAME)) {
+                    throw new ParseException("calc=4: Argument 'jsonfile' needed. Argument 'matrixname' optional. All others not allowed.");
+                }
+                break;
+            case 5:
+                if (!hasOption(line, AppParameter.JSON_FILE) || hasOption(line, AppParameter.DESTINATION_DIRECTORY) || hasOption(line, AppParameter.BASE_DIRECTORY) || hasOption(line, AppParameter.JSON_NAME) || hasOption(line, AppParameter.MATRIX_NAME)) {
+                    throw new ParseException("calc=5: Argument 'jsonfile' needed. Argument 'matrixname' optional. All others not allowed.");
+                }
+                break;
+            case 6:
+                if (hasOption(line, AppParameter.BASE_DIRECTORY) || hasOption(line, AppParameter.DESTINATION_DIRECTORY) || hasOption(line, AppParameter.JSON_FILE) || hasOption(line, AppParameter.JSON_NAME) || hasOption(line, AppParameter.MATRIX_NAME)) {
+                    throw new ParseException("calc=6: No other arguments allowed.");
+                }
+                break;
+            case 7:
+                if (hasOption(line, AppParameter.BASE_DIRECTORY) || hasOption(line, AppParameter.DESTINATION_DIRECTORY) || hasOption(line, AppParameter.JSON_FILE) || hasOption(line, AppParameter.JSON_NAME) || hasOption(line, AppParameter.MATRIX_NAME)) {
+                    throw new ParseException("calc=7: No other arguments allowed.");
+                }
+                break;
+            case 8:
+                if (hasOption(line, AppParameter.BASE_DIRECTORY) || hasOption(line, AppParameter.DESTINATION_DIRECTORY) || hasOption(line, AppParameter.JSON_FILE) || hasOption(line, AppParameter.JSON_NAME) || hasOption(line, AppParameter.MATRIX_NAME)) {
+                    throw new ParseException("calc=8: No other arguments allowed.");
                 }
                 break;
             default:
