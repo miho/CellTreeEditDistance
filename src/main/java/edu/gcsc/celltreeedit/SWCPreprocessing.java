@@ -110,7 +110,7 @@ public class SWCPreprocessing {
             new File(newFileDir).mkdirs();
             // move file to defined directory
             Files.move(Paths.get(file.getCanonicalPath()), Paths.get(newFileDir + file.getName()), StandardCopyOption.REPLACE_EXISTING);
-            System.out.println("File: " + file.getCanonicalPath() + "   moved to   " + newFileDir + file.getName());
+            System.out.println("File: " + file.getCanonicalPath() + "  Moved to: " + newFileDir + file.getName());
         } catch (IOException ex) {
             ex.printStackTrace();
         }

@@ -67,6 +67,34 @@ public class Main {
         }
     }
 
+    /**
+     * Initiates preprocessing of SWCDirectory
+     * @throws IOException if no json-files containing neuronMetadata are found
+     */
+    private static void preprocessSWCDirectory() throws IOException {
+        // put metadata in hashMap
+        NeuronMetadataMapper neuronMetadataMapper = new NeuronMetadataMapper();
+        Map<String, NeuronMetadataR> neuronMetadata = neuronMetadataMapper.mapAllFromMetadataDirectory(appProperties.getMetadataDirectory());
+
+        // preprocess SWC-Directory
+        SWCPreprocessing swcPreprocessing = new SWCPreprocessing();
+        swcPreprocessing.preprocessSWCDirectory(neuronMetadata, appProperties.getSwcFileDirectory());
+    }
+
+    /**
+     * Starts CLI for querying SWC-Files using Lucene
+     * @throws IOException if no json-files containing neuronMetadata are found
+     */
+    private static void queryLucene() throws IOException {
+        // put metadata in hashMap
+        NeuronMetadataMapper neuronMetadataMapper = new NeuronMetadataMapper();
+        Map<String, NeuronMetadataR> neuronMetadata = neuronMetadataMapper.mapExistingFromMetadataDirectory(appProperties.getMetadataDirectory(), appProperties.getSwcFileDirectory());
+
+        File indexDirectory = new File(appProperties.getWorkingDirectory() + "/LuceneIndex");
+        LuceneIndexWriter luceneIndexWriter = new LuceneIndexWriter(indexDirectory);
+        luceneIndexWriter.createIndex(neuronMetadata);
+        CLI.startCLI(indexDirectory, appProperties.getBaseDirectory(), appProperties.getOutputDirectory(), appProperties.getSwcFileDirectory(), appProperties.getJsonName());
+    }
 
     private static Pair<double[][], String[]> calculateTEDMatrix() throws IOException {
         CellTreeEditDistance cellTreeEditDistance = new CellTreeEditDistance();
@@ -105,19 +133,6 @@ public class Main {
             ClusteringAnalyzer.analyzeClusteringOfTEDResult(result, neuronMetadata);
         }
     }
-
-    private static void queryLucene() throws IOException {
-        // put metadata in hashMap
-        NeuronMetadataMapper neuronMetadataMapper = new NeuronMetadataMapper();
-        Map<String, NeuronMetadataR> neuronMetadata = neuronMetadataMapper.mapExistingFromMetadataDirectory(appProperties.getMetadataDirectory(), appProperties.getSwcFileDirectory());
-
-        File indexDirectory = new File(appProperties.getWorkingDirectory() + "/LuceneIndex");
-        LuceneIndexWriter luceneIndexWriter = new LuceneIndexWriter(indexDirectory);
-        luceneIndexWriter.createIndex(neuronMetadata);
-        System.out.println("lucene index created!");
-        CLI.startCLI(indexDirectory, appProperties.getBaseDirectory(), appProperties.getOutputDirectory(), appProperties.getSwcFileDirectory(), appProperties.getJsonName());
-    }
-
 
     // for querying the mostCommon neurontypes
 //    private static void queryByUniqueMetadata() throws IOException {
@@ -212,17 +227,6 @@ public class Main {
         // write to json
         JsonUtils.writeToJSON(selectedNeuronFiles, appProperties.getDestinationDirectory(), appProperties.getJsonName());
     }
-
-    private static void preprocessSWCDirectory() throws IOException {
-        // put metadata in hashMap
-        NeuronMetadataMapper neuronMetadataMapper = new NeuronMetadataMapper();
-        Map<String, NeuronMetadataR> neuronMetadata = neuronMetadataMapper.mapAllFromMetadataDirectory(appProperties.getMetadataDirectory());
-
-        // preprocess SWC-Directory
-        SWCPreprocessing swcPreprocessing = new SWCPreprocessing();
-        swcPreprocessing.preprocessSWCDirectory(neuronMetadata, appProperties.getSwcFileDirectory());
-    }
-
 
     // method to do some custom things which program should not be able to do in the end
     private static void doWhateverIsInMyFunctionBody() throws IOException {
