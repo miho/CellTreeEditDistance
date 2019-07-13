@@ -233,4 +233,23 @@ public class Utils {
         }
         return fileNames;
     }
+
+    public static boolean doublesAlmostEqual(double a, double b)
+    {
+        double maxDiff = 1e-10d;
+        int maxUlpsDiff = 5;
+        // Check if the numbers are really close -- needed when comparing numbers near zero as their difference could be greatly bigger than zero
+        double absDiff = Math.abs(a - b);
+        if (absDiff <= maxDiff)
+            return true;
+
+        // Different signs means they do not match.
+        if (a < 0 != b < 0)
+            return false;
+
+        // find larger number
+        double largest = (b > a) ? b : a;
+        // get ulp of largest. when difference of doubles is smaller than ulp * allowed number of ulp
+        return (absDiff <= Math.ulp(largest) * maxUlpsDiff);
+    }
 }

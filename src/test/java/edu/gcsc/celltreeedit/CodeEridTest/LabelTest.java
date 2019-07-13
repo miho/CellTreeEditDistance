@@ -2,6 +2,7 @@ package edu.gcsc.celltreeedit.CodeEridTest;
 
 import edu.gcsc.celltreeedit.TEDCalculation.NodeData;
 import edu.gcsc.celltreeedit.TEDCalculation.TreeCreator;
+import edu.gcsc.celltreeedit.Utils;
 import eu.mihosoft.ext.apted.node.Node;
 import org.junit.Test;
 
@@ -10,6 +11,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class LabelTest {
 
@@ -42,7 +44,7 @@ public class LabelTest {
 
     @Test
     public void checkLabels() throws IOException {
-        for (int i = 1; i < 23; i++) {
+        for (int i = 1; i < 22; i++) {
             FileInputStream f = new FileInputStream(new File("/media/exdisk/Sem06/BA/ProgramData/Data/Test/labelTest01.swc"));
             TreeCreator t = new TreeCreator(f);
             Node<NodeData> root = t.createTree(i);
@@ -52,7 +54,10 @@ public class LabelTest {
 
     // currentNode and index in preorder
     private int checkLabel(Node<NodeData> currentNode, int labelId, int nodeIndex, double delta) {
-        assertEquals(this.correctLabels[nodeIndex][labelId - 1], currentNode.getNodeData().getLabel(), delta);
+        System.out.println("correct: " + this.correctLabels[nodeIndex][labelId - 1]);
+        System.out.println("actual : " + currentNode.getNodeData().getLabel());
+        assertTrue(Utils.doublesAlmostEqual(this.correctLabels[nodeIndex][labelId - 1], currentNode.getNodeData().getLabel()));
+//        assertEquals(this.correctLabels[nodeIndex][labelId - 1], currentNode.getNodeData().getLabel(), delta);
 
         // if currentNode has no children return own index
         if (currentNode.getChildren() == null) {

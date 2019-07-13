@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
 
+import edu.gcsc.celltreeedit.Utils;
 import eu.mihosoft.ext.apted.node.Node;
 import eu.mihosoft.ext.apted.parser.InputParser;
 import eu.mihosoft.vswcreader.SWCSegment;
@@ -216,7 +217,7 @@ public class TreeCreator implements InputParser <NodeData> , Serializable {
         double x = currentNode.getNodeData().getPosX().get(j) - currentNode.getNodeData().getPosX().get(j-1);
         double y = currentNode.getNodeData().getPosY().get(j) - currentNode.getNodeData().getPosY().get(j-1);
         double z = currentNode.getNodeData().getPosZ().get(j) - currentNode.getNodeData().getPosZ().get(j-1);
-        return Math.pow(x * x + y * y + z * z, 0.5);
+        return Math.sqrt(x * x + y * y + z * z);
     }
 
     /**
@@ -395,11 +396,17 @@ public class TreeCreator implements InputParser <NodeData> , Serializable {
      */
     private double calculate_s_sec(Node<NodeData> currentNode) {
         double surface = 0;
+        double length, surfacePart;
+        Double r1, r2;
         for (int j = 1; j < currentNode.getNodeData().getPosX().size(); j++) {
-            double length = calculateLengthAtIndex(currentNode, j);
-            double r1 = currentNode.getNodeData().getRadius().get(j-1); // radius of node closer to root
-            double r2 = currentNode.getNodeData().getRadius().get(j); // radius of node closer to leafs
-            double surfacePart = (r1+r2)*Math.PI*Math.sqrt(Math.pow(r1-r2,2)+Math.pow(length, 2));
+            length = calculateLengthAtIndex(currentNode, j);
+            r1 = currentNode.getNodeData().getRadius().get(j-1); // radius of node closer to root
+            r2 = currentNode.getNodeData().getRadius().get(j); // radius of node closer to leafs
+            if (Utils.doublesAlmostEqual(r1, r2)) {
+                surfacePart = 2 * r1 * Math.PI * length;
+            } else {
+                surfacePart = (r1+r2)*Math.PI*Math.sqrt((r1-r2)*(r1-r2)+length*length);
+            }
             surface += surfacePart;
         }
         return surface;

@@ -13,7 +13,6 @@ import edu.gcsc.celltreeedit.NeuronMetadata.UniqueMetadataContainer;
 import edu.gcsc.celltreeedit.TEDCalculation.CellTreeEditDistance;
 import javafx.util.Pair;
 import org.apache.commons.cli.ParseException;
-import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,6 +28,25 @@ public class Main {
     private static AppProperties appProperties = AppProperties.getInstance();
 
     public static void main(String[] args) throws IOException, ParseException {
+
+        System.out.printf("%.30f\n", 1.435 - 1.43);
+        System.out.printf("%.30f\n", 1.4305 - 1.43);
+        System.out.printf("%.30f\n", 1.43005 - 1.43);
+        System.out.printf("%.30f\n", 1.430005 - 1.43);
+        System.out.printf("%.30f\n", 1.4300005 - 1.43);
+        System.out.printf("%.30f\n", 1.43000005 - 1.43);
+        System.out.printf("%.30f\n", 1.430000005 - 1.43);
+        System.out.printf("%.30f\n", 1.4300000005 - 1.43);
+        System.out.printf("%.30f\n", 1.43000000005 - 1.43);
+        System.out.printf("%.30f\n", 1.430000000005 - 1.43);
+        System.out.printf("%.30f\n", 1.4300000000005 - 1.43);
+        System.out.printf("%.30f\n", 1.43000000000005 - 1.43);
+        System.out.printf("%.30f\n", 1.430000000000005 - 1.43);
+        System.out.printf("%.30f\n", 1.4300000000000005 - 1.43);
+        System.out.printf("%.30f\n", 1.43000000000000005 - 1.43);
+
+
+
 
         CommandLineParsing.parseArguments(args);
 
