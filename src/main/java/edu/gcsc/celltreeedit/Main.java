@@ -13,6 +13,7 @@ import edu.gcsc.celltreeedit.NeuronMetadata.UniqueMetadataContainer;
 import edu.gcsc.celltreeedit.TEDCalculation.CellTreeEditDistance;
 import javafx.util.Pair;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -96,7 +97,7 @@ public class Main {
         CLI.startCLI(indexDirectory, appProperties.getBaseDirectory(), appProperties.getOutputDirectory(), appProperties.getSwcFileDirectory(), appProperties.getJsonName());
     }
 
-    /**
+    /** TODO: DELETE??
      * Lets User choose either a directory containing swc-Files or multiple swc-Files. SWC-File-paths are written to json-File.
      * @throws IOException if json-file could not be written to hard drive
      */
@@ -159,20 +160,25 @@ public class Main {
     }
 
     private static Pair<double[][], String[]> calculateTEDMatrix() throws IOException {
-        System.out.println("> Starting TED calculation");
+        System.out.println("> Starting TED calculation\n");
         CellTreeEditDistance cellTreeEditDistance = new CellTreeEditDistance();
         File[] files = JsonUtils.parseJsonToFiles(appProperties.getJsonFile());
+        for (int i = 0; i < files.length; i++) {
+            files[i] = new File(appProperties.getSwcFileDirectory() + "/" + files[i].getPath());
+        }
         Pair<double[][], String[]> result = cellTreeEditDistance.compareFilesFromFiles(files, 9);
         Utils.printMatrixToTxt(result.getKey(), result.getValue(), appProperties.getOutputDirectory(), appProperties.getMatrixName());
         return result;
     }
 
     private static void calculateTEDMatrixAndDendrogram() throws IOException {
+        System.out.println("> Starting TED calculation and Dendrogram calculation\n");
         Pair<double[][], String[]> result = calculateTEDMatrix();
         DendrogramCreator.showDendrogram(result, appProperties.getMetadataDirectory());
     }
 
     private static void calculateDendrogramsForTEDMatrices() throws IOException {
+        System.out.println("> Starting Dendrogram calculation for TEDMatrices");
         List<Pair<double[][], String[]>> results = Utils.readMatricesFromTxt();
         for (Pair<double[][], String[]> result : results) {
             DendrogramCreator.showDendrogram(result, appProperties.getMetadataDirectory());
@@ -185,6 +191,7 @@ public class Main {
      * @throws IOException
      */
     private static void analyzeClusteringOfTEDMatrices() throws IOException {
+        System.out.println("> Starting Analysis of Clustering for TEDMatrices");
 
         List<Pair<double[][], String[]>> results = Utils.readMatricesFromTxt();
 
@@ -233,6 +240,7 @@ public class Main {
 
     // method to do some custom things which program should not be able to do in the end
     private static void doWhateverIsInMyFunctionBody() throws IOException {
+        System.out.println("> Starting doWhateverIsInMyFunctionBody()");
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         CellTreeEditDistance cellTreeEditDistance;
         Pair<double[][], String[]> result;

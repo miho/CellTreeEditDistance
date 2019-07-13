@@ -42,7 +42,7 @@ public class CommandLineParsing {
             }
             if (hasOption(line, AppParameter.JSON_FILE)) {
                 properties.jsonFile = extractFile(line, AppParameter.JSON_FILE);
-                setDirectoriesAccordingToBaseDirectory(FilenameUtils.getPath(properties.jsonFile.getAbsolutePath()));
+                setDirectoriesAccordingToBaseDirectory(FilenameUtils.getFullPathNoEndSeparator(properties.jsonFile.getAbsolutePath()));
             }
             if (hasOption(line, AppParameter.JSON_NAME)) {
                 properties.jsonName = extractString(line, AppParameter.JSON_NAME);
@@ -112,32 +112,32 @@ public class CommandLineParsing {
                 }
                 break;
             case 4:
-                if (!hasOption(line, AppParameter.JSON_FILE) || hasOption(line, AppParameter.DESTINATION_DIRECTORY) || hasOption(line, AppParameter.BASE_DIRECTORY) || hasOption(line, AppParameter.JSON_NAME) || hasOption(line, AppParameter.MATRIX_NAME)) {
+                if (!hasOption(line, AppParameter.JSON_FILE) || hasOption(line, AppParameter.DESTINATION_DIRECTORY) || hasOption(line, AppParameter.BASE_DIRECTORY) || hasOption(line, AppParameter.JSON_NAME)) {
                     throw new ParseException("calc=4: Argument 'jsonfile' needed. Argument 'matrixname' optional. All others not allowed.");
                 }
                 break;
             case 5:
-                if (!hasOption(line, AppParameter.JSON_FILE) || hasOption(line, AppParameter.DESTINATION_DIRECTORY) || hasOption(line, AppParameter.BASE_DIRECTORY) || hasOption(line, AppParameter.JSON_NAME) || hasOption(line, AppParameter.MATRIX_NAME)) {
+                if (!hasOption(line, AppParameter.JSON_FILE) || hasOption(line, AppParameter.DESTINATION_DIRECTORY) || hasOption(line, AppParameter.BASE_DIRECTORY) || hasOption(line, AppParameter.JSON_NAME)) {
                     throw new ParseException("calc=5: Argument 'jsonfile' needed. Argument 'matrixname' optional. All others not allowed.");
                 }
                 break;
             case 6:
-                if (hasOption(line, AppParameter.BASE_DIRECTORY) || hasOption(line, AppParameter.DESTINATION_DIRECTORY) || hasOption(line, AppParameter.JSON_FILE) || hasOption(line, AppParameter.JSON_NAME) || hasOption(line, AppParameter.MATRIX_NAME)) {
+                if (!hasOption(line, AppParameter.BASE_DIRECTORY) || hasOption(line, AppParameter.DESTINATION_DIRECTORY) || hasOption(line, AppParameter.JSON_FILE) || hasOption(line, AppParameter.JSON_NAME) || hasOption(line, AppParameter.MATRIX_NAME)) {
                     throw new ParseException("calc=6: No other arguments allowed.");
                 }
                 break;
             case 7:
-                if (hasOption(line, AppParameter.BASE_DIRECTORY) || hasOption(line, AppParameter.DESTINATION_DIRECTORY) || hasOption(line, AppParameter.JSON_FILE) || hasOption(line, AppParameter.JSON_NAME) || hasOption(line, AppParameter.MATRIX_NAME)) {
+                if (!hasOption(line, AppParameter.BASE_DIRECTORY) || hasOption(line, AppParameter.DESTINATION_DIRECTORY) || hasOption(line, AppParameter.JSON_FILE) || hasOption(line, AppParameter.JSON_NAME) || hasOption(line, AppParameter.MATRIX_NAME)) {
                     throw new ParseException("calc=7: No other arguments allowed.");
                 }
                 break;
             case 8:
-                if (hasOption(line, AppParameter.BASE_DIRECTORY) || hasOption(line, AppParameter.DESTINATION_DIRECTORY) || hasOption(line, AppParameter.JSON_FILE) || hasOption(line, AppParameter.JSON_NAME) || hasOption(line, AppParameter.MATRIX_NAME)) {
+                if (!hasOption(line, AppParameter.BASE_DIRECTORY) || hasOption(line, AppParameter.DESTINATION_DIRECTORY) || hasOption(line, AppParameter.JSON_FILE) || hasOption(line, AppParameter.JSON_NAME) || hasOption(line, AppParameter.MATRIX_NAME)) {
                     throw new ParseException("calc=8: No other arguments allowed.");
                 }
                 break;
             default:
-                throw new ParseException("'calc' can only have value 0, 1, 2 or 3");
+                throw new ParseException("'calc' can only have value between 0 and 8");
         }
     }
 }
