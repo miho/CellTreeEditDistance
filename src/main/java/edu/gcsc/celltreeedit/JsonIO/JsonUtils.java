@@ -46,23 +46,23 @@ public class JsonUtils {
     }
 
     public static void writeToJSON(List<File> files, File swcFileDirectory, File outputDirectory, String jsonName) throws IOException {
-        files = removeBaseDirectoryFromPaths(files, swcFileDirectory);
+        files = removeSwcFileDirectoryFromPaths(files, swcFileDirectory);
         writeToJSON(files, outputDirectory, jsonName);
     }
 
     public static void writeToJSON(List<File> files, File destinationDirectory, String jsonName) throws IOException {
         NeuronFilesWrapper neuronFilesWrapper = new NeuronFilesWrapper();
-        neuronFilesWrapper.setNeuronFiles(files.stream().map(File::getName).collect(Collectors.toList()));
+        neuronFilesWrapper.setNeuronFiles(files.stream().map(File::getAbsolutePath).collect(Collectors.toList()));
         ObjectMapper mapper = new ObjectMapper();
         File file = Utils.incrementFileNameIfNecessary(destinationDirectory, FilenameUtils.removeExtension(jsonName) + ".json");
         mapper.writeValue(file, neuronFilesWrapper);
         System.out.println("File saved to: " + file.getAbsolutePath());
     }
 
-    private static List<File> removeBaseDirectoryFromPaths(List<File> files, File baseDirectory) {
+    private static List<File> removeSwcFileDirectoryFromPaths(List<File> files, File swcFileDirectory) {
         List<File> newFiles = new ArrayList<>();
         for (File file : files) {
-            newFiles.add(new File(file.getPath().replace(baseDirectory.getPath(), "")));
+            newFiles.add(new File(file.getAbsolutePath().replace(swcFileDirectory.getAbsolutePath(), "")));
         }
         return newFiles;
     }

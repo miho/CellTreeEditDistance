@@ -22,13 +22,15 @@ public class Utils {
      * @return a list of files which were selected
      */
     public static List<File> chooseSWCFiles() {
+        JFrame jFrame = new JFrame();
+        jFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES); //accept files and directories as input
         FileNameExtensionFilter swc = new FileNameExtensionFilter("SWC", "SWC");
         fileChooser.addChoosableFileFilter(swc);                            // filter on swc files
         fileChooser.setAcceptAllFileFilterUsed(false);                     // show only swc files
         fileChooser.setMultiSelectionEnabled(true);                       // accept multiple files as input
-        fileChooser.showOpenDialog(null);
+        fileChooser.showOpenDialog(jFrame);
 
         File[] chosenFiles;
 
@@ -43,6 +45,7 @@ public class Utils {
                 }
             });
         }
+        jFrame.dispose();
         return (chosenFiles != null) ? Arrays.asList(chosenFiles) : new ArrayList<>();
     }
 
@@ -146,15 +149,32 @@ public class Utils {
      * @return a txt-file
      */
     private static File[] chooseTxtFiles() {
+        JFrame jFrame = new JFrame();
+        jFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY); //accept files and directories as input
         FileNameExtensionFilter json = new FileNameExtensionFilter("txt", "txt");
         fileChooser.addChoosableFileFilter(json);                            // filter on txt files
         fileChooser.setAcceptAllFileFilterUsed(false);                     // show only txt files
         fileChooser.setMultiSelectionEnabled(true);                       // accept only single file as input
-        fileChooser.showOpenDialog(null);
+        fileChooser.showOpenDialog(jFrame);
 
-        return fileChooser.getSelectedFiles();
+
+        File[] chosenFiles;
+
+        if (fileChooser.getSelectedFile().isFile())
+            chosenFiles = fileChooser.getSelectedFiles();
+        else {
+            File folder = new File(fileChooser.getSelectedFile().getAbsolutePath());
+            chosenFiles = folder.listFiles(new FilenameFilter() {              // return only swc files
+                @Override
+                public boolean accept(File dir, String name) {
+                    return name.endsWith(".txt");
+                }
+            });
+        }
+        jFrame.dispose();
+        return (chosenFiles != null) ? chosenFiles : new File[]{};
     }
 
     public static File chooseDirectory() {
