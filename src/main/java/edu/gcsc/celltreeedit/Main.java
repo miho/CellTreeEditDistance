@@ -110,47 +110,52 @@ public class Main {
     // TODO: Inhalt auslagern??, uniqueMetadata Anzahl der Neuronen stimmt nicht
     // for querying a predefined combination
     private static void queryByUniqueMetadata() throws IOException {
-        System.out.println("Starting query by predefined UniqueMetadata");
+        System.out.println("Starting query by predefined UniqueMetadata\n");
         int noOfNeuronsPerType = 37;
 
-        // define which uniqueMetadata Types shall be used
-        UniqueMetadataContainer selectedUniqueMetadataContainer = new UniqueMetadataContainer();
-        Set<UniqueMetadataContainer.UniqueMetadata> selectedUniqueMetadata = new HashSet<>();
-        selectedUniqueMetadata.add(selectedUniqueMetadataContainer.createUniqueMetadataObject(new HashSet<>(Arrays.asList("principal cell", "pyramidal")), new HashSet<>(Arrays.asList("CA1", "hippocampus")), "rat", "", ""));
-        selectedUniqueMetadata.add(selectedUniqueMetadataContainer.createUniqueMetadataObject(new HashSet<>(Arrays.asList("principal cell", "pyramidal")), new HashSet<>(Arrays.asList("CA3", "hippocampus")), "rat", "", ""));
-        selectedUniqueMetadata.add(selectedUniqueMetadataContainer.createUniqueMetadataObject(new HashSet<>(Arrays.asList("principal cell", "granule")), new HashSet<>(Arrays.asList("dentate gyrus", "hippocampus")), "rat", "", ""));
-        selectedUniqueMetadata.add(selectedUniqueMetadataContainer.createUniqueMetadataObject(new HashSet<>(Arrays.asList("Glia", "astrocyte")), new HashSet<>(Arrays.asList("CA3", "hippocampus")), "rat", "", ""));
-        selectedUniqueMetadata.add(selectedUniqueMetadataContainer.createUniqueMetadataObject(new HashSet<>(Arrays.asList("Glia", "astrocyte")), new HashSet<>(Arrays.asList("CA1", "hippocampus")), "rat", "", ""));
-        selectedUniqueMetadata.add(selectedUniqueMetadataContainer.createUniqueMetadataObject(new HashSet<>(Arrays.asList("principal cell", "pyramidal")), new HashSet<>(Arrays.asList("somatosensory", "neocortex", "layer 4")), "rat", "", ""));
-        selectedUniqueMetadata.add(selectedUniqueMetadataContainer.createUniqueMetadataObject(new HashSet<>(Arrays.asList("stellate", "interneuron")), new HashSet<>(Arrays.asList("amygdala", "basolateral amygdala complex")), "rat", "", ""));
-        selectedUniqueMetadata.add(selectedUniqueMetadataContainer.createUniqueMetadataObject(new HashSet<>(Arrays.asList("principal cell", "pyramidal")), new HashSet<>(Arrays.asList("somatosensory", "neocortex", "layer 2")), "rat", "", ""));
-        selectedUniqueMetadata.add(selectedUniqueMetadataContainer.createUniqueMetadataObject(new HashSet<>(Arrays.asList("principal cell", "pyramidal")), new HashSet<>(Arrays.asList("somatosensory", "neocortex", "layer 3")), "rat", "", ""));
-        selectedUniqueMetadata.add(selectedUniqueMetadataContainer.createUniqueMetadataObject(new HashSet<>(Arrays.asList("principal cell", "pyramidal")), new HashSet<>(Arrays.asList("somatosensory", "neocortex", "layer 5a")), "rat", "", ""));
-        selectedUniqueMetadata.add(selectedUniqueMetadataContainer.createUniqueMetadataObject(new HashSet<>(Arrays.asList("principal cell", "pyramidal")), new HashSet<>(Arrays.asList("somatosensory", "neocortex", "layer 5b")), "rat", "", ""));
-        selectedUniqueMetadata.add(selectedUniqueMetadataContainer.createUniqueMetadataObject(new HashSet<>(Arrays.asList("Horizontal", "interneuron", "neurogliaform")), new HashSet<>(Arrays.asList("somatosensory", "neocortex", "layer 1")), "rat", "", ""));
-        selectedUniqueMetadata.add(selectedUniqueMetadataContainer.createUniqueMetadataObject(new HashSet<>(Arrays.asList("Star", "pyramidal", "interneuron")), new HashSet<>(Arrays.asList("somatosensory", "neocortex", "layer 4")), "rat", "", ""));
+        // define which uniqueMetadata-groups shall be used
+        UniqueMetadataContainer predefinedUniqueMetadataContainer = new UniqueMetadataContainer();
+        Set<UniqueMetadataContainer.UniqueMetadata> predefinedUniqueMetadata = new HashSet<>();
+        predefinedUniqueMetadata.add(predefinedUniqueMetadataContainer.createUniqueMetadataObject(new HashSet<>(Arrays.asList("principal cell", "pyramidal")), new HashSet<>(Arrays.asList("CA1", "hippocampus")), "rat", "", ""));
+        predefinedUniqueMetadata.add(predefinedUniqueMetadataContainer.createUniqueMetadataObject(new HashSet<>(Arrays.asList("principal cell", "pyramidal")), new HashSet<>(Arrays.asList("CA3", "hippocampus")), "rat", "", ""));
+        predefinedUniqueMetadata.add(predefinedUniqueMetadataContainer.createUniqueMetadataObject(new HashSet<>(Arrays.asList("principal cell", "granule")), new HashSet<>(Arrays.asList("dentate gyrus", "hippocampus")), "rat", "", ""));
+        predefinedUniqueMetadata.add(predefinedUniqueMetadataContainer.createUniqueMetadataObject(new HashSet<>(Arrays.asList("Glia", "astrocyte")), new HashSet<>(Arrays.asList("CA3", "hippocampus")), "rat", "", ""));
+        predefinedUniqueMetadata.add(predefinedUniqueMetadataContainer.createUniqueMetadataObject(new HashSet<>(Arrays.asList("Glia", "astrocyte")), new HashSet<>(Arrays.asList("CA1", "hippocampus")), "rat", "", ""));
+        predefinedUniqueMetadata.add(predefinedUniqueMetadataContainer.createUniqueMetadataObject(new HashSet<>(Arrays.asList("principal cell", "pyramidal")), new HashSet<>(Arrays.asList("somatosensory", "neocortex", "layer 4")), "rat", "", ""));
+        predefinedUniqueMetadata.add(predefinedUniqueMetadataContainer.createUniqueMetadataObject(new HashSet<>(Arrays.asList("stellate", "interneuron")), new HashSet<>(Arrays.asList("amygdala", "basolateral amygdala complex")), "rat", "", ""));
+        predefinedUniqueMetadata.add(predefinedUniqueMetadataContainer.createUniqueMetadataObject(new HashSet<>(Arrays.asList("principal cell", "pyramidal")), new HashSet<>(Arrays.asList("somatosensory", "neocortex", "layer 2")), "rat", "", ""));
+        predefinedUniqueMetadata.add(predefinedUniqueMetadataContainer.createUniqueMetadataObject(new HashSet<>(Arrays.asList("principal cell", "pyramidal")), new HashSet<>(Arrays.asList("somatosensory", "neocortex", "layer 3")), "rat", "", ""));
+        predefinedUniqueMetadata.add(predefinedUniqueMetadataContainer.createUniqueMetadataObject(new HashSet<>(Arrays.asList("principal cell", "pyramidal")), new HashSet<>(Arrays.asList("somatosensory", "neocortex", "layer 5a")), "rat", "", ""));
+        predefinedUniqueMetadata.add(predefinedUniqueMetadataContainer.createUniqueMetadataObject(new HashSet<>(Arrays.asList("principal cell", "pyramidal")), new HashSet<>(Arrays.asList("somatosensory", "neocortex", "layer 5b")), "rat", "", ""));
+        predefinedUniqueMetadata.add(predefinedUniqueMetadataContainer.createUniqueMetadataObject(new HashSet<>(Arrays.asList("Horizontal", "interneuron", "neurogliaform")), new HashSet<>(Arrays.asList("somatosensory", "neocortex", "layer 1")), "rat", "", ""));
+        predefinedUniqueMetadata.add(predefinedUniqueMetadataContainer.createUniqueMetadataObject(new HashSet<>(Arrays.asList("Star", "pyramidal", "interneuron")), new HashSet<>(Arrays.asList("somatosensory", "neocortex", "layer 4")), "rat", "", ""));
 
-        // put metadata in hashMap
+        // get existing neuronMetadata and put it in existingUniqueMetadataContainer --> neuronNames for each uniqueMetadata-group --> select neurons randomly from uniqueMetadata-group
         NeuronMetadataMapper neuronMetadataMapper = new NeuronMetadataMapper();
         Map<String, NeuronMetadataR> neuronMetadata = neuronMetadataMapper.mapExistingFromMetadataDirectory(appProperties.getMetadataDirectory(), appProperties.getSwcFileDirectory());
-
-        UniqueMetadataContainer uniqueMetadataContainer = new UniqueMetadataContainer();
-        // add all metadata to UniqueMetadata
+        UniqueMetadataContainer existingUniqueMetadataContainer = new UniqueMetadataContainer();
+        // add all existing neuronMetadata to UniqueMetadata
         for (String neuronMetadataRKey : neuronMetadata.keySet()) {
-            uniqueMetadataContainer.addNeuronMetadata(neuronMetadata.get(neuronMetadataRKey));
+            existingUniqueMetadataContainer.addNeuronMetadata(neuronMetadata.get(neuronMetadataRKey));
         }
 
 //         select neurons depending on typeCount and input-variables
         List<String> selectedNeuronNames = new ArrayList<>();
-        for (UniqueMetadataContainer.UniqueMetadata uniqueMetadata : selectedUniqueMetadata) {
+        for (UniqueMetadataContainer.UniqueMetadata uniqueMetadata : predefinedUniqueMetadata) {
             // select noOfNeuronsPerType neurons randomly
-            selectedNeuronNames.addAll(pickNRandom(uniqueMetadataContainer.getUniqueMetadataMap().get(uniqueMetadata).getNeuronNames(), noOfNeuronsPerType));
-            System.out.println(uniqueMetadata.getSpecies() + ";" + String.join(", ", uniqueMetadata.getBrainRegion()) + ";" + String.join(", ", uniqueMetadata.getCellTypes()) + ";" + uniqueMetadata.getNoOfNeurons() + ";" + uniqueMetadata.getArchives().size());
+            selectedNeuronNames.addAll(pickNRandom(existingUniqueMetadataContainer.getUniqueMetadataMap().get(uniqueMetadata).getNeuronNames(), noOfNeuronsPerType));
+            System.out.println("species: " + uniqueMetadata.getSpecies() + "; " + "brainRegion" + String.join(", ", uniqueMetadata.getBrainRegion()) + "; " + "cellTypes: " + String.join(", ", uniqueMetadata.getCellTypes()) + "; " + "noOfNeurons: " + existingUniqueMetadataContainer.getUniqueMetadataMap().get(uniqueMetadata).getNoOfNeurons() + "; " + "noOfArchives: " + existingUniqueMetadataContainer.getUniqueMetadataMap().get(uniqueMetadata).getArchives().size());
         }
 
         List<File> selectedNeuronFiles = Utils.getFilesForNeuronNames(selectedNeuronNames, appProperties.getSwcFileDirectory());
         // write to json
         JsonUtils.writeToJSON(selectedNeuronFiles, appProperties.getSwcFileDirectory(), appProperties.getOutputDirectory(), appProperties.getJsonName());
+    }
+
+    private static List<String> pickNRandom(List<String> lst, int n) {
+        List<String> copy = new LinkedList<>(lst);
+        Collections.shuffle(copy);
+        return n > copy.size() ? copy.subList(0, copy.size()) : copy.subList(0, n);
     }
 
     private static Pair<double[][], String[]> calculateTEDMatrix() throws IOException {
@@ -225,12 +230,6 @@ public class Main {
 //        // write to json
 //        JsonUtils.writeToJSON(selectedNeuronNames, appProperties.getOutputDirectory());
 //    }
-
-    private static List<String> pickNRandom(List<String> lst, int n) {
-        List<String> copy = new LinkedList<>(lst);
-        Collections.shuffle(copy);
-        return n > copy.size() ? copy.subList(0, copy.size()) : copy.subList(0, n);
-    }
 
     // method to do some custom things which program should not be able to do in the end
     private static void doWhateverIsInMyFunctionBody() throws IOException {
