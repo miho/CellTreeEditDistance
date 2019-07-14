@@ -37,13 +37,19 @@ public class LabelTest {
     };
 
     private Random rand = new Random();
-    private int maxDepth = 20;
-    private double[] nodeOffsets = new double[]{2, 1, 1, 1};
+    private int maxDepth;
+    private double[] nodeOffsets;
     private int nodeNumber;
     private BufferedWriter br;
 
+    private int noOfTestNodes;
+    private double lengthOfT;
+    private double volumeOfT;
+    private double surfaceOfT;
+
 
     @Test
+
     public void checkLabels() throws IOException {
         for (int i = 1; i < 22; i++) {
             FileInputStream f = new FileInputStream(new File("/media/exdisk/Sem06/BA/ProgramData/Data/Test/labelTest01.swc"));
@@ -82,60 +88,247 @@ public class LabelTest {
 
     @Test
     public void checkLabelsProgramatically() throws IOException {
-        createTreeAndSWCFile();
+        TestNode testRoot = createTreeAndSWCFile();
+        this.noOfTestNodes = calculateNoOfTestNodes(testRoot);
+        this.lengthOfT = testRoot.getNoOfDecendents() * calculateLengthOfSegment();
+        this.volumeOfT = testRoot.getNoOfDecendents() * calculateVolumeOfSegment();
+        this.surfaceOfT = testRoot.getNoOfDecendents() * calculateSurfaceOfSegment();
 
-        for (int i = 1; i < 22; i++) {
+        for (int i = 1; i < 21; i++) {
+            System.out.println("labelId: " + i);
             FileInputStream f = new FileInputStream(new File("/media/exdisk/Sem06/BA/ProgramData/WorkingDir/programaticSWCFile.swc"));
             TreeCreator t = new TreeCreator(f);
             Node<NodeData> root = t.createTree(i);
-            checkLabelProgramatically(root, i, 0);
+            checkLabelProgramatically(testRoot, root, i);
         }
     }
 
     // currentNode and index in preorder
-    private int checkLabelProgramatically(Node<NodeData> currentNode, int labelId, int nodeIndex) {
-
-//        System.out.println("correct: " + this.correctLabels[nodeIndex][labelId - 1]);
-//        System.out.println("actual : " + currentNode.getNodeData().getLabel());
-//        assertTrue(Utils.doublesAlmostEqual(this.correctLabels[nodeIndex][labelId - 1], currentNode.getNodeData().getLabel(), 1e-12, 5));
-//        System.out.println(currentNode.getNodeData().getLabel() + ", " + deltaBySize(currentNode.getNodeData().getLabel()));
-        assertEquals(this.correctLabels[nodeIndex][labelId - 1], currentNode.getNodeData().getLabel(), deltaBySize(currentNode.getNodeData().getLabel()));
-
-        // if currentNode has no children return own index
-        if (currentNode.getChildren() == null) {
-            return nodeIndex;
+    private void checkLabelProgramatically(TestNode testNode, Node<NodeData> node, int labelId) {
+        double testLabel = 0;
+        switch (labelId) {
+            case 1:
+                testLabel = 1d;
+                break;
+            case 2:
+                testLabel = 1d / noOfTestNodes;
+                break;
+            case 3:
+                testLabel = calculateLengthOfSegment() * testNode.getNoOfIncludedSegments();
+                break;
+            case 4:
+                testLabel = calculateLengthOfSegment() * testNode.getNoOfAncestors();
+                break;
+            case 5:
+                testLabel = calculateLengthOfSegment() * testNode.getNoOfDecendents();
+                break;
+            case 6:
+                testLabel = calculateLengthOfSegment() * testNode.getNoOfIncludedSegments() / this.lengthOfT;
+                break;
+            case 7:
+                testLabel = calculateLengthOfSegment() * testNode.getNoOfAncestors() / this.lengthOfT;
+                break;
+            case 8:
+                testLabel = calculateLengthOfSegment() * testNode.getNoOfDecendents() / this.lengthOfT;
+                break;
+            case 9:
+                testLabel = calculateVolumeOfSegment() * testNode.getNoOfIncludedSegments();
+                break;
+            case 10:
+                testLabel = calculateVolumeOfSegment() * testNode.getNoOfAncestors();
+                break;
+            case 11:
+                testLabel = calculateVolumeOfSegment() * testNode.getNoOfDecendents();
+                break;
+            case 12:
+                testLabel = calculateVolumeOfSegment() * testNode.getNoOfIncludedSegments() / this.volumeOfT;
+                break;
+            case 13:
+                testLabel = calculateVolumeOfSegment() * testNode.getNoOfAncestors() / this.volumeOfT;
+                break;
+            case 14:
+                testLabel = calculateVolumeOfSegment() * testNode.getNoOfDecendents() / this.volumeOfT;
+                break;
+            case 15:
+                testLabel = calculateSurfaceOfSegment() * testNode.getNoOfIncludedSegments();
+                break;
+            case 16:
+                testLabel = calculateSurfaceOfSegment() * testNode.getNoOfAncestors();
+                break;
+            case 17:
+                testLabel = calculateSurfaceOfSegment() * testNode.getNoOfDecendents();
+                break;
+            case 18:
+                testLabel = calculateSurfaceOfSegment() * testNode.getNoOfIncludedSegments() / this.surfaceOfT;
+                break;
+            case 19:
+                testLabel = calculateSurfaceOfSegment() * testNode.getNoOfAncestors() / this.surfaceOfT;
+                break;
+            case 20:
+                testLabel = calculateSurfaceOfSegment() * testNode.getNoOfDecendents() / this.surfaceOfT;
+                break;
+            case 21:
+                break;
+            case 22:
+                break;
+            default:
+                System.out.println("Something went wrong. LabelId not correct: " + labelId);
+                assertTrue(false);
+                break;
         }
-        // recursively go through children and return highest index
-        for (Node<NodeData> childNode : currentNode.getChildren()) {
-            nodeIndex += 1;
-            nodeIndex = checkLabel(childNode, labelId, nodeIndex);
+        assertEquals(testLabel, node.getNodeData().getLabel(), deltaBySize(testLabel));
+
+        int noOfChildren = node.getChildren().size();
+        if (testNode.getChildren().size() != noOfChildren) {
+            System.out.println("Something went wrong. Number of childnodes do not match");
+            assertTrue(false);
         }
-        // index of last child
-        return nodeIndex;
+        for (int i = 0; i < noOfChildren; i++) {
+            checkLabelProgramatically(testNode.getChildren().get(i), node.getChildren().get(i), labelId);
+        }
     }
 
-    private void createTreeAndSWCFile() {
+    private int calculateNoOfTestNodes(TestNode node) {
+        int noOfTestNodes = 1;
+        for (TestNode child : node.getChildren()) {
+            noOfTestNodes += calculateNoOfTestNodes(child);
+        }
+        return noOfTestNodes;
+    }
+
+    private double calculateLengthOfSegment() {
+        double x = nodeOffsets[0];
+        double y = nodeOffsets[1];
+        double z = nodeOffsets[2];
+        return Math.sqrt(x * x + y * y + z * z);
+    }
+
+    private double calculateVolumeOfSegment() {
+        return calculateLengthOfSegment() * Math.PI * nodeOffsets[3] * nodeOffsets[3];
+    }
+
+    private double calculateSurfaceOfSegment() {
+        return calculateLengthOfSegment() * 2 * Math.PI * nodeOffsets[3];
+    }
+
+    private TestNode createTreeAndSWCFile() throws IOException {
         // write root node in swcFile
         // create random Object with seed
         // randomly create number of children
 
+        File file = new File("/media/exdisk/Sem06/BA/ProgramData/WorkingDir/programaticSWCFile.swc");
+
+        // stuff for writing to swc-File
+        FileWriter export = new FileWriter(file.getPath());
+        this.br = new BufferedWriter(export);
+        this.nodeNumber = 1;
+        this.nodeOffsets = new double[]{1d, 2d, 3d, 1d};
+        double x = this.nodeOffsets[0];
+        double y = this.nodeOffsets[1];
+        double z = this.nodeOffsets[2];
+        double r = this.nodeOffsets[3];
+        int parentNodeNumber = 1;
+
+        // stuff for tree-creation
         this.rand.setSeed(1L);
+
+        // print swcLines for root and its direct children
+        printSwcLine(x, y, z, r, -1);
+        int noOfSinlgeNodes = getRandomNumberOfSingleNodes();
+        for (int i = 0; i < noOfSinlgeNodes; i++) {
+            this.nodeNumber += 1;
+            x += this.nodeOffsets[0];
+            y += this.nodeOffsets[1];
+            z += this.nodeOffsets[2];
+            printSwcLine(x, y, z, r, parentNodeNumber);
+            parentNodeNumber = this.nodeNumber;
+        }
+
         TestNode root = new TestNode();
+        // only noOfSingleNodes because absolute root node does have an own segment
+        root.setNoOfIncludedSegments(noOfSinlgeNodes);
         int depth = 0;
-        createTreeRec(root, depth + 1);
+        this.maxDepth = 15;
+
+        // createTreeRec called with values of parentNode
+        createTreeRec(root, depth, x, y, z, r, parentNodeNumber);
+        createTreeRec(root, depth, x, y, z, r, parentNodeNumber);
+
+        br.close();
+        System.out.println("SWC-File saved to: " + file.getPath());
+
         // traverse tree inorder to set number of ancestors
         setNoOfAncestorsAndNoOfDecendants(root, 0);
-        printTreeToSWC(root);
+        return root;
     }
 
-    private void createTreeRec(TestNode parentNode, int depth) {
-        if (depth >= this.maxDepth) {
+    private void printSwcLine(double x, double y, double z, double r, int parentNodeNumber) throws IOException {
+        this.br.write(this.nodeNumber + " " + "3 " + x + " " + y + " " + z + " " + r + " " + parentNodeNumber);
+        this.br.newLine();
+    }
+
+    private void createTreeRec(TestNode parentNode, int depth, double x, double y, double z, double r, int parentNodeNumber) throws IOException {
+        depth += 1;
+
+        if (depth > this.maxDepth) {
             return;
         }
-        for (int i = 0; i <= getRandomNumberOfChildren(); i++) {
-            TestNode child = parentNode.addChild(new TestNode());
-            createTreeRec(child, depth + 1);
+
+        int noOfSingleNodes = getRandomNumberOfSingleNodes();
+        for (int i = 0; i < noOfSingleNodes; i++) {
+            this.nodeNumber += 1;
+            x += this.nodeOffsets[0];
+            y += this.nodeOffsets[1];
+            z += this.nodeOffsets[2];
+            printSwcLine(x, y, z, r, parentNodeNumber);
+            parentNodeNumber = this.nodeNumber;
         }
+
+        this.nodeNumber += 1;
+        x += this.nodeOffsets[0];
+        y += this.nodeOffsets[1];
+        z += this.nodeOffsets[2];
+        printSwcLine(x, y, z, r, parentNodeNumber);
+        parentNodeNumber = this.nodeNumber;
+
+        TestNode node = parentNode.addChild(new TestNode());
+        node.setNoOfIncludedSegments(noOfSingleNodes + 1);
+
+        boolean isBranch = getEndOrBranch();
+        if (isBranch) {
+            // createTreeRec called with values of parentNode
+            createTreeRec(node, depth, x, y, z, r, parentNodeNumber);
+            createTreeRec(node, depth, x, y, z, r, parentNodeNumber);
+        }
+    }
+
+
+    private int getRandomNumberOfSingleNodes() {
+        int noOfSingleNodes = 0;
+        while (this.rand.nextInt(3) < 2) {
+            noOfSingleNodes += 1;
+        }
+        return noOfSingleNodes;
+    }
+
+    private boolean getEndOrBranch() {
+        int number = this.rand.nextInt(8);
+        return (number > 1);
+    }
+
+    // noOfAncestors is sum of all segments before
+    private int setNoOfAncestorsAndNoOfDecendants(TestNode node, int noOfAncestors) {
+        noOfAncestors += node.getNoOfIncludedSegments();
+        node.setNoOfAncestors(noOfAncestors);
+
+        List<TestNode> children = node.getChildren();
+        int decendants = node.getNoOfIncludedSegments();
+        for (TestNode child : children) {
+            decendants += setNoOfAncestorsAndNoOfDecendants(child, noOfAncestors);
+        }
+        node.setNoOfDecendents(decendants);
+        // decendants are number of all segments from children AND own segments
+        return decendants;
     }
 
     private int getRandomNumberOfChildren() {
@@ -148,19 +341,6 @@ public class LabelTest {
             return 2;
         }
     }
-
-    private int setNoOfAncestorsAndNoOfDecendants(TestNode node, int noOfAncestors) {
-        node.setNoOfAncestors(noOfAncestors);
-
-        List<TestNode> children = node.getChildren();
-        int decendants = 0;
-        for (TestNode child : children) {
-            decendants += setNoOfAncestorsAndNoOfDecendants(child, noOfAncestors + 1);
-        }
-        node.setNoOfDecendents(decendants);
-        return decendants + 1;
-    }
-
 
     private void printTreeToSWC(TestNode node) {
         File file = new File("/media/exdisk/Sem06/BA/ProgramData/WorkingDir/programaticSWCFile.swc");

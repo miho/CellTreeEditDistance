@@ -9,8 +9,22 @@ public class TestNode {
 
     private TestNode parent = null;
 
+    // including own node
+    private int noOfIncludedSegments = 0;
+
+    // including own node
     private int noOfAncestors = 0;
+
+    // including own node
     private int noOfDecendents = 0;
+
+    public int getNoOfIncludedSegments() {
+        return noOfIncludedSegments;
+    }
+
+    public void setNoOfIncludedSegments(int noOfIncludedSegments) {
+        this.noOfIncludedSegments = noOfIncludedSegments;
+    }
 
     public int getNoOfAncestors() {
         return noOfAncestors;
