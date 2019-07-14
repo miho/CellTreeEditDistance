@@ -229,7 +229,7 @@ public class LabelTest {
         FileWriter export = new FileWriter(file.getPath());
         this.br = new BufferedWriter(export);
         this.nodeNumber = 1;
-        this.nodeOffsets = new double[]{1d, 2d, 3d, 1d};
+        this.nodeOffsets = new double[]{1.329d, -2.7812d, 0.43d, 3.76d};
         double x = this.nodeOffsets[0];
         double y = this.nodeOffsets[1];
         double z = this.nodeOffsets[2];
