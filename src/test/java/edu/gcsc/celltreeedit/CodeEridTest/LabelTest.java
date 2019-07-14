@@ -49,7 +49,6 @@ public class LabelTest {
 
 
     @Test
-
     public void checkLabels() throws IOException {
         for (int i = 1; i < 22; i++) {
             FileInputStream f = new FileInputStream(new File("/media/exdisk/Sem06/BA/ProgramData/Data/Test/labelTest01.swc"));
@@ -94,7 +93,7 @@ public class LabelTest {
         this.volumeOfT = testRoot.getNoOfDecendents() * calculateVolumeOfSegment();
         this.surfaceOfT = testRoot.getNoOfDecendents() * calculateSurfaceOfSegment();
 
-        for (int i = 1; i < 21; i++) {
+        for (int i = 1; i < 23; i++) {
             System.out.println("labelId: " + i);
             FileInputStream f = new FileInputStream(new File("/media/exdisk/Sem06/BA/ProgramData/WorkingDir/programaticSWCFile.swc"));
             TreeCreator t = new TreeCreator(f);
@@ -168,8 +167,16 @@ public class LabelTest {
                 testLabel = calculateSurfaceOfSegment() * testNode.getNoOfDecendents() / this.surfaceOfT;
                 break;
             case 21:
+                testLabel = calculateVolumeOfSegment() * testNode.getNoOfIncludedSegments() / this.surfaceOfT;
                 break;
             case 22:
+                if (testNode.getChildren().size() == 0) {
+                    testLabel = 0d;
+                } else {
+                    testLabel = Math.acos((nodeOffsets[0] * nodeOffsets[2] + nodeOffsets[1]*nodeOffsets[0] + nodeOffsets[2]*nodeOffsets[1])
+                            / (Math.sqrt(nodeOffsets[0]*nodeOffsets[0] + nodeOffsets[1]*nodeOffsets[1] + nodeOffsets[2]*nodeOffsets[2])
+                            * Math.sqrt(nodeOffsets[2]*nodeOffsets[2] + nodeOffsets[0]*nodeOffsets[0] + nodeOffsets[1]*nodeOffsets[1])));
+                }
                 break;
             default:
                 System.out.println("Something went wrong. LabelId not correct: " + labelId);
@@ -251,8 +258,8 @@ public class LabelTest {
         this.maxDepth = 15;
 
         // createTreeRec called with values of parentNode
-        createTreeRec(root, depth, x, y, z, r, parentNodeNumber);
-        createTreeRec(root, depth, x, y, z, r, parentNodeNumber);
+        createTreeRec(root, depth, x, y, z, r, parentNodeNumber, false);
+        createTreeRec(root, depth, x, y, z, r, parentNodeNumber, true);
 
         br.close();
         System.out.println("SWC-File saved to: " + file.getPath());
@@ -267,9 +274,8 @@ public class LabelTest {
         this.br.newLine();
     }
 
-    private void createTreeRec(TestNode parentNode, int depth, double x, double y, double z, double r, int parentNodeNumber) throws IOException {
+    private void createTreeRec(TestNode parentNode, int depth, double x, double y, double z, double r, int parentNodeNumber, boolean issecondChild) throws IOException {
         depth += 1;
-
         if (depth > this.maxDepth) {
             return;
         }
@@ -277,17 +283,29 @@ public class LabelTest {
         int noOfSingleNodes = getRandomNumberOfSingleNodes();
         for (int i = 0; i < noOfSingleNodes; i++) {
             this.nodeNumber += 1;
-            x += this.nodeOffsets[0];
-            y += this.nodeOffsets[1];
-            z += this.nodeOffsets[2];
+            if (issecondChild) {
+                x += this.nodeOffsets[2];
+                y += this.nodeOffsets[0];
+                z += this.nodeOffsets[1];
+            } else {
+                x += this.nodeOffsets[0];
+                y += this.nodeOffsets[1];
+                z += this.nodeOffsets[2];
+            }
             printSwcLine(x, y, z, r, parentNodeNumber);
             parentNodeNumber = this.nodeNumber;
         }
 
         this.nodeNumber += 1;
-        x += this.nodeOffsets[0];
-        y += this.nodeOffsets[1];
-        z += this.nodeOffsets[2];
+        if (issecondChild) {
+            x += this.nodeOffsets[2];
+            y += this.nodeOffsets[0];
+            z += this.nodeOffsets[1];
+        } else {
+            x += this.nodeOffsets[0];
+            y += this.nodeOffsets[1];
+            z += this.nodeOffsets[2];
+        }
         printSwcLine(x, y, z, r, parentNodeNumber);
         parentNodeNumber = this.nodeNumber;
 
@@ -297,8 +315,8 @@ public class LabelTest {
         boolean isBranch = getEndOrBranch();
         if (isBranch) {
             // createTreeRec called with values of parentNode
-            createTreeRec(node, depth, x, y, z, r, parentNodeNumber);
-            createTreeRec(node, depth, x, y, z, r, parentNodeNumber);
+            createTreeRec(node, depth, x, y, z, r, parentNodeNumber, false);
+            createTreeRec(node, depth, x, y, z, r, parentNodeNumber, true);
         }
     }
 

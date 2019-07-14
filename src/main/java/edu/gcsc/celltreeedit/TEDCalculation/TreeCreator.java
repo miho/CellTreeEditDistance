@@ -516,7 +516,7 @@ public class TreeCreator implements InputParser <NodeData> , Serializable {
             }
         }
         // set label of current node
-        node.getNodeData().setLabel(sum / noOfChildNodes);
+        node.getNodeData().setLabel(sum / (0.5 * noOfChildNodes * noOfChildNodes - 0.5 * noOfChildNodes));
         // recursively call children to set their labels
         for (Node<NodeData> childNode : childNodes) {
             calculate_a_sec(childNode);
