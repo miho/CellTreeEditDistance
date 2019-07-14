@@ -234,10 +234,7 @@ public class Utils {
         return fileNames;
     }
 
-    public static boolean doublesAlmostEqual(double a, double b)
-    {
-        double maxDiff = 1e-10d;
-        int maxUlpsDiff = 5;
+    public static boolean doublesAlmostEqual(double a, double b, double maxDiff, double maxUlpsDiff) {
         // Check if the numbers are really close -- needed when comparing numbers near zero as their difference could be greatly bigger than zero
         double absDiff = Math.abs(a - b);
         if (absDiff <= maxDiff)

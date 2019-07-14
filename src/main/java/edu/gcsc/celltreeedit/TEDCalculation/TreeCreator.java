@@ -402,11 +402,12 @@ public class TreeCreator implements InputParser <NodeData> , Serializable {
             length = calculateLengthAtIndex(currentNode, j);
             r1 = currentNode.getNodeData().getRadius().get(j-1); // radius of node closer to root
             r2 = currentNode.getNodeData().getRadius().get(j); // radius of node closer to leafs
-            if (Utils.doublesAlmostEqual(r1, r2)) {
-                surfacePart = 2 * r1 * Math.PI * length;
-            } else {
-                surfacePart = (r1+r2)*Math.PI*Math.sqrt((r1-r2)*(r1-r2)+length*length);
-            }
+//            if (Utils.doublesAlmostEqual(r1, r2, 1e-12, 1)) {
+//                surfacePart = 2 * r1 * Math.PI * length;
+//            } else {
+//                surfacePart = (r1+r2)*Math.PI*Math.sqrt((r1-r2)*(r1-r2)+length*length);
+//            }
+            surfacePart = (r1+r2)*Math.PI*Math.sqrt((r1-r2)*(r1-r2)+length*length);
             surface += surfacePart;
         }
         return surface;
