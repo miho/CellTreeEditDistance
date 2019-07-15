@@ -60,8 +60,8 @@ public class LabelTest {
 
     // currentNode and index in preorder
     private int checkLabel(Node<NodeData> currentNode, int labelId, int nodeIndex) {
-//        System.out.println("correct: " + this.correctLabels[nodeIndex][labelId - 1]);
-//        System.out.println("actual : " + currentNode.getNodeData().getLabel());
+        System.out.println("correct: " + this.correctLabels[nodeIndex][labelId - 1]);
+        System.out.println("actual : " + currentNode.getNodeData().getLabel());
 //        assertTrue(Utils.doublesAlmostEqual(this.correctLabels[nodeIndex][labelId - 1], currentNode.getNodeData().getLabel(), 1e-12, 5));
 //        System.out.println(currentNode.getNodeData().getLabel() + ", " + deltaBySize(currentNode.getNodeData().getLabel()));
         assertEquals(this.correctLabels[nodeIndex][labelId - 1], currentNode.getNodeData().getLabel(), deltaBySize(currentNode.getNodeData().getLabel()));
