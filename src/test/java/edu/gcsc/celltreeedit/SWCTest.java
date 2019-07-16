@@ -16,7 +16,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * Created by Erid on 23.04.2018.
  */
-public class SWCPreprocessing {
+public class SWCTest {
 
     @Test
     public void readFile(){

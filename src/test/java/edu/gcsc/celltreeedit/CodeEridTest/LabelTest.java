@@ -6,6 +6,8 @@ import eu.mihosoft.ext.apted.node.Node;
 import org.junit.Test;
 
 import java.io.*;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -26,16 +28,6 @@ public class LabelTest {
 
     };
 
-    private Double[][] correctLabels02 = new Double[][]{
-            {1d, 0.142857142857143, 0d, 0d, 30d, 0d, 0d, 1d, 0d, 0d, 5299.86680660598, 0d, 0d, 1d, 0d, 0d, 2611.25516150189, 0d, 0d, 1d, 0d, 0.475882249660417},
-            {1d, 0.142857142857143, 3d, 3d, 3d, 0.1, 0.1, 0.1, 1407.43350880823, 1407.43350880823, 1407.43350880823, 0.265560165975104, 0.265560165975104, 0.265560165975104, 644.202705564797, 644.202705564797, 644.202705564797, 0.246702319659285, 0.246702319659285, 0.246702319659285, 0.538987353498893, 0d},
-            {1d, 0.142857142857143, 6d, 6d, 18d, 0.2, 0.2, 0.6, 1759.29188601028, 1759.29188601028, 2045.17681748696, 0.33195020746888, 0.33195020746888, 0.385892116182573, 832.698264780185, 832.698264780185, 1066.39115076208, 0.318888125931458, 0.318888125931458, 0.408382591821754, 0.673734191873616, 0.475882249660417},
-            {1d, 0.142857142857143, 3d, 9d, 3d, 0.1, 0.3, 0.1, 87.9645943005142, 1847.2564803108, 87.9645943005142, 0.016597510373444, 0.348547717842324, 0.016597510373444, 67.9630403948339, 900.661305175019, 67.9630403948339, 0.026026962587503, 0.344915088518961, 0.026026962587503, 0.0336867095936808, 0d},
-            {1d, 0.142857142857143, 6d, 12d, 6d, 0.2, 0.4, 0.2, 109.955742875643, 1869.24762888593, 109.955742875643, 0.020746887966805, 0.352697095435685, 0.020746887966805, 97.7668051922222, 930.465069972407, 97.7668051922222, 0.0374405407152898, 0.356328666646748, 0.0374405407152898, 0.042108386992101, 0d},
-            {1d, 0.142857142857143, 3d, 9d, 3d, 0.1, 0.3, 0.1, 87.9645943005142, 1847.2564803108, 87.9645943005142, 0.016597510373444, 0.348547717842324, 0.016597510373444, 67.9630403948339, 900.661305175019, 67.9630403948339, 0.026026962587503, 0.344915088518961, 0.026026962587503, 0.0336867095936808, 0d},
-            {1d, 0.142857142857143, 9d, 9d, 9d, 0.3, 0.3, 0.3, 1847.2564803108, 1847.2564803108, 1847.2564803108, 0.348547717842324, 0.348547717842324, 0.348547717842324, 900.661305175019, 900.661305175019, 900.661305175019, 0.344915088518961, 0.344915088518961, 0.344915088518961, 0.707420901467296, 0d}
-    };
-
     private Random rand = new Random();
     private int maxDepth;
     private double[] nodeOffsets;
@@ -47,6 +39,11 @@ public class LabelTest {
     private double volumeOfT;
     private double surfaceOfT;
 
+    private double deltaBySize(double value, double epsilon) {
+        String scientificNotation = String.format("%1.1e", value);
+        int integerPlaces = Integer.parseInt(scientificNotation.substring(4));
+        return epsilon * Double.parseDouble("1e" + (integerPlaces));
+    }
 
     @Test
     public void checkLabels() throws IOException {
@@ -60,11 +57,9 @@ public class LabelTest {
 
     // currentNode and index in preorder
     private int checkLabel(Node<NodeData> currentNode, int labelId, int nodeIndex) {
-        System.out.println("correct: " + this.correctLabels[nodeIndex][labelId - 1]);
-        System.out.println("actual : " + currentNode.getNodeData().getLabel());
 //        assertTrue(Utils.doublesAlmostEqual(this.correctLabels[nodeIndex][labelId - 1], currentNode.getNodeData().getLabel(), 1e-12, 5));
 //        System.out.println(currentNode.getNodeData().getLabel() + ", " + deltaBySize(currentNode.getNodeData().getLabel()));
-        assertEquals(this.correctLabels[nodeIndex][labelId - 1], currentNode.getNodeData().getLabel(), deltaBySize(currentNode.getNodeData().getLabel()));
+        assertEquals(this.correctLabels[nodeIndex][labelId - 1], currentNode.getNodeData().getLabel(), deltaBySize(currentNode.getNodeData().getLabel(), 1e-14));
 
         // if currentNode has no children return own index
         if (currentNode.getChildren() == null) {
@@ -79,21 +74,28 @@ public class LabelTest {
         return nodeIndex;
     }
 
-    private double deltaBySize(double value) {
-        double epsilon = 1e-15;
-        int integerPlaces = Double.toString(value).indexOf('.');
-        return epsilon * Double.parseDouble("1e" + integerPlaces + 1);
-    }
-
     @Test
     public void checkLabelsProgramatically() throws IOException {
-        TestNode testRoot = createTreeAndSWCFile();
-        this.noOfTestNodes = calculateNoOfTestNodes(testRoot);
-        this.lengthOfT = testRoot.getNoOfDecendents() * calculateLengthOfSegment();
-        this.volumeOfT = testRoot.getNoOfDecendents() * calculateVolumeOfSegment();
-        this.surfaceOfT = testRoot.getNoOfDecendents() * calculateSurfaceOfSegment();
+        TestNode testRoot = createTreeAndSWCFile(1L, 15, new double[]{1.329d, -2.7812d, 0.43d, 3.76d});
+        for (int i = 1; i < 22; i++) {
+            System.out.println("labelId: " + i);
+            FileInputStream f = new FileInputStream(new File("/media/exdisk/Sem06/BA/ProgramData/WorkingDir/programaticSWCFile.swc"));
+            TreeCreator t = new TreeCreator(f);
+            Node<NodeData> root = t.createTree(i);
+            checkLabelProgramatically(testRoot, root, i);
+        }
 
-        for (int i = 1; i < 23; i++) {
+        testRoot = createTreeAndSWCFile(3001L, 15, new double[]{0.1d, 0.1d, 0.1d, 1d});
+        for (int i = 1; i < 22; i++) {
+            System.out.println("labelId: " + i);
+            FileInputStream f = new FileInputStream(new File("/media/exdisk/Sem06/BA/ProgramData/WorkingDir/programaticSWCFile.swc"));
+            TreeCreator t = new TreeCreator(f);
+            Node<NodeData> root = t.createTree(i);
+            checkLabelProgramatically(testRoot, root, i);
+        }
+
+        testRoot = createTreeAndSWCFile(73L, 15, new double[]{-2.43d, -8.92893d, 29.3344d, 28d});
+        for (int i = 1; i < 22; i++) {
             System.out.println("labelId: " + i);
             FileInputStream f = new FileInputStream(new File("/media/exdisk/Sem06/BA/ProgramData/WorkingDir/programaticSWCFile.swc"));
             TreeCreator t = new TreeCreator(f);
@@ -173,8 +175,8 @@ public class LabelTest {
                 if (testNode.getChildren().size() == 0) {
                     testLabel = 0d;
                 } else {
-                    testLabel = Math.acos((nodeOffsets[0] * nodeOffsets[2] + nodeOffsets[1]*nodeOffsets[0] + nodeOffsets[2]*nodeOffsets[1])
-                            / (Math.sqrt(nodeOffsets[0]*nodeOffsets[0] + nodeOffsets[1]*nodeOffsets[1] + nodeOffsets[2]*nodeOffsets[2])
+                    testLabel = Math.acos((nodeOffsets[0] * nodeOffsets[2] + nodeOffsets[1] * nodeOffsets[0] + nodeOffsets[2] * nodeOffsets[1])
+                            / (Math.sqrt(nodeOffsets[0] * nodeOffsets[0] + nodeOffsets[1] * nodeOffsets[1] + nodeOffsets[2] * nodeOffsets[2])
                             * Math.sqrt(nodeOffsets[2]*nodeOffsets[2] + nodeOffsets[0]*nodeOffsets[0] + nodeOffsets[1]*nodeOffsets[1])));
                 }
                 break;
@@ -183,18 +185,22 @@ public class LabelTest {
                 assertTrue(false);
                 break;
         }
-        assertEquals(testLabel, node.getNodeData().getLabel(), deltaBySize(testLabel));
+        if (Double.isNaN(testLabel)) {
+            System.out.println(labelId);
 
-        int noOfChildren = node.getChildren().size();
-        if (testNode.getChildren().size() != noOfChildren) {
-            System.out.println("Something went wrong. Number of childnodes do not match");
-            assertTrue(false);
         }
+        // labels should be similar
+        assertEquals(testLabel, node.getNodeData().getLabel(), deltaBySize(testLabel, 1e-12));
+
+        // nunber of Children must be the same, prevent topology is false
+        assertEquals(testNode.getChildren().size(), node.getChildren().size());
+        int noOfChildren = node.getChildren().size();
         for (int i = 0; i < noOfChildren; i++) {
             checkLabelProgramatically(testNode.getChildren().get(i), node.getChildren().get(i), labelId);
         }
     }
 
+    // ---------------------- Creation and Calculation for checkLabelsProgramatically ----------------------------------
     private int calculateNoOfTestNodes(TestNode node) {
         int noOfTestNodes = 1;
         for (TestNode child : node.getChildren()) {
@@ -218,7 +224,7 @@ public class LabelTest {
         return calculateLengthOfSegment() * 2 * Math.PI * nodeOffsets[3];
     }
 
-    private TestNode createTreeAndSWCFile() throws IOException {
+    private TestNode createTreeAndSWCFile(Long seed, int maxDepth, double[] nodeOffsets) throws IOException {
         // write root node in swcFile
         // create random Object with seed
         // randomly create number of children
@@ -229,7 +235,7 @@ public class LabelTest {
         FileWriter export = new FileWriter(file.getPath());
         this.br = new BufferedWriter(export);
         this.nodeNumber = 1;
-        this.nodeOffsets = new double[]{1.329d, -2.7812d, 0.43d, 3.76d};
+        this.nodeOffsets = nodeOffsets;
         double x = this.nodeOffsets[0];
         double y = this.nodeOffsets[1];
         double z = this.nodeOffsets[2];
@@ -237,7 +243,7 @@ public class LabelTest {
         int parentNodeNumber = 1;
 
         // stuff for tree-creation
-        this.rand.setSeed(1L);
+        this.rand.setSeed(seed);
 
         // print swcLines for root and its direct children
         printSwcLine(x, y, z, r, -1);
@@ -255,7 +261,7 @@ public class LabelTest {
         // only noOfSingleNodes because absolute root node does have an own segment
         root.setNoOfIncludedSegments(noOfSinlgeNodes);
         int depth = 0;
-        this.maxDepth = 15;
+        this.maxDepth = maxDepth;
 
         // createTreeRec called with values of parentNode
         createTreeRec(root, depth, x, y, z, r, parentNodeNumber, false);
@@ -266,6 +272,11 @@ public class LabelTest {
 
         // traverse tree inorder to set number of ancestors
         setNoOfAncestorsAndNoOfDecendants(root, 0);
+
+        this.noOfTestNodes = calculateNoOfTestNodes(root);
+        this.lengthOfT = root.getNoOfDecendents() * calculateLengthOfSegment();
+        this.volumeOfT = root.getNoOfDecendents() * calculateVolumeOfSegment();
+        this.surfaceOfT = root.getNoOfDecendents() * calculateSurfaceOfSegment();
         return root;
     }
 
@@ -320,7 +331,6 @@ public class LabelTest {
         }
     }
 
-
     private int getRandomNumberOfSingleNodes() {
         int noOfSingleNodes = 0;
         while (this.rand.nextInt(3) < 2) {
@@ -348,50 +358,5 @@ public class LabelTest {
         // decendants are number of all segments from children AND own segments
         return decendants;
     }
-
-    private int getRandomNumberOfChildren() {
-        int number = this.rand.nextInt(11);
-        if (number < 3) {
-            return 0;
-        } else if (number < 9) {
-            return 1;
-        } else {
-            return 2;
-        }
-    }
-
-    private void printTreeToSWC(TestNode node) {
-        File file = new File("/media/exdisk/Sem06/BA/ProgramData/WorkingDir/programaticSWCFile.swc");
-        try {
-            FileWriter export = new FileWriter(file.getPath());
-            this.br = new BufferedWriter(export);
-
-            this.nodeNumber = 0;
-            writeLinesPreOrder(node, nodeOffsets[0], nodeOffsets[1], nodeOffsets[2], nodeOffsets[3], -1);
-            br.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        System.out.print("SWC-File saved to: " + file.getPath());
-    }
-
-    private void writeLinesPreOrder(TestNode node, double x, double y, double z, double r, int parentNodeNumber) throws IOException {
-        this.nodeNumber++;
-        this.br.write(this.nodeNumber + " " + "3 " + x + " " + y + " " + z + " " + r + " " + parentNodeNumber);
-        parentNodeNumber = this.nodeNumber;
-        this.br.newLine();
-        int noOfChildren = node.getChildren().size();
-        switch (noOfChildren) {
-            case 0:
-                break;
-            case 1:
-                writeLinesPreOrder(node.getChildren().get(0), x + nodeOffsets[0], y + nodeOffsets[1], z + nodeOffsets[2], nodeOffsets[3], parentNodeNumber);
-                break;
-            case 2:
-                writeLinesPreOrder(node.getChildren().get(0), x + nodeOffsets[0], y + nodeOffsets[1], z + nodeOffsets[2], nodeOffsets[3], parentNodeNumber);
-                writeLinesPreOrder(node.getChildren().get(1), x + nodeOffsets[1], y + nodeOffsets[0], z + nodeOffsets[2], nodeOffsets[3], parentNodeNumber);
-        }
-    }
-
 
 }

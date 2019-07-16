@@ -18,10 +18,10 @@ public class TEDTest {
     // - TED --> Fälle Bild prüfen (für alle Labels: Baum-leer, gleiche Bäume, fast gleiche Bäume (zwei Knoten mit kleinen labels mehr, löschen mittlerer Knoten führt zu anderem Baum, hinzufügen mittlerer Knoten führt zu anderem Baum, umbenennen mittlerer Knoten führt zu anderem baum)
 
 
-    private double deltaBySize(double value) {
-        double epsilon = 1e-8;
-        int integerPlaces = Double.toString(value).indexOf('.');
-        return epsilon * Double.parseDouble("1e" + integerPlaces + 1);
+    private float deltaBySize(float value, float epsilon) {
+        String scientificNotation = String.format("%1.1e", value);
+        int integerPlaces = Integer.parseInt(scientificNotation.substring(4));
+        return epsilon * Float.parseFloat("1e" + (integerPlaces));
     }
 
     @Test
@@ -56,7 +56,7 @@ public class TEDTest {
                 expectedResult += node.getNodeData().getLabel();
             }
             float expectedResultFloat = (float) expectedResult;
-            assertEquals(expectedResultFloat, result, deltaBySize(expectedResult));
+            assertEquals(expectedResultFloat, result, deltaBySize(expectedResultFloat, 1e-6f));
 
 
             // change order of trees
@@ -67,65 +67,213 @@ public class TEDTest {
                 expectedResult += node.getNodeData().getLabel();
             }
             expectedResultFloat = (float) expectedResult;
-            assertEquals(expectedResultFloat, result, deltaBySize(expectedResult));
+            assertEquals(expectedResultFloat, result, deltaBySize(expectedResultFloat, 1e-6f));
         }
     }
 
     @Test
     public void checkTEDSuperSimpleTreesCreatedManually() {
+        double label1 = 0.452;
+        double label2 = 1.1111;
+        Node<NodeData> rootDefault = createTree(label1, label2, 0);
+        Node<NodeData> rootLeafRenamed = createTree(label1, label2, 1);
+        Node<NodeData> rootLeafMissing = createTree(label1, label2, 2);
+        Node<NodeData> rootLeafInserted = createTree(label1, label2, 3);
 
-        double labelValue1 = 1d/3;
-        double labelValue2 = 1d/2;
-
-        // create first tree manually
-        NodeData nodeData = new NodeData(1);
-        Node<NodeData> root1 = new Node<>(nodeData);
-        nodeData = new NodeData(1);
-        Node<NodeData> leftChild1 = new Node<>(nodeData);
-        root1.addChild(leftChild1);
-        nodeData = new NodeData(1);
-        Node<NodeData> rightChild1 = new Node<>(nodeData);
-        root1.addChild(rightChild1);
-        // set labels manually
-        root1.getNodeData().setLabel(labelValue1);
-        leftChild1.getNodeData().setLabel(labelValue1);
-        rightChild1.getNodeData().setLabel(labelValue1);
-
-        // create second tree manually
-        nodeData = new NodeData(1);
-        Node<NodeData> root2 = new Node<>(nodeData);
-        nodeData = new NodeData(1);
-        Node<NodeData> leftChild2 = new Node<>(nodeData);
-        root2.addChild(leftChild2);
-
-        // set labels manually
-        root2.getNodeData().setLabel(labelValue2);
-        leftChild2.getNodeData().setLabel(labelValue2);
+        Node<NodeData> rootInnerRenamed = createTree(label1, label2, 4);
+        Node<NodeData> rootInnerMissing = createTree(label1, label2, 5);
+        Node<NodeData> rootInnerInserted = createTree(label1, label2, 6);
 
 
         APTED<TreeCostModel, NodeData> apted = new APTED<>(new TreeCostModel());
-        double result = apted.computeEditDistance(root2, root1);
+        float result = apted.computeEditDistance(rootDefault, rootLeafRenamed);
+        float testResult = (float)(Math.abs(label2 - label1));
+        assertEquals(testResult, result, deltaBySize(testResult, 1e-6f));
+        System.out.println("correctResult: " + testResult);
+        System.out.println("actuallResult: " + result);
 
-        assertEquals(labelValue1, result, 0d);
+        apted = new APTED<>(new TreeCostModel());
+        result = apted.computeEditDistance(rootDefault, rootLeafMissing);
+        testResult = (float)(label1);
+        assertEquals(testResult, result, deltaBySize(testResult, 1e-6f));
+        System.out.println("correctResult: " + testResult);
+        System.out.println("actuallResult: " + result);
+
+        apted = new APTED<>(new TreeCostModel());
+        result = apted.computeEditDistance(rootDefault, rootLeafInserted);
+        testResult = (float)(label1);
+        assertEquals(testResult, result, deltaBySize(testResult, 1e-6f));
+        System.out.println("correctResult: " + testResult);
+        System.out.println("actuallResult: " + result);
+
+        apted = new APTED<>(new TreeCostModel());
+        result = apted.computeEditDistance(rootDefault, rootInnerRenamed);
+        testResult = (float)(Math.abs(label2 - label1));
+        assertEquals(testResult, result, deltaBySize(testResult, 1e-6f));
+        System.out.println("correctResult: " + testResult);
+        System.out.println("actuallResult: " + result);
+
+        apted = new APTED<>(new TreeCostModel());
+        result = apted.computeEditDistance(rootDefault, rootInnerMissing);
+        testResult = (float)(label1);
+        assertEquals(testResult, result, deltaBySize(testResult, 1e-6f));
+        System.out.println("correctResult: " + testResult);
+        System.out.println("actuallResult: " + result);
+
+        apted = new APTED<>(new TreeCostModel());
+        result = apted.computeEditDistance(rootDefault, rootInnerInserted);
+        testResult = (float)(label1);
+        assertEquals(testResult, result, deltaBySize(testResult, 1e-6f));
+        System.out.println("correctResult: " + testResult);
+        System.out.println("actuallResult: " + result);
     }
+
+    private Node<NodeData> createTree(double label1, double label2, int option) {
+
+        // create first tree manually
+        NodeData nodeData = new NodeData(1);
+        Node<NodeData> root = new Node<>(nodeData);
+        // set labels manually
+        root.getNodeData().setLabel(label1);
+        
+        nodeData = new NodeData(1);
+        Node<NodeData> childL = new Node<>(nodeData);
+        root.addChild(childL);
+        childL.getNodeData().setLabel(label1);
+        nodeData = new NodeData(1);
+        Node<NodeData> childLL = new Node<>(nodeData);
+        childL.addChild(childLL);
+        childLL.getNodeData().setLabel(label1);
+        nodeData = new NodeData(1);
+        Node<NodeData> childLR = new Node<>(nodeData);
+        childL.addChild(childLR);
+        childLR.getNodeData().setLabel(label1);
+
+
+        nodeData = new NodeData(1);
+        Node<NodeData> childM = new Node<>(nodeData);
+        nodeData = new NodeData(1);
+        Node<NodeData> childMM = new Node<>(nodeData);
+
+        switch (option) {
+            case 4:
+                // create both Nodes M and MM but MM with label2
+                root.addChild(childM);
+                childM.getNodeData().setLabel(label1);
+
+                childM.addChild(childMM);
+                childMM.getNodeData().setLabel(label2);
+                break;
+            case 5:
+                // do not create childM. put childMM directly under root
+                root.addChild(childMM);
+                childMM.getNodeData().setLabel(label1);
+                break;
+            case 6:
+                // create both Nodes M and MM but MM with label2
+                root.addChild(childM);
+                childM.getNodeData().setLabel(label1);
+
+                nodeData = new NodeData(1);
+                Node<NodeData> childIns = new Node<>(nodeData);
+                childM.addChild(childIns);
+                childIns.getNodeData().setLabel(label1);
+
+                childIns.addChild(childMM);
+                childMM.getNodeData().setLabel(label1);
+                break;
+            default:
+                // create both Nodes M and MM
+                root.addChild(childM);
+                childM.getNodeData().setLabel(label1);
+
+                childM.addChild(childMM);
+                childMM.getNodeData().setLabel(label1);
+                break;
+
+        }
+
+        nodeData = new NodeData(1);
+        Node<NodeData> childMML = new Node<>(nodeData);
+        childMM.addChild(childMML);
+        childMML.getNodeData().setLabel(label1);
+        nodeData = new NodeData(1);
+        Node<NodeData> childMMM = new Node<>(nodeData);
+        childMM.addChild(childMMM);
+        childMMM.getNodeData().setLabel(label1);
+
+        nodeData = new NodeData(1);
+        Node<NodeData> childMMR = new Node<>(nodeData);
+        switch (option) {
+            case 1:
+                childMM.addChild(childMMR);
+                childMMR.getNodeData().setLabel(label2);
+                break;
+            case 2:
+                break;
+            case 3:
+                childMM.addChild(childMMR);
+                childMMR.getNodeData().setLabel(label1);
+                nodeData = new NodeData(1);
+                Node<NodeData> childIns = new Node<>(nodeData);
+                childMM.addChild(childIns);
+                childIns.getNodeData().setLabel(label1);
+                break;
+            default:
+                childMM.addChild(childMMR);
+                childMMR.getNodeData().setLabel(label1);
+                break;
+        }
+        
+        nodeData = new NodeData(1);
+        Node<NodeData> childR = new Node<>(nodeData);
+        root.addChild(childR);
+        childR.getNodeData().setLabel(label1);
+        
+        return root;
+    }
+
 
     @Test
     public void checkTEDSameTrees1lengthChanged() throws IOException {
 
-        double diffLengthOfSegment = 1;
-        double diffVolumeOfSegment = Math.PI * 1 * 1 * diffLengthOfSegment;
-        double diffSurfaceOfSegment = 2 * Math.PI * 1 * diffLengthOfSegment;
+        int noOfNodes = 7;
+
+        double[] v1 = new double[]{-2.1, -1, 0.1};
+        double r1 = 1.6;
+
+        double[] v2 = new double[]{-4.2, -1, -1.4};
+        double r2 = 1.3;
+
+        double[] v2New = new double[]{-4.2, -2, -1.4};
+        double r2New = 1.3;
+
+        double oldLengthOfSegment = Math.sqrt((v1[0]-v2[0]) * (v1[0]-v2[0]) + (v1[1]-v2[1]) * (v1[1]-v2[1]) + (v1[2]-v2[2]) * (v1[2]-v2[2]));
+        double newLengthOfSegment = Math.sqrt((v1[0]-v2New[0]) * (v1[0]-v2New[0]) + (v1[1]-v2New[1]) * (v1[1]-v2New[1]) + (v1[2]-v2New[2]) * (v1[2]-v2New[2]));
+        double diffLengthOfSegment = Math.abs(newLengthOfSegment - oldLengthOfSegment);
+        double oldLengthOfT = 20.6838908114423;
+        double newLengthOfT = oldLengthOfT + diffLengthOfSegment; // diffLengthOfSegment;
+        double oldLengthToSomaSum = 0.3 + 3.67375357771614 + 6.25445115782893 + 6.18063508696575 + 13.6246329358432 + 1.67167878623671;
+
+        double oldVolumeOfSegment = oldLengthOfSegment*Math.PI/3*(r1*r1+r1*r2+r2*r2);
+        double newVolumeOfSegment = newLengthOfSegment*Math.PI/3*(r1*r1+r1*r2New+r2New*r2New);
+        double diffVolumeOfSegment = Math.abs(newVolumeOfSegment - oldVolumeOfSegment);
+
+        double oldSurfaceOfSegment = (r1+r2)*Math.PI*Math.sqrt((r1-r2)*(r1-r2)+oldLengthOfSegment*oldLengthOfSegment);
+        double newSurfaceOfSegment = (r1+r2New)*Math.PI*Math.sqrt((r1-r2New)*(r1-r2New)+newLengthOfSegment*newLengthOfSegment);
+        double diffSurfaceOfSegment = Math.abs(newSurfaceOfSegment - oldSurfaceOfSegment);
 
         float result;
         double testTED;
 
-        for (int i = 1; i < 23; i++) {
+        // TODO: implement solution for labels 7-22
+        for (int i = 1; i < 7; i++) {
             System.out.println(i);
-            FileInputStream f1 = new FileInputStream(new File("/media/exdisk/Sem06/BA/ProgramData/Data/Test/TEDTest01_superSimpleTree.swc"));
+            FileInputStream f1 = new FileInputStream(new File("/media/exdisk/Sem06/BA/ProgramData/Data/Test/TEDTest01_simpleTree.swc"));
             TreeCreator t1 = new TreeCreator(f1);
             Node<NodeData> root1 = t1.createTree(i);
 
-            FileInputStream f2 = new FileInputStream(new File("/media/exdisk/Sem06/BA/ProgramData/Data/Test/TEDTest01_superSimpleTree_1NodeRenamed.swc"));
+            FileInputStream f2 = new FileInputStream(new File("/media/exdisk/Sem06/BA/ProgramData/Data/Test/TEDTest01_simpleTree_1lengthChanged.swc"));
             TreeCreator t2 = new TreeCreator(f2);
             Node<NodeData> root2 = t2.createTree(i);
 
@@ -135,19 +283,33 @@ public class TEDTest {
             testTED = 0;
             switch (i) {
                 case 1:
+                    // must be 0 because same topology
                     testTED = 0d;
                     break;
                 case 2:
+                    // must be 0 because same topology
                     testTED = 0d;
                     break;
                 case 3:
+                    // must be diffLengthOfSegment because only label of this node has to be renamed by the difference
                     testTED = diffLengthOfSegment;
                     break;
                 case 4:
+                    // must be diffLengthOfSegment because only this length to soma has changed
                     testTED = diffLengthOfSegment;
                     break;
-//                case 5:
-//                    testTED
+                case 5:
+                    // must be number of nodes (including node itself) that are ancestors of node with changed length * diffLengthOfSegment. because ancestor labels changed as well
+                    testTED = 3 * diffLengthOfSegment;
+                    break;
+                case 6:
+                    // must be number of nodes (including node itself) that are ancestors of node with changed length * diffLengthOfSegment
+                    testTED = (oldLengthOfT - oldLengthOfSegment) * Math.abs((newLengthOfT - oldLengthOfT) / (newLengthOfT * oldLengthOfT)) + Math.abs(oldLengthOfSegment / oldLengthOfT - newLengthOfSegment / newLengthOfT);
+                    break;
+                case 7:
+                    // must be number of nodes (including node itself) that are ancestors of node with changed length * diffLengthOfSegment
+                    testTED = (oldLengthToSomaSum) * Math.abs((newLengthOfT - oldLengthOfT) / (newLengthOfT * oldLengthOfT)) + Math.abs(oldLengthOfSegment / oldLengthOfT - newLengthOfSegment / newLengthOfT);
+                    break;
                 case 9:
                     testTED = diffVolumeOfSegment;
                     break;
@@ -164,9 +326,11 @@ public class TEDTest {
                     testTED = 0d;
                     break;
             }
-            if (i == 1 || i == 2 || i == 3 || i == 4 || i == 9 || i == 10 || i == 15 || i == 16 || i == 22) {
-                assertEquals((float) testTED, result, 0f);
-            }
+            float testTEDFloat = (float) testTED;
+            System.out.println("correctValue: " + testTED);
+            System.out.println("actualValue: " + result);
+            System.out.println("delta: " + deltaBySize(testTEDFloat, 1e-4f));
+            assertEquals(testTEDFloat, result, deltaBySize(testTEDFloat, 1e-4f));
         }
     }
 
