@@ -106,7 +106,7 @@ public class Utils {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.print("Matrix saved to: " + file.getPath());
+        System.out.println("Matrix saved to: " + file.getPath());
     }
 
 
@@ -116,33 +116,37 @@ public class Utils {
 
         List<Pair<double[][], String[]>> result = new ArrayList<>();
         for (File matrixFile: matrixFiles) {
-            // read first line to get dimensions of matrix
-            Scanner scanner = new Scanner(matrixFile);
-            String line = scanner.nextLine();
-            String[] splittedline = line.split(";");
-            int size = splittedline.length - 1;
-            double[][] matrix = new double[size][size];
-            String[] filenames = new String[size];
-            filenames[0] = splittedline[0];
-            for (int i = 1; i < splittedline.length; i++) {
-                matrix[0][i - 1] = Double.parseDouble(splittedline[i]);
-            }
-
-            // read cell by cell to build matrix and filenames-array
-            int i = 1;
-            while (scanner.hasNextLine()) {
-                line = scanner.nextLine();
-                splittedline = line.split(";");
-                filenames[i] = splittedline[0];
-                for (int j = 1; j < splittedline.length; j++) {
-                    matrix[i][j - 1] = Double.parseDouble(splittedline[j]);
-                }
-                i++;
-            }
-            scanner.close();
-            result.add(new Pair<>(matrix, filenames));
+            result.add(readMatrixFromTxt(matrixFile));
         }
         return result;
+    }
+
+    public static Pair<double[][], String[]> readMatrixFromTxt(File matrixFile) throws FileNotFoundException {
+        // read first line to get dimensions of matrix
+        Scanner scanner = new Scanner(matrixFile);
+        String line = scanner.nextLine();
+        String[] splittedline = line.split(";");
+        int size = splittedline.length - 1;
+        double[][] matrix = new double[size][size];
+        String[] filenames = new String[size];
+        filenames[0] = splittedline[0];
+        for (int i = 1; i < splittedline.length; i++) {
+            matrix[0][i - 1] = Double.parseDouble(splittedline[i]);
+        }
+
+        // read cell by cell to build matrix and filenames-array
+        int i = 1;
+        while (scanner.hasNextLine()) {
+            line = scanner.nextLine();
+            splittedline = line.split(";");
+            filenames[i] = splittedline[0];
+            for (int j = 1; j < splittedline.length; j++) {
+                matrix[i][j - 1] = Double.parseDouble(splittedline[j]);
+            }
+            i++;
+        }
+        scanner.close();
+        return new Pair<>(matrix, filenames);
     }
 
     /**

@@ -24,10 +24,10 @@ import java.util.List;
  */
 public class CLI {
 
-    public static void startCLI(File indexPath, File baseDirectory, File outputDirectory, File swcFileDirectory, String jsonName) throws IOException {
+    public static void startCLI(File indexDirectory, File baseDirectory, File outputDirectory, File swcFileDirectory, String jsonName) throws IOException {
         // preparation for queryparsing
-        Directory indexDirectory = FSDirectory.open(indexPath.toPath());
-        IndexReader indexReader = DirectoryReader.open(indexDirectory);
+        Directory luceneDirectory = FSDirectory.open(indexDirectory.toPath());
+        IndexReader indexReader = DirectoryReader.open(luceneDirectory);
         final IndexSearcher indexSearcher = new IndexSearcher(indexReader);
         Analyzer analyzer = new CaseInsensitiveKeywordAnalyzer();
         QueryParser queryParser = new QueryParser("neuronId", analyzer);
@@ -67,6 +67,7 @@ public class CLI {
                 System.out.println("Query could not be parsed. Please try again.");
             }
         }
+        indexDirectory.delete();
     }
 
     private static void exportNamesToJson(IndexSearcher indexSearcher, TopDocs topDocs, File outputDirectory, File swcFileDirectory, String jsonName) {

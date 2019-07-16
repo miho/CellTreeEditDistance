@@ -6,8 +6,6 @@ import eu.mihosoft.ext.apted.node.Node;
 import org.junit.Test;
 
 import java.io.*;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -48,7 +46,7 @@ public class LabelTest {
     @Test
     public void checkLabels() throws IOException {
         for (int i = 1; i < 22; i++) {
-            FileInputStream f = new FileInputStream(new File("/media/exdisk/Sem06/BA/ProgramData/Data/Test/labelTest01.swc"));
+            FileInputStream f = new FileInputStream(new File("/media/exdisk/Sem06/BA/ProgramData/Test/labelTest01.swc"));
             TreeCreator t = new TreeCreator(f);
             Node<NodeData> root = t.createTree(i);
             checkLabel(root, i, 0);
@@ -77,9 +75,10 @@ public class LabelTest {
     @Test
     public void checkLabelsProgramatically() throws IOException {
         TestNode testRoot = createTreeAndSWCFile(1L, 15, new double[]{1.329d, -2.7812d, 0.43d, 3.76d});
+        File savedFile = new File("/media/exdisk/Sem06/BA/ProgramData/WorkingDir/programaticSWCFile.swc");
         for (int i = 1; i < 22; i++) {
             System.out.println("labelId: " + i);
-            FileInputStream f = new FileInputStream(new File("/media/exdisk/Sem06/BA/ProgramData/WorkingDir/programaticSWCFile.swc"));
+            FileInputStream f = new FileInputStream(savedFile);
             TreeCreator t = new TreeCreator(f);
             Node<NodeData> root = t.createTree(i);
             checkLabelProgramatically(testRoot, root, i);
@@ -88,7 +87,7 @@ public class LabelTest {
         testRoot = createTreeAndSWCFile(3001L, 15, new double[]{0.1d, 0.1d, 0.1d, 1d});
         for (int i = 1; i < 22; i++) {
             System.out.println("labelId: " + i);
-            FileInputStream f = new FileInputStream(new File("/media/exdisk/Sem06/BA/ProgramData/WorkingDir/programaticSWCFile.swc"));
+            FileInputStream f = new FileInputStream(savedFile);
             TreeCreator t = new TreeCreator(f);
             Node<NodeData> root = t.createTree(i);
             checkLabelProgramatically(testRoot, root, i);
@@ -97,11 +96,12 @@ public class LabelTest {
         testRoot = createTreeAndSWCFile(73L, 15, new double[]{-2.43d, -8.92893d, 29.3344d, 28d});
         for (int i = 1; i < 22; i++) {
             System.out.println("labelId: " + i);
-            FileInputStream f = new FileInputStream(new File("/media/exdisk/Sem06/BA/ProgramData/WorkingDir/programaticSWCFile.swc"));
+            FileInputStream f = new FileInputStream(savedFile);
             TreeCreator t = new TreeCreator(f);
             Node<NodeData> root = t.createTree(i);
             checkLabelProgramatically(testRoot, root, i);
         }
+        savedFile.delete();
     }
 
     // currentNode and index in preorder
