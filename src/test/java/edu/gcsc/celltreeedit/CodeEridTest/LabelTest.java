@@ -2,7 +2,9 @@ package edu.gcsc.celltreeedit.CodeEridTest;
 
 import edu.gcsc.celltreeedit.TEDCalculation.NodeData;
 import edu.gcsc.celltreeedit.TEDCalculation.TreeCreator;
+import edu.gcsc.celltreeedit.Utils;
 import eu.mihosoft.ext.apted.node.Node;
+import org.apache.commons.math3.util.MathArrays;
 import org.junit.Test;
 
 import java.io.*;
@@ -76,7 +78,7 @@ public class LabelTest {
     public void checkLabelsProgramatically() throws IOException {
         TestNode testRoot = createTreeAndSWCFile(1L, 15, new double[]{1.329d, -2.7812d, 0.43d, 3.76d});
         File savedFile = new File("/media/exdisk/Sem06/BA/ProgramData/WorkingDir/programaticSWCFile.swc");
-        for (int i = 1; i < 22; i++) {
+        for (int i = 1; i < 23; i++) {
             System.out.println("labelId: " + i);
             FileInputStream f = new FileInputStream(savedFile);
             TreeCreator t = new TreeCreator(f);
@@ -84,8 +86,8 @@ public class LabelTest {
             checkLabelProgramatically(testRoot, root, i);
         }
 
-        testRoot = createTreeAndSWCFile(3001L, 15, new double[]{0.1d, 0.1d, 0.1d, 1d});
-        for (int i = 1; i < 22; i++) {
+        testRoot = createTreeAndSWCFile(3001L, 15, new double[]{1d, 1d, 1d, 1d});
+        for (int i = 1; i < 23; i++) {
             System.out.println("labelId: " + i);
             FileInputStream f = new FileInputStream(savedFile);
             TreeCreator t = new TreeCreator(f);
@@ -94,7 +96,7 @@ public class LabelTest {
         }
 
         testRoot = createTreeAndSWCFile(73L, 15, new double[]{-2.43d, -8.92893d, 29.3344d, 28d});
-        for (int i = 1; i < 22; i++) {
+        for (int i = 1; i < 23; i++) {
             System.out.println("labelId: " + i);
             FileInputStream f = new FileInputStream(savedFile);
             TreeCreator t = new TreeCreator(f);
@@ -175,9 +177,14 @@ public class LabelTest {
                 if (testNode.getChildren().size() == 0) {
                     testLabel = 0d;
                 } else {
-                    testLabel = Math.acos((nodeOffsets[0] * nodeOffsets[2] + nodeOffsets[1] * nodeOffsets[0] + nodeOffsets[2] * nodeOffsets[1])
-                            / (Math.sqrt(nodeOffsets[0] * nodeOffsets[0] + nodeOffsets[1] * nodeOffsets[1] + nodeOffsets[2] * nodeOffsets[2])
-                            * Math.sqrt(nodeOffsets[2]*nodeOffsets[2] + nodeOffsets[0]*nodeOffsets[0] + nodeOffsets[1]*nodeOffsets[1])));
+                    double[] v1 = new double[]{nodeOffsets[0], nodeOffsets[1], nodeOffsets[2]};
+                    double[] v2 = new double[]{nodeOffsets[2], nodeOffsets[0], nodeOffsets[1]};
+                    double cosAngle = MathArrays.cosAngle(v1, v2);
+                    if (Utils.doublesAlmostEqual(Math.abs(cosAngle), 1d, 0d, 1)) {
+                        testLabel = (cosAngle > 0) ? 0d : Math.PI;
+                    } else {
+                        testLabel = Math.acos(cosAngle);
+                    }
                 }
                 break;
             default:
@@ -185,10 +192,7 @@ public class LabelTest {
                 assertTrue(false);
                 break;
         }
-        if (Double.isNaN(testLabel)) {
-            System.out.println(labelId);
 
-        }
         // labels should be similar
         assertEquals(testLabel, node.getNodeData().getLabel(), deltaBySize(testLabel, 1e-12));
 

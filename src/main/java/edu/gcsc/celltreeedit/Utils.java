@@ -249,6 +249,8 @@ public class Utils {
             return false;
 
         // find larger number
+        a = Math.abs(a);
+        b = Math.abs(b);
         double largest = (b > a) ? b : a;
         // get ulp of largest. when difference of doubles is smaller than ulp * allowed number of ulp
         return (absDiff <= Math.ulp(largest) * maxUlpsDiff);

@@ -12,6 +12,11 @@ import edu.gcsc.celltreeedit.Utils;
 import eu.mihosoft.ext.apted.node.Node;
 import eu.mihosoft.ext.apted.parser.InputParser;
 import eu.mihosoft.vswcreader.SWCSegment;
+import org.apache.commons.math3.exception.NotANumberException;
+import org.apache.commons.math3.util.MathArrays;
+import org.apache.commons.math3.util.MathUtils;
+
+import javax.rmi.CORBA.Util;
 
 /**
  * Created by Erid on 12.04.2018.
@@ -220,6 +225,13 @@ public class TreeCreator implements InputParser <NodeData> , Serializable {
         return Math.sqrt(x * x + y * y + z * z);
     }
 
+    private double calculateLengthSquaredAtIndex(Node<NodeData> currentNode, int j) {
+        double x = currentNode.getNodeData().getPosX().get(j) - currentNode.getNodeData().getPosX().get(j-1);
+        double y = currentNode.getNodeData().getPosY().get(j) - currentNode.getNodeData().getPosY().get(j-1);
+        double z = currentNode.getNodeData().getPosZ().get(j) - currentNode.getNodeData().getPosZ().get(j-1);
+        return x * x + y * y + z * z;
+    }
+
     /**
      * Calculates label l_sec for currentNode.
      * @param currentNode
@@ -396,10 +408,10 @@ public class TreeCreator implements InputParser <NodeData> , Serializable {
      */
     private double calculate_s_sec(Node<NodeData> currentNode) {
         double surface = 0;
-        double length, surfacePart;
+        double lengthSquared, surfacePart;
         Double r1, r2;
         for (int j = 1; j < currentNode.getNodeData().getPosX().size(); j++) {
-            length = calculateLengthAtIndex(currentNode, j);
+            lengthSquared = calculateLengthSquaredAtIndex(currentNode, j);
             r1 = currentNode.getNodeData().getRadius().get(j-1); // radius of node closer to root
             r2 = currentNode.getNodeData().getRadius().get(j); // radius of node closer to leafs
 //            if (Utils.doublesAlmostEqual(r1, r2, 1e-12, 1)) {
@@ -407,7 +419,7 @@ public class TreeCreator implements InputParser <NodeData> , Serializable {
 //            } else {
 //                surfacePart = (r1+r2)*Math.PI*Math.sqrt((r1-r2)*(r1-r2)+length*length);
 //            }
-            surfacePart = (r1+r2)*Math.PI*Math.sqrt((r1-r2)*(r1-r2)+length*length);
+            surfacePart = (r1+r2)*Math.PI*Math.sqrt((r1-r2)*(r1-r2)+lengthSquared);
             surface += surfacePart;
         }
         return surface;
@@ -512,7 +524,23 @@ public class TreeCreator implements InputParser <NodeData> , Serializable {
             v1 = getVectorOfChild(childNodes.get(i));
             for (int j = i + 1; j < noOfChildNodes; j++) {
                 v2 = getVectorOfChild(childNodes.get(j));
-                sum += Math.acos((v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2]) / (Math.sqrt(v1[0] * v1[0] + v1[1] * v1[1] + v1[2] * v1[2]) * Math.sqrt(v2[0] * v2[0] + v2[1] * v2[1] + v2[2] * v2[2])));
+                double cosAngle = MathArrays.cosAngle(v1, v2);
+                if (Utils.doublesAlmostEqual(Math.abs(cosAngle), 1d, 0d, 1)) {
+                    sum += (cosAngle > 0) ? 0d : Math.PI;
+                } else {
+                    sum += Math.acos(cosAngle);
+                }
+//                double cosAngle = MathArrays.cosAngle(v1, v2);
+//                // check if |cosAngle| > 1. if so check if it is due to double precision
+//                if (Math.abs(cosAngle) > 1) {
+//                    if (Utils.doublesAlmostEqual(Math.abs(cosAngle), 1d, 0d, 1)) {
+//                        sum += (cosAngle > 0) ? 0d : Math.PI;
+//                    } else {
+//                        throw new RuntimeException("Angle for arccos calculation not in range between -1 and 1");
+//                    }
+//                } else {
+//                    sum += Math.acos(cosAngle);
+//                }
             }
         }
         // set label of current node

@@ -34,6 +34,8 @@ dependencies {
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.9'
     compile group: 'commons-cli', name: 'commons-cli', version: '1.4'
     compile group: 'commons-io', name: 'commons-io', version: '2.6'
+    // https://mvnrepository.com/artifact/org.apache.commons/commons-math3
+    compile group: 'org.apache.commons', name: 'commons-math3', version: '3.6.1'
     compile group: 'org.apache.lucene', name: 'lucene-core', version: '8.1.1'
     compile group: 'org.apache.lucene', name: 'lucene-analyzers-common', version: '8.1.1'
     compile group: 'org.apache.lucene', name: 'lucene-queryparser', version: '8.1.1'
