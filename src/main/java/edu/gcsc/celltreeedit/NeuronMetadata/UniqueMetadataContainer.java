@@ -16,11 +16,9 @@ public class UniqueMetadataContainer {
     public Map<UniqueMetadata, UniqueMetadata> getUniqueMetadataMap() {
         return this.uniqueMetadataMap;
     }
-
     public Map<String, UniqueMetadata> getFileNameToUniqueMetadataMap() {
         return this.fileNameToUniqueMetadataMap;
     }
-
     public int getNoOfUniqueMetadata() {
         return this.noOfUniqueMetadata;
     }

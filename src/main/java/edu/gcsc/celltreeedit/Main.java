@@ -29,25 +29,6 @@ public class Main {
 
     public static void main(String[] args) throws IOException, ParseException {
 
-        System.out.printf("%.30f\n", 1.435 - 1.43);
-        System.out.printf("%.30f\n", 1.4305 - 1.43);
-        System.out.printf("%.30f\n", 1.43005 - 1.43);
-        System.out.printf("%.30f\n", 1.430005 - 1.43);
-        System.out.printf("%.30f\n", 1.4300005 - 1.43);
-        System.out.printf("%.30f\n", 1.43000005 - 1.43);
-        System.out.printf("%.30f\n", 1.430000005 - 1.43);
-        System.out.printf("%.30f\n", 1.4300000005 - 1.43);
-        System.out.printf("%.30f\n", 1.43000000005 - 1.43);
-        System.out.printf("%.30f\n", 1.430000000005 - 1.43);
-        System.out.printf("%.30f\n", 1.4300000000005 - 1.43);
-        System.out.printf("%.30f\n", 1.43000000000005 - 1.43);
-        System.out.printf("%.30f\n", 1.430000000000005 - 1.43);
-        System.out.printf("%.30f\n", 1.4300000000000005 - 1.43);
-        System.out.printf("%.30f\n", 1.43000000000000005 - 1.43);
-
-
-
-
         CommandLineParsing.parseArguments(args);
 
         switch (appProperties.getCalcType()) {
