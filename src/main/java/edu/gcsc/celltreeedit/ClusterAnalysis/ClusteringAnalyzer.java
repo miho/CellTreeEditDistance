@@ -37,7 +37,12 @@ public class ClusteringAnalyzer {
         // HungarianDouble takes DistanceMatrix of values
         // go through each uniqueMetadataObject. Calculate partitioning error for all clusters
         int[][] partitioningErrorMatrix = calculatePartitioningErrorMatrix(uniqueMetadataObjects, limitedClusters, uniqueMetadataContainer.getFileNameToUniqueMetadataMap());
-        HungarianAlgorithm hungarian = new HungarianAlgorithm(partitioningErrorMatrix);
+        int length = partitioningErrorMatrix.length;
+        int[][] partitioningErrorMatrixCopy = new int[length][];
+        for (int i = 0; i < length; i++) {
+            partitioningErrorMatrixCopy[i] = partitioningErrorMatrix[i].clone();
+        }
+        HungarianAlgorithm hungarian = new HungarianAlgorithm(partitioningErrorMatrixCopy);
         Map<Integer, Integer> assignment = putAssignmentInMap(hungarian.findOptimalAssignment());
         System.out.println("Donedonedonedone");
 
@@ -135,7 +140,7 @@ public class ClusteringAnalyzer {
      * @param size
      * @return
      */
-    private static List<Cluster> limitClusterBySize(Cluster cluster, int size) {
+    public static List<Cluster> limitClusterBySize(Cluster cluster, int size) {
         TreeMap<Integer, Cluster> limitedClusters = new TreeMap<>();
 
         // i is used for leaf-clusters. leafs have keys below 0 thus they are sorted at the beginning of limitedClusters
