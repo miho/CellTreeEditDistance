@@ -111,24 +111,27 @@ public class Main {
     // for querying a predefined combination
     private static void queryByUniqueMetadata() throws IOException {
         System.out.println("Starting query by predefined UniqueMetadata\n");
-        int noOfNeuronsPerType = 37;
+        int noOfNeuronsPerType = 143;
 
         // define which uniqueMetadata-groups shall be used
         UniqueMetadataContainer predefinedUniqueMetadataContainer = new UniqueMetadataContainer();
         Set<UniqueMetadataContainer.UniqueMetadata> predefinedUniqueMetadata = new HashSet<>();
-        predefinedUniqueMetadata.add(predefinedUniqueMetadataContainer.createUniqueMetadataObject(new HashSet<>(Arrays.asList("principal cell", "pyramidal")), new HashSet<>(Arrays.asList("CA1", "hippocampus")), "rat", "", ""));
-        predefinedUniqueMetadata.add(predefinedUniqueMetadataContainer.createUniqueMetadataObject(new HashSet<>(Arrays.asList("principal cell", "pyramidal")), new HashSet<>(Arrays.asList("CA3", "hippocampus")), "rat", "", ""));
+        predefinedUniqueMetadata.add(predefinedUniqueMetadataContainer.createUniqueMetadataObject(new HashSet<>(Arrays.asList("principal cell", "pyramidal")), new HashSet<>(Arrays.asList("hippocampus")), "rat", "", ""));
         predefinedUniqueMetadata.add(predefinedUniqueMetadataContainer.createUniqueMetadataObject(new HashSet<>(Arrays.asList("principal cell", "granule")), new HashSet<>(Arrays.asList("dentate gyrus", "hippocampus")), "rat", "", ""));
-        predefinedUniqueMetadata.add(predefinedUniqueMetadataContainer.createUniqueMetadataObject(new HashSet<>(Arrays.asList("Glia", "astrocyte")), new HashSet<>(Arrays.asList("CA3", "hippocampus")), "rat", "", ""));
-        predefinedUniqueMetadata.add(predefinedUniqueMetadataContainer.createUniqueMetadataObject(new HashSet<>(Arrays.asList("Glia", "astrocyte")), new HashSet<>(Arrays.asList("CA1", "hippocampus")), "rat", "", ""));
-        predefinedUniqueMetadata.add(predefinedUniqueMetadataContainer.createUniqueMetadataObject(new HashSet<>(Arrays.asList("principal cell", "pyramidal")), new HashSet<>(Arrays.asList("somatosensory", "neocortex", "layer 4")), "rat", "", ""));
-        predefinedUniqueMetadata.add(predefinedUniqueMetadataContainer.createUniqueMetadataObject(new HashSet<>(Arrays.asList("stellate", "interneuron")), new HashSet<>(Arrays.asList("amygdala", "basolateral amygdala complex")), "rat", "", ""));
-        predefinedUniqueMetadata.add(predefinedUniqueMetadataContainer.createUniqueMetadataObject(new HashSet<>(Arrays.asList("principal cell", "pyramidal")), new HashSet<>(Arrays.asList("somatosensory", "neocortex", "layer 2")), "rat", "", ""));
-        predefinedUniqueMetadata.add(predefinedUniqueMetadataContainer.createUniqueMetadataObject(new HashSet<>(Arrays.asList("principal cell", "pyramidal")), new HashSet<>(Arrays.asList("somatosensory", "neocortex", "layer 3")), "rat", "", ""));
-        predefinedUniqueMetadata.add(predefinedUniqueMetadataContainer.createUniqueMetadataObject(new HashSet<>(Arrays.asList("principal cell", "pyramidal")), new HashSet<>(Arrays.asList("somatosensory", "neocortex", "layer 5a")), "rat", "", ""));
-        predefinedUniqueMetadata.add(predefinedUniqueMetadataContainer.createUniqueMetadataObject(new HashSet<>(Arrays.asList("principal cell", "pyramidal")), new HashSet<>(Arrays.asList("somatosensory", "neocortex", "layer 5b")), "rat", "", ""));
-        predefinedUniqueMetadata.add(predefinedUniqueMetadataContainer.createUniqueMetadataObject(new HashSet<>(Arrays.asList("Horizontal", "interneuron", "neurogliaform")), new HashSet<>(Arrays.asList("somatosensory", "neocortex", "layer 1")), "rat", "", ""));
-        predefinedUniqueMetadata.add(predefinedUniqueMetadataContainer.createUniqueMetadataObject(new HashSet<>(Arrays.asList("Star", "pyramidal", "interneuron")), new HashSet<>(Arrays.asList("somatosensory", "neocortex", "layer 4")), "rat", "", ""));
+
+//        predefinedUniqueMetadata.add(predefinedUniqueMetadataContainer.createUniqueMetadataObject(new HashSet<>(Arrays.asList("principal cell", "pyramidal")), new HashSet<>(Arrays.asList("CA1", "hippocampus")), "rat", "", ""));
+//        predefinedUniqueMetadata.add(predefinedUniqueMetadataContainer.createUniqueMetadataObject(new HashSet<>(Arrays.asList("principal cell", "pyramidal")), new HashSet<>(Arrays.asList("CA3", "hippocampus")), "rat", "", ""));
+//        predefinedUniqueMetadata.add(predefinedUniqueMetadataContainer.createUniqueMetadataObject(new HashSet<>(Arrays.asList("principal cell", "granule")), new HashSet<>(Arrays.asList("dentate gyrus", "hippocampus")), "rat", "", ""));
+//        predefinedUniqueMetadata.add(predefinedUniqueMetadataContainer.createUniqueMetadataObject(new HashSet<>(Arrays.asList("Glia", "astrocyte")), new HashSet<>(Arrays.asList("CA3", "hippocampus")), "rat", "", ""));
+//        predefinedUniqueMetadata.add(predefinedUniqueMetadataContainer.createUniqueMetadataObject(new HashSet<>(Arrays.asList("Glia", "astrocyte")), new HashSet<>(Arrays.asList("CA1", "hippocampus")), "rat", "", ""));
+//        predefinedUniqueMetadata.add(predefinedUniqueMetadataContainer.createUniqueMetadataObject(new HashSet<>(Arrays.asList("principal cell", "pyramidal")), new HashSet<>(Arrays.asList("somatosensory", "neocortex", "layer 4")), "rat", "", ""));
+//        predefinedUniqueMetadata.add(predefinedUniqueMetadataContainer.createUniqueMetadataObject(new HashSet<>(Arrays.asList("stellate", "interneuron")), new HashSet<>(Arrays.asList("amygdala", "basolateral amygdala complex")), "rat", "", ""));
+//        predefinedUniqueMetadata.add(predefinedUniqueMetadataContainer.createUniqueMetadataObject(new HashSet<>(Arrays.asList("principal cell", "pyramidal")), new HashSet<>(Arrays.asList("somatosensory", "neocortex", "layer 2")), "rat", "", ""));
+//        predefinedUniqueMetadata.add(predefinedUniqueMetadataContainer.createUniqueMetadataObject(new HashSet<>(Arrays.asList("principal cell", "pyramidal")), new HashSet<>(Arrays.asList("somatosensory", "neocortex", "layer 3")), "rat", "", ""));
+//        predefinedUniqueMetadata.add(predefinedUniqueMetadataContainer.createUniqueMetadataObject(new HashSet<>(Arrays.asList("principal cell", "pyramidal")), new HashSet<>(Arrays.asList("somatosensory", "neocortex", "layer 5a")), "rat", "", ""));
+//        predefinedUniqueMetadata.add(predefinedUniqueMetadataContainer.createUniqueMetadataObject(new HashSet<>(Arrays.asList("principal cell", "pyramidal")), new HashSet<>(Arrays.asList("somatosensory", "neocortex", "layer 5b")), "rat", "", ""));
+//        predefinedUniqueMetadata.add(predefinedUniqueMetadataContainer.createUniqueMetadataObject(new HashSet<>(Arrays.asList("Horizontal", "interneuron", "neurogliaform")), new HashSet<>(Arrays.asList("somatosensory", "neocortex", "layer 1")), "rat", "", ""));
+//        predefinedUniqueMetadata.add(predefinedUniqueMetadataContainer.createUniqueMetadataObject(new HashSet<>(Arrays.asList("Star", "pyramidal", "interneuron")), new HashSet<>(Arrays.asList("somatosensory", "neocortex", "layer 4")), "rat", "", ""));
 
         // get existing neuronMetadata and put it in existingUniqueMetadataContainer --> neuronNames for each uniqueMetadata-group --> select neurons randomly from uniqueMetadata-group
         NeuronMetadataMapper neuronMetadataMapper = new NeuronMetadataMapper();
@@ -244,20 +247,23 @@ public class Main {
         CellTreeEditDistance cellTreeEditDistance;
         Pair<double[][], String[]> result;
         // calculate distances of Selection of SWC-Files for every possible label
-        File[] files = JsonUtils.parseJsonToFiles(new File("/media/exdisk/Sem06/BA/Testlaeufe/swcFiles_Selected_481_13Types_37Each.json"));
+        File[] files = JsonUtils.parseJsonToFiles(new File("/media/exdisk/Sem06/BA/ProgramData/swcFiles.json"));
+        for (int i = 0; i < files.length; i++) {
+            files[i] = new File(appProperties.getSwcFileDirectory() + "/" + files[i].getPath());
+        }
         for (int i = 1; i < 23; i += 1) {
             Date date = new Date();
             System.out.println(dateFormat.format(date) + " selected Label " + i);
             cellTreeEditDistance = new CellTreeEditDistance();
             result = cellTreeEditDistance.compareFilesFromFiles(files, i);
-            Utils.printMatrixToTxt(result.getKey(), result.getValue(), appProperties.getOutputDirectory(), "Matrix_Selected_481_13Types_37Each_Label" + i + ".txt");
+            Utils.printMatrixToTxt(result.getKey(), result.getValue(), appProperties.getOutputDirectory(), "Matrix_PyramidalVsGranule_143Each_Label" + i + ".txt");
         }
 
         // calculate distances of 1000 of these SWC-Files
-        Date date = new Date();
-        System.out.println(dateFormat.format(date) + " 1000 mostCommon");
-        cellTreeEditDistance = new CellTreeEditDistance();
-        result = cellTreeEditDistance.compareFilesFromFiles(JsonUtils.parseJsonToFiles(new File("/media/exdisk/Sem06/BA/Testlaeufe/swcFiles_mostCommon_1000_40Types_25Each.json")), 9);
-        Utils.printMatrixToTxt(result.getKey(), result.getValue(), appProperties.getOutputDirectory(), "Matrix_mostCommon_1000_40Types_25Each.txt");
+//        Date date = new Date();
+//        System.out.println(dateFormat.format(date) + " 1000 mostCommon");
+//        cellTreeEditDistance = new CellTreeEditDistance();
+//        result = cellTreeEditDistance.compareFilesFromFiles(JsonUtils.parseJsonToFiles(new File("/media/exdisk/Sem06/BA/Testlaeufe/swcFiles_mostCommon_1000_40Types_25Each.json")), 9);
+//        Utils.printMatrixToTxt(result.getKey(), result.getValue(), appProperties.getOutputDirectory(), "Matrix_mostCommon_1000_40Types_25Each.txt");
     }
 }

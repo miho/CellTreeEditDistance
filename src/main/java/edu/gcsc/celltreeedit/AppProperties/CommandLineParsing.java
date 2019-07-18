@@ -128,13 +128,10 @@ public class CommandLineParsing {
                 break;
             case 7:
                 if (!hasOption(line, AppParameter.BASE_DIRECTORY) || hasOption(line, AppParameter.DESTINATION_DIRECTORY) || hasOption(line, AppParameter.JSON_FILE) || hasOption(line, AppParameter.JSON_NAME) || hasOption(line, AppParameter.MATRIX_NAME)) {
-                    throw new ParseException("calc=7: No other arguments allowed.");
+                    throw new ParseException("calc=7: Argument 'base' needed. All others not allowed.");
                 }
                 break;
             case 8:
-                if (!hasOption(line, AppParameter.BASE_DIRECTORY) || hasOption(line, AppParameter.DESTINATION_DIRECTORY) || hasOption(line, AppParameter.JSON_FILE) || hasOption(line, AppParameter.JSON_NAME) || hasOption(line, AppParameter.MATRIX_NAME)) {
-                    throw new ParseException("calc=8: No other arguments allowed.");
-                }
                 break;
             default:
                 throw new ParseException("'calc' can only have value between 0 and 8");

@@ -25,14 +25,14 @@ public class ClusterAnalyzerTest {
         NeuronMetadataMapper neuronMetadataMapper = new NeuronMetadataMapper();
         Map<String, NeuronMetadataR> neuronMetadata = neuronMetadataMapper.mapAllFromMetadataDirectory(new File("/media/exdisk/Sem06/BA/ProgramData/Data/Metadata"));
 
-        Pair<float[][], List<UniqueMetadataContainer.UniqueMetadata>> analyzerResult = ClusteringAnalyzer.analyzeClusteringOfTEDResult(result, neuronMetadata);
-        float[][] relPartitioningErrors = analyzerResult.getKey();
+        Pair<double[][], List<UniqueMetadataContainer.UniqueMetadata>> analyzerResult = ClusteringAnalyzer.analyzeClusteringOfTEDResult(result, neuronMetadata);
+        double[][] relPartitioningErrors = analyzerResult.getKey();
         List<UniqueMetadataContainer.UniqueMetadata> uniqueMetadataObjects = analyzerResult.getValue();
 
         // check all relPartitioningErrors not lower left for 0
         for (int i = 0; i < relPartitioningErrors.length; i++) {
             for (int j = i + 1; j < relPartitioningErrors.length; j++) {
-                assertEquals(0f, relPartitioningErrors[i][j], 0f);
+                assertEquals(0d, relPartitioningErrors[i][j], 0d);
             }
         }
 
@@ -51,33 +51,33 @@ public class ClusterAnalyzerTest {
                 assertTrue(false);
             }
         }
-        float result00 = 0;
-        float result10 = 0;
-        float result11 = 0;
+        double result00 = 0;
+        double result10 = 0;
+        double result11 = 0;
         if (uniqueMetadata1 == 1 && uniqueMetadata2 == 2 && uniqueMetadata3 == 3) {
-            result00 = 1f / 4f;
-            result10 = 1f / 3f;
-            result11 = 1f / 8f;
+            result00 = 1d / 4d;
+            result10 = 1d / 3d;
+            result11 = 1d / 8d;
         } else if (uniqueMetadata1 == 1 && uniqueMetadata2 == 3 && uniqueMetadata3 == 2) {
-            result00 = 1f / 3f;
-            result10 = 1f / 4f;
-            result11 = 1f / 8f;
+            result00 = 1d / 3d;
+            result10 = 1d / 4d;
+            result11 = 1d / 8d;
         } else if (uniqueMetadata1 == 2 && uniqueMetadata2 == 1 && uniqueMetadata3 == 3) {
-            result00 = 1f / 4f;
-            result10 = 1f / 8f;
-            result11 = 1f / 3f;
+            result00 = 1d / 4d;
+            result10 = 1d / 8d;
+            result11 = 1d / 3d;
         } else if (uniqueMetadata1 == 2 && uniqueMetadata2 == 3 && uniqueMetadata3 == 1) {
-            result00 = 1f / 8f;
-            result10 = 1f / 4f;
-            result11 = 1f / 3f;
+            result00 = 1d / 8d;
+            result10 = 1d / 4d;
+            result11 = 1d / 3d;
         } else if (uniqueMetadata1 == 3 && uniqueMetadata2 == 1 && uniqueMetadata3 == 2) {
-            result00 = 1f / 3f;
-            result10 = 1f / 8f;
-            result11 = 1f / 4f;
+            result00 = 1d / 3d;
+            result10 = 1d / 8d;
+            result11 = 1d / 4d;
         } else if (uniqueMetadata1 == 3 && uniqueMetadata2 == 2 && uniqueMetadata3 == 1) {
-            result00 = 1f / 8f;
-            result10 = 1f / 3f;
-            result11 = 1f / 4f;
+            result00 = 1d / 8d;
+            result10 = 1d / 3d;
+            result11 = 1d / 4d;
         } else {
             assertTrue(false);
         }
@@ -85,9 +85,9 @@ public class ClusterAnalyzerTest {
         System.out.println(relPartitioningErrors[1][0]);
         System.out.println(relPartitioningErrors[1][1]);
         // check all relPartitioningErrors lower left entries
-//        assertEquals(result00, relPartitioningErrors[0][0], 0f);
-//        assertEquals(result10, relPartitioningErrors[1][0], 0f);
-//        assertEquals(result11, relPartitioningErrors[1][1], 0f);
+        assertEquals(result00, relPartitioningErrors[0][0], 0d);
+        assertEquals(result10, relPartitioningErrors[1][0], 0d);
+        assertEquals(result11, relPartitioningErrors[1][1], 0d);
         // check entries relating to uniqueMetadata1
     }
 
