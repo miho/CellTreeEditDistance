@@ -135,13 +135,13 @@ public class ClusteringAnalyzer {
         // size is 1 row and 1 column smaller because only lower left matrix is relevant. An entry sums up would be symmetric and main diagonal entries would be 0
         int size = assignment.size() - 1;
         float[][] relPartitioningErrors = new float[size][size];
-        // index of row
+        // index of row of new matrix
         for (int i = 0; i < size; i++) {
             // index of col. only go from 0 to i --> lower left matrix
             for (int j = 0; j <= i; j++) {
                 // number of neurons from uniqueMetadataObject A that have been put in B + number of neurons of B put in A
                 int deltaAbs = (calculateWronglyClusteredNeurons(uniqueMetadataObjects.get(j), clusters.get(assignment.get(i+1)), fileNamesUniqueMetadataMap) + calculateWronglyClusteredNeurons(uniqueMetadataObjects.get(i+1), clusters.get(assignment.get(j)), fileNamesUniqueMetadataMap));
-                relPartitioningErrors[i][j] = 2 * (float) deltaAbs / ((float) uniqueMetadataObjects.get(i).getNoOfNeurons() + (float) uniqueMetadataObjects.get(j).getNoOfNeurons());
+                relPartitioningErrors[i][j] = 2 * (float) deltaAbs / ((float) uniqueMetadataObjects.get(i+1).getNoOfNeurons() + (float) uniqueMetadataObjects.get(j).getNoOfNeurons());
             }
         }
         return relPartitioningErrors;
