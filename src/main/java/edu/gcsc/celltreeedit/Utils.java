@@ -149,6 +149,34 @@ public class Utils {
         return new Pair<>(matrix, filenames);
     }
 
+    public static List<Set<String>> readRArrayFromTxt(File arrayFile) throws FileNotFoundException {
+        // skip first line
+        Scanner scanner = new Scanner(arrayFile);
+        String line = scanner.nextLine();
+
+        // read cell by cell to build array
+        int size = 2;
+        String[] splittedline;
+        Map<Integer, Set<String>> clusterMap = new HashMap<>();
+//        List<Set<String>> clusters = new ArrayList<>();
+        String name;
+        int clusterId;
+
+        while (scanner.hasNextLine()) {
+            line = scanner.nextLine();
+            splittedline = line.split(";");
+            name = splittedline[0];
+            clusterId = Integer.parseInt(splittedline[1]);
+            if (clusterMap.containsKey(clusterId)) {
+                clusterMap.get(clusterId).add(name);
+            } else {
+                clusterMap.put(clusterId, new HashSet<>(Arrays.asList(name)));
+            }
+        }
+        scanner.close();
+        return new ArrayList<>(clusterMap.values());
+    }
+
     /**
      * @return a txt-file
      */

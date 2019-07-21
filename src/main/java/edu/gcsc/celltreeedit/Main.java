@@ -4,6 +4,7 @@ import edu.gcsc.celltreeedit.AppProperties.AppProperties;
 import edu.gcsc.celltreeedit.AppProperties.CommandLineParsing;
 import edu.gcsc.celltreeedit.ClusterAnalysis.ClusteringAnalyzer;
 import edu.gcsc.celltreeedit.Clustering.DendrogramCreator;
+import edu.gcsc.celltreeedit.Clustering.PassingDataToELKI;
 import edu.gcsc.celltreeedit.JsonIO.JsonUtils;
 import edu.gcsc.celltreeedit.Lucene.CLI;
 import edu.gcsc.celltreeedit.Lucene.LuceneIndexWriter;
@@ -29,40 +30,42 @@ public class Main {
 
     public static void main(String[] args) throws IOException, ParseException {
 
-        CommandLineParsing.parseArguments(args);
+//        PassingDataToELKI.backupCluster();
 
-        switch (appProperties.getCalcType()) {
-            case 0: // baseDirectory
-                preprocessSWCDirectory();
-                break;
-            case 1: // baseDirectory, nameOfSWCFile
-                queryLucene();
-                break;
-            case 2: // outputDirectory, nameOfSWCFile
-                queryByFileDialog();
-                break;
-            case 3: // baseDirectory, nameOfSWCFile
-                queryByUniqueMetadata();
-                break;
-            case 4: // directoryOfSWCFile, nameOfOutputMatrix
-                calculateTEDMatrix();
-                break;
-            case 5: // directoryOfSWCFile, nameOfOutputMatrix
-                calculateTEDMatrixAndDendrogram();
-                break;
-            case 6:
-                calculateDendrogramsForTEDMatrices();
-                break;
-            case 7:
-                analyzeClusteringOfTEDMatrices();
-                break;
-            case 8:
-                doWhateverIsInMyFunctionBody();
-                break;
-            default:
-                System.out.println("calcType not valid");
-                break;
-        }
+//        CommandLineParsing.parseArguments(args);
+//
+//        switch (appProperties.getCalcType()) {
+//            case 0: // baseDirectory
+//                preprocessSWCDirectory();
+//                break;
+//            case 1: // baseDirectory, nameOfSWCFile
+//                queryLucene();
+//                break;
+//            case 2: // outputDirectory, nameOfSWCFile
+//                queryByFileDialog();
+//                break;
+//            case 3: // baseDirectory, nameOfSWCFile
+//                queryByUniqueMetadata();
+//                break;
+//            case 4: // directoryOfSWCFile, nameOfOutputMatrix
+//                calculateTEDMatrix();
+//                break;
+//            case 5: // directoryOfSWCFile, nameOfOutputMatrix
+//                calculateTEDMatrixAndDendrogram();
+//                break;
+//            case 6:
+//                calculateDendrogramsForTEDMatrices();
+//                break;
+//            case 7:
+//                analyzeClusteringOfTEDMatrices();
+//                break;
+//            case 8:
+//                doWhateverIsInMyFunctionBody();
+//                break;
+//            default:
+//                System.out.println("calcType not valid");
+//                break;
+//        }
     }
 
     /**
