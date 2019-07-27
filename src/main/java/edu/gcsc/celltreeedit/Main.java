@@ -28,44 +28,79 @@ public class Main {
 
     private static AppProperties appProperties = AppProperties.getInstance();
 
+    /**
+     * Make sure structure of BaseDirectory is correct.
+     * Structure of BaseDirectory:
+     * ProgramData
+     *      /Data
+     *          /Metadata
+     *          /SWCFiles
+     *      /Output
+     *      /Test
+     *          /TestClustering
+     *          /TestSWCFiles
+     *          /TestWorkingDir
+     *      /WorkingDir
+     *      /someSWCFileForTEDCalculation.json
+     *
+     * case=0: preprocess SWC-Directory.
+     *          BaseDirectory must be given.
+     * case=1: query Metadata with Lucene and create .json file.
+     *          BaseDirectory must be given. json-filename optional.
+     * case=2: choose some files from filedialog, which should be used for TED-calculation. creates .json file.
+     *          destinationDirectory must be given. json-filename optional. CURRENTLY NOT SUPPORTED!
+     * case=3: query Metadata by unique metadata. UniqueMetadata must be adjusted inside of the program in main-function. create .json file.
+     *          BaseDirectory must be given. json-filename optional.
+     * case=4: calculate TED-matrix.
+     *          directory to json-file must be given. matrix-name optional. json-file must be located directly inside /ProgramData
+     * case=5: calculate TED-matrix and create dendrogram.
+     *          directory to json-file must be given. matrix-name optional. json-file must be located directly inside /ProgramData
+     * case=6: calculate Dendrograms for TED-matrices which have already been calculated.
+     *          BaseDirectory must be given.
+     * case=7: analyze clusterings of TED-matrices. shows relative partitioning errors of the result. CURRENTLY USES Average-Linkage-Strategy --> CLUSTERING NOT WORKING AS DESIRED
+     *          BaseDirectory must be given.
+     * case=8: do whatever is defined in the function-body. used for development
+     *
+     * @param args
+     * @throws IOException
+     * @throws ParseException
+     */
     public static void main(String[] args) throws IOException, ParseException {
 
-//        PassingDataToELKI.backupCluster();
+        CommandLineParsing.parseArguments(args);
 
-//        CommandLineParsing.parseArguments(args);
-//
-//        switch (appProperties.getCalcType()) {
-//            case 0: // baseDirectory
-//                preprocessSWCDirectory();
-//                break;
-//            case 1: // baseDirectory, nameOfSWCFile
-//                queryLucene();
-//                break;
-//            case 2: // outputDirectory, nameOfSWCFile
-//                queryByFileDialog();
-//                break;
-//            case 3: // baseDirectory, nameOfSWCFile
-//                queryByUniqueMetadata();
-//                break;
-//            case 4: // directoryOfSWCFile, nameOfOutputMatrix
-//                calculateTEDMatrix();
-//                break;
-//            case 5: // directoryOfSWCFile, nameOfOutputMatrix
-//                calculateTEDMatrixAndDendrogram();
-//                break;
-//            case 6:
-//                calculateDendrogramsForTEDMatrices();
-//                break;
-//            case 7:
-//                analyzeClusteringOfTEDMatrices();
-//                break;
-//            case 8:
-//                doWhateverIsInMyFunctionBody();
-//                break;
-//            default:
-//                System.out.println("calcType not valid");
-//                break;
-//        }
+        switch (appProperties.getCalcType()) {
+            case 0:
+                preprocessSWCDirectory();
+                break;
+            case 1:
+                queryLucene();
+                break;
+            case 2:
+                queryByFileDialog();
+                break;
+            case 3:
+                queryByUniqueMetadata();
+                break;
+            case 4:
+                calculateTEDMatrix();
+                break;
+            case 5:
+                calculateTEDMatrixAndDendrogram();
+                break;
+            case 6:
+                calculateDendrogramsForTEDMatrices();
+                break;
+            case 7:
+                analyzeClusteringOfTEDMatrices();
+                break;
+            case 8:
+                doWhateverIsInMyFunctionBody();
+                break;
+            default:
+                System.out.println("calcType not valid");
+                break;
+        }
     }
 
     /**
