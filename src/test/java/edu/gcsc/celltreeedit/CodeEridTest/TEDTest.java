@@ -15,9 +15,6 @@ import static org.junit.Assert.assertEquals;
 
 public class TEDTest {
 
-    // - TED --> Fälle Bild prüfen (für alle Labels: Baum-leer, gleiche Bäume, fast gleiche Bäume (zwei Knoten mit kleinen labels mehr, löschen mittlerer Knoten führt zu anderem Baum, hinzufügen mittlerer Knoten führt zu anderem Baum, umbenennen mittlerer Knoten führt zu anderem baum)
-
-
     private float deltaBySize(float value, float epsilon) {
         String scientificNotation = String.format("%1.1e", value);
         int integerPlaces = Integer.parseInt(scientificNotation.substring(4));
@@ -27,10 +24,10 @@ public class TEDTest {
     @Test
     public void checkTEDSameTrees() throws IOException {
         for (int i = 1; i < 23; i++) {
-            FileInputStream f1 = new FileInputStream(new File("/media/exdisk/Sem06/BA/ProgramData/Test/TEDTest01.CNG.swc"));
+            FileInputStream f1 = new FileInputStream(new File(BaseDirectory.baseDirectory.getPath() + "/Test/TEDTest01.CNG.swc"));
             TreeCreator t1 = new TreeCreator(f1);
             Node<NodeData> root1 = t1.createTree(i);
-            FileInputStream f2 = new FileInputStream(new File("/media/exdisk/Sem06/BA/ProgramData/Test/TEDTest01.CNG.swc"));
+            FileInputStream f2 = new FileInputStream(new File(BaseDirectory.baseDirectory.getPath() + "/Test/TEDTest01.CNG.swc"));
             TreeCreator t2 = new TreeCreator(f2);
             Node<NodeData> root2 = t2.createTree(i);
 
@@ -44,7 +41,7 @@ public class TEDTest {
     public void checkTEDTreeEmpty() throws IOException {
         for (int i = 1; i < 23; i++) {
             System.out.println("Label: " + i);
-            FileInputStream f1 = new FileInputStream(new File("/media/exdisk/Sem06/BA/ProgramData/Test/TEDTest01.CNG.swc"));
+            FileInputStream f1 = new FileInputStream(new File(BaseDirectory.baseDirectory.getPath() + "/Test/TEDTest01.CNG.swc"));
             TreeCreator t1 = new TreeCreator(f1);
             Node<NodeData> root1 = t1.createTree(i);
             Node<NodeData> root2 = new Node<>(new NodeData(0d));
@@ -270,11 +267,11 @@ public class TEDTest {
         // TODO: implement solution for labels 7-22
         for (int i = 1; i < 7; i++) {
             System.out.println(i);
-            FileInputStream f1 = new FileInputStream(new File("/media/exdisk/Sem06/BA/ProgramData/Test/TEDTest01_simpleTree.swc"));
+            FileInputStream f1 = new FileInputStream(new File(BaseDirectory.baseDirectory.getPath() + "/Test/TEDTest01_simpleTree.swc"));
             TreeCreator t1 = new TreeCreator(f1);
             Node<NodeData> root1 = t1.createTree(i);
 
-            FileInputStream f2 = new FileInputStream(new File("/media/exdisk/Sem06/BA/ProgramData/Test/TEDTest01_simpleTree_1lengthChanged.swc"));
+            FileInputStream f2 = new FileInputStream(new File(BaseDirectory.baseDirectory.getPath() + "/Test/TEDTest01_simpleTree_1lengthChanged.swc"));
             TreeCreator t2 = new TreeCreator(f2);
             Node<NodeData> root2 = t2.createTree(i);
 
@@ -348,11 +345,11 @@ public class TEDTest {
 
         for (int i = 1; i < 23; i++) {
             System.out.println(i);
-            FileInputStream f1 = new FileInputStream(new File("/media/exdisk/Sem06/BA/ProgramData/Test/TEDTest01_superSimpleTree.swc"));
+            FileInputStream f1 = new FileInputStream(new File(BaseDirectory.baseDirectory.getPath() + "/Test/TEDTest01_superSimpleTree.swc"));
             TreeCreator t1 = new TreeCreator(f1);
             Node<NodeData> root1 = t1.createTree(i);
 
-            FileInputStream f2 = new FileInputStream(new File("/media/exdisk/Sem06/BA/ProgramData/Test/TEDTest01_superSimpleTree_1NodeInserted.swc"));
+            FileInputStream f2 = new FileInputStream(new File(BaseDirectory.baseDirectory.getPath() + "/Test/TEDTest01_superSimpleTree_1NodeInserted.swc"));
             TreeCreator t2 = new TreeCreator(f2);
             Node<NodeData> root2 = t2.createTree(i);
 

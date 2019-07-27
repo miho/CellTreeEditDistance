@@ -17,7 +17,7 @@ public class MetadataTest {
 
     @Test
     public void allMetadataTest() throws IOException {
-        File metadataDirectory = new File("/media/exdisk/Sem06/BA/ProgramData/Test");
+        File metadataDirectory = new File(BaseDirectory.baseDirectory.getPath() + "/Test");
         NeuronMetadataMapper neuronMetadataMapper = new NeuronMetadataMapper();
         Map<String, NeuronMetadataR> neuronMetadata = neuronMetadataMapper.mapAllFromMetadataDirectory(metadataDirectory);
 
@@ -63,8 +63,8 @@ public class MetadataTest {
 
     @Test
     public void existingMetadataTest() throws IOException {
-        File metadataDirectory = new File("/media/exdisk/Sem06/BA/ProgramData/Test");
-        File swcFileDirectory = new File("/media/exdisk/Sem06/BA/ProgramData/Test/TestSWCFiles");
+        File metadataDirectory = new File(BaseDirectory.baseDirectory.getPath() + "/Test");
+        File swcFileDirectory = new File(BaseDirectory.baseDirectory.getPath() + "/Test/TestSWCFiles");
         NeuronMetadataMapper neuronMetadataMapper = new NeuronMetadataMapper();
         Map<String, NeuronMetadataR> neuronMetadata = neuronMetadataMapper.mapExistingFromMetadataDirectory(metadataDirectory, swcFileDirectory);
 
@@ -109,7 +109,7 @@ public class MetadataTest {
 
     @Test
     public void uniqueMetadataTest() throws IOException {
-        File metadataDirectory = new File("/media/exdisk/Sem06/BA/ProgramData/Test");
+        File metadataDirectory = new File(BaseDirectory.baseDirectory.getPath() + "/Test");
         NeuronMetadataMapper neuronMetadataMapper = new NeuronMetadataMapper();
         Map<String, NeuronMetadataR> neuronMetadata = neuronMetadataMapper.mapAllFromMetadataDirectory(metadataDirectory);
 

@@ -48,7 +48,7 @@ public class LabelTest {
     @Test
     public void checkLabels() throws IOException {
         for (int i = 1; i < 22; i++) {
-            FileInputStream f = new FileInputStream(new File("/media/exdisk/Sem06/BA/ProgramData/Test/labelTest01.swc"));
+            FileInputStream f = new FileInputStream(new File(BaseDirectory.baseDirectory.getPath() + "/Test/labelTest01.swc"));
             TreeCreator t = new TreeCreator(f);
             Node<NodeData> root = t.createTree(i);
             checkLabel(root, i, 0);
@@ -77,7 +77,7 @@ public class LabelTest {
     @Test
     public void checkLabelsProgramatically() throws IOException {
         TestNode testRoot = createTreeAndSWCFile(1L, 15, new double[]{1.329d, -2.7812d, 0.43d, 3.76d});
-        File savedFile = new File("/media/exdisk/Sem06/BA/ProgramData/WorkingDir/programaticSWCFile.swc");
+        File savedFile = new File(BaseDirectory.baseDirectory.getPath() + "/WorkingDir/programaticSWCFile.swc");
         for (int i = 1; i < 23; i++) {
             System.out.println("labelId: " + i);
             FileInputStream f = new FileInputStream(savedFile);
@@ -233,7 +233,7 @@ public class LabelTest {
         // create random Object with seed
         // randomly create number of children
 
-        File file = new File("/media/exdisk/Sem06/BA/ProgramData/WorkingDir/programaticSWCFile.swc");
+        File file = new File(BaseDirectory.baseDirectory.getPath() + "/WorkingDir/programaticSWCFile.swc");
 
         // stuff for writing to swc-File
         FileWriter export = new FileWriter(file.getPath());

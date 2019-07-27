@@ -45,7 +45,7 @@ public class FileIOTest {
                 "ri06"
         };
 
-        File outputDirectory = new File("/media/exdisk/Sem06/BA/ProgramData/Test/TestWorkingDir/");
+        File outputDirectory = new File(BaseDirectory.baseDirectory.getPath() + "/Test/TestWorkingDir/");
         String matrixName = "matrixTest.txt";
         Utils.printMatrixToTxt(matrixToWrite, fileNamesToWrite, outputDirectory, matrixName);
         File savedFile = new File(outputDirectory.getPath() + "/" + matrixName);
@@ -78,25 +78,25 @@ public class FileIOTest {
     @Test
     public void jsonIOTest() throws IOException  {
         List<File> fileDirectoriesToWrite = new ArrayList<>(Arrays.asList(
-                new File("/media/TestDirectory/kisvarday/CNG version/oi33lpy1-1.CNG.swc"),
-                new File("/media/TestDirectory/markram/CNG version/C050800E2.CNG.swc"),
-                new File("/media/TestDirectory/yuste/CNG version/JM090103-10-1.CNG.swc"),
-                new File("/media/TestDirectory/yuste/CNG version/JM090103-10-2.CNG.swc"),
-                new File("/media/TestDirectory/yuste/CNG version/JM072303.CNG.swc"),
-                new File("/media/TestDirectory/yuste/CNG version/JM092903-20-1.CNG.swc")
+                new File(BaseDirectory.baseDirectory.getPath() + "/TestDirectory/kisvarday/CNG version/oi33lpy1-1.CNG.swc"),
+                new File(BaseDirectory.baseDirectory.getPath() + "/TestDirectory/markram/CNG version/C050800E2.CNG.swc"),
+                new File(BaseDirectory.baseDirectory.getPath() + "/TestDirectory/yuste/CNG version/JM090103-10-1.CNG.swc"),
+                new File(BaseDirectory.baseDirectory.getPath() + "/TestDirectory/yuste/CNG version/JM090103-10-2.CNG.swc"),
+                new File(BaseDirectory.baseDirectory.getPath() + "/TestDirectory/yuste/CNG version/JM072303.CNG.swc"),
+                new File(BaseDirectory.baseDirectory.getPath() + "/TestDirectory/yuste/CNG version/JM092903-20-1.CNG.swc")
         ));
-        File swcFileDirectory = new File("/media/TestDirectory/");
-        File outputDirectory = new File("/media/exdisk/Sem06/BA/ProgramData/Test/TestWorkingDir");
+        File swcFileDirectory = new File(BaseDirectory.baseDirectory.getPath() + "/TestDirectory/");
+        File outputDirectory = new File(BaseDirectory.baseDirectory.getPath() + "/Test/TestWorkingDir");
         String jsonName = "jsonTest.json";
         JsonUtils.writeToJSON(fileDirectoriesToWrite, swcFileDirectory, outputDirectory, jsonName);
-        File savedFile = new File("/media/exdisk/Sem06/BA/ProgramData/Test/TestWorkingDir/jsonTest.json");
+        File savedFile = new File(BaseDirectory.baseDirectory.getPath() + "/Test/TestWorkingDir/jsonTest.json");
         File[] fileDirectoriesRead = JsonUtils.parseJsonToFiles(savedFile);
 
         assertEquals(fileDirectoriesToWrite.size(), fileDirectoriesRead.length);
         for (int i = 0; i < fileDirectoriesRead.length; i++) {
             System.out.println("expected: " + fileDirectoriesToWrite.get(i).getPath());
-            System.out.println("actual:   " + "/media/TestDirectory/" + fileDirectoriesRead[i].getPath());
-            assertEquals(fileDirectoriesToWrite.get(i).getPath(), "/media/TestDirectory/" + fileDirectoriesRead[i].getPath());
+            System.out.println("actual:   " + BaseDirectory.baseDirectory.getPath() + "/TestDirectory/" + fileDirectoriesRead[i].getPath());
+            assertEquals(fileDirectoriesToWrite.get(i).getPath(), BaseDirectory.baseDirectory.getPath() + "/TestDirectory/" + fileDirectoriesRead[i].getPath());
         }
         savedFile.delete();
     }
