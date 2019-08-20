@@ -21,7 +21,7 @@ import de.lmu.ifi.dbs.elki.utilities.ELKIBuilder;
 
 import java.util.*;
 
-public class PassingDataToELKI {
+public class ClusteringELKI {
 
     public static List<Set<String>> createClustering(double[][] distanceMatrix, String[] fileNames, int noOfClusters) {
         // Set the logging level to statistics:

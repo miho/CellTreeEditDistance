@@ -1,14 +1,5 @@
 package edu.gcsc.celltreeedit.CodeEridTest;
 
-import edu.gcsc.celltreeedit.Clustering.PassingDataToELKI;
-import edu.gcsc.celltreeedit.Utils;
-import javafx.util.Pair;
-import org.junit.Test;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import static junit.framework.TestCase.assertTrue;
@@ -25,7 +16,7 @@ public class ClusteringTest {
 //        double[][] distanceMatrix = resultTED.getKey();
 //        String[] fileNames = resultTED.getValue();
 //        // create cluster from matrix and names
-//        List<Set<String>> clusterResult = PassingDataToELKI.createClustering(distanceMatrix, fileNames, 2);
+//        List<Set<String>> clusterResult = ClusteringELKI.createClustering(distanceMatrix, fileNames, 2);
 //        // read result from R
 //        List<Set<String>> rResult = Utils.readRArrayFromTxt(new File("/media/exdisk/Sem06/BA/ProgramData/Test/TestClustering/r_result01.txt"));
 //        Set<Set<String>> clusterResultSet = new HashSet<>(clusterResult);
@@ -38,7 +29,7 @@ public class ClusteringTest {
 //        distanceMatrix = resultTED.getKey();
 //        fileNames = resultTED.getValue();
 //        // create cluster from matrix and names
-//        clusterResult = PassingDataToELKI.createClustering(distanceMatrix, fileNames, 13);
+//        clusterResult = ClusteringELKI.createClustering(distanceMatrix, fileNames, 13);
 //        // read result from R
 //        rResult = Utils.readRArrayFromTxt(new File("/media/exdisk/Sem06/BA/ProgramData/Test/TestClustering/r_result03.txt"));
 //        clusterResultSet = new HashSet<>(clusterResult);

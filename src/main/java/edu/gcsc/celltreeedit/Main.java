@@ -4,7 +4,6 @@ import edu.gcsc.celltreeedit.AppProperties.AppProperties;
 import edu.gcsc.celltreeedit.AppProperties.CommandLineParsing;
 import edu.gcsc.celltreeedit.ClusterAnalysis.ClusteringAnalyzer;
 import edu.gcsc.celltreeedit.Clustering.DendrogramCreator;
-import edu.gcsc.celltreeedit.Clustering.PassingDataToELKI;
 import edu.gcsc.celltreeedit.JsonIO.JsonUtils;
 import edu.gcsc.celltreeedit.Lucene.CLI;
 import edu.gcsc.celltreeedit.Lucene.LuceneIndexWriter;
