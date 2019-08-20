@@ -80,7 +80,7 @@ public class Utils {
         // increment fileName if necessary
         int count = 1;
         while (file.exists()) {
-            file = new File(destinationDirectory.getAbsolutePath() + "/" + FilenameUtils.removeExtension(fileName) + count + "." + FilenameUtils.getExtension(fileName));
+            file = new File(destinationDirectory.getAbsolutePath() + "/" + FilenameUtils.removeExtension(fileName) + "_" + count + "." + FilenameUtils.getExtension(fileName));
             count++;
         }
         return file;

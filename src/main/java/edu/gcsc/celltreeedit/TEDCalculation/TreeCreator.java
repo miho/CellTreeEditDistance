@@ -516,6 +516,8 @@ public class TreeCreator implements InputParser <NodeData> , Serializable {
             return;
         }
         int noOfChildNodes = childNodes.size();
+        int noOfCalculations = noOfChildNodes * (noOfChildNodes - 1) / 2;
+
         // for each combination of children calculate the angle between their first nodes
         double sum = 0;
         double[] v1;
@@ -524,27 +526,24 @@ public class TreeCreator implements InputParser <NodeData> , Serializable {
             v1 = getVectorOfChild(childNodes.get(i));
             for (int j = i + 1; j < noOfChildNodes; j++) {
                 v2 = getVectorOfChild(childNodes.get(j));
-                double cosAngle = MathArrays.cosAngle(v1, v2);
-                if (Utils.doublesAlmostEqual(Math.abs(cosAngle), 1d, 0d, 1)) {
-                    sum += (cosAngle > 0) ? 0d : Math.PI;
+                if ((v1[0] == 0 && v1[1] == 0 && v1[2] == 0) || (v2[0] == 0 && v2[1] == 0 && v2[2] == 0)) {
+                    noOfCalculations--;
                 } else {
-                    sum += Math.acos(cosAngle);
+                    double cosAngle = MathArrays.cosAngle(v1, v2);
+                    if (Utils.doublesAlmostEqual(Math.abs(cosAngle), 1d, 0d, 1)) {
+                        sum += (cosAngle > 0) ? 0d : Math.PI;
+                    } else {
+                        sum += Math.acos(cosAngle);
+                    }
                 }
-//                double cosAngle = MathArrays.cosAngle(v1, v2);
-//                // check if |cosAngle| > 1. if so check if it is due to double precision
-//                if (Math.abs(cosAngle) > 1) {
-//                    if (Utils.doublesAlmostEqual(Math.abs(cosAngle), 1d, 0d, 1)) {
-//                        sum += (cosAngle > 0) ? 0d : Math.PI;
-//                    } else {
-//                        throw new RuntimeException("Angle for arccos calculation not in range between -1 and 1");
-//                    }
-//                } else {
-//                    sum += Math.acos(cosAngle);
-//                }
             }
         }
         // set label of current node
-        node.getNodeData().setLabel(sum / (0.5 * noOfChildNodes * noOfChildNodes - 0.5 * noOfChildNodes));
+        if (noOfCalculations == 0) {
+            node.getNodeData().setLabel(0);
+        } else {
+            node.getNodeData().setLabel(sum / noOfCalculations);
+        }
         // recursively call children to set their labels
         for (Node<NodeData> childNode : childNodes) {
             calculate_a_sec(childNode);

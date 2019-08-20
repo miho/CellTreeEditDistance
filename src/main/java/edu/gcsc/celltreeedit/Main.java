@@ -281,20 +281,22 @@ public class Main {
     // method to do some custom things which program should not be able to do in the end
     private static void doWhateverIsInMyFunctionBody() throws IOException {
         System.out.println("> Starting doWhateverIsInMyFunctionBody()");
+
+        File[] files = Utils.chooseSWCFiles().toArray(new File[1]);
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         CellTreeEditDistance cellTreeEditDistance;
         Pair<double[][], String[]> result;
-        // calculate distances of Selection of SWC-Files for every possible label
-        File[] files = JsonUtils.parseJsonToFiles(new File("/media/exdisk/Sem06/BA/ProgramData/swcFiles.json"));
-        for (int i = 0; i < files.length; i++) {
-            files[i] = new File(appProperties.getSwcFileDirectory() + "/" + files[i].getPath());
-        }
+//        // calculate distances of Selection of SWC-Files for every possible label
+//        File[] files = JsonUtils.parseJsonToFiles(new File("/media/exdisk/Sem06/BA/ProgramData/swcFiles.json"));
+//        for (int i = 0; i < files.length; i++) {
+//            files[i] = new File(appProperties.getSwcFileDirectory() + "/" + files[i].getPath());
+//        }
         for (int i = 1; i < 23; i += 1) {
             Date date = new Date();
             System.out.println(dateFormat.format(date) + " selected Label " + i);
             cellTreeEditDistance = new CellTreeEditDistance();
             result = cellTreeEditDistance.compareFilesFromFiles(files, i);
-            Utils.printMatrixToTxt(result.getKey(), result.getValue(), appProperties.getOutputDirectory(), "Matrix_PyramidalVsGranule_143Each_Label" + i + ".txt");
+            Utils.printMatrixToTxt(result.getKey(), result.getValue(), appProperties.getOutputDirectory(), "Matrix_ChosenSWCFiles_" + i + ".txt");
         }
 
         // calculate distances of 1000 of these SWC-Files
