@@ -27,6 +27,7 @@ public final class Clustering {
         dp.setModel(cluster);
         JFrame frame = new JFrame();
         frame.add(dp);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(950,350);
         frame.setVisible(true);
         frame.setTitle("Dendrogram");
