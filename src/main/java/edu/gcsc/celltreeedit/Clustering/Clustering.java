@@ -19,7 +19,7 @@ public final class Clustering {
     public Cluster createCluster(double[][] matrix, String[] fileNames) {
         ClusteringAlgorithm alg = new DefaultClusteringAlgorithm();
         return alg.performClustering(matrix, fileNames,
-                new AverageLinkageStrategy());
+                new WardLinkageStrategy());
     }
 
     public void showCluster(Cluster cluster) {

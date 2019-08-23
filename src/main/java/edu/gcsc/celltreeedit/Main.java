@@ -1,8 +1,11 @@
 package edu.gcsc.celltreeedit;
 
+import com.apporiented.algorithm.clustering.Cluster;
 import edu.gcsc.celltreeedit.AppProperties.AppProperties;
 import edu.gcsc.celltreeedit.AppProperties.CommandLineParsing;
 import edu.gcsc.celltreeedit.ClusterAnalysis.ClusteringAnalyzer;
+import edu.gcsc.celltreeedit.Clustering.Clustering;
+import edu.gcsc.celltreeedit.Clustering.ClusteringELKI;
 import edu.gcsc.celltreeedit.Clustering.DendrogramCreator;
 import edu.gcsc.celltreeedit.JsonIO.JsonUtils;
 import edu.gcsc.celltreeedit.Lucene.CLI;
@@ -66,40 +69,51 @@ public class Main {
      */
     public static void main(String[] args) throws IOException, ParseException {
 
-        CommandLineParsing.parseArguments(args);
+        double[][] distanceMatrix = new double[][]{
+                {0.0, 1.0, 3.0},
+                {1.0, 0.0, 4.0},
+                {3.0, 4.0, 0.0}
+        };
+        String[] fileNames = {"A", "B", "C"};
+        Clustering clustering = Clustering.getInstance();
+        Cluster rootCluster = clustering.createCluster(distanceMatrix, fileNames);
+        clustering.showCluster(rootCluster);
 
-        switch (appProperties.getCalcType()) {
-            case 0:
-                preprocessSWCDirectory();
-                break;
-            case 1:
-                queryLucene();
-                break;
-            case 2:
-                queryByFileDialog();
-                break;
-            case 3:
-                queryByUniqueMetadata();
-                break;
-            case 4:
-                calculateTEDMatrix();
-                break;
-            case 5:
-                calculateTEDMatrixAndDendrogram();
-                break;
-            case 6:
-                calculateDendrogramsForTEDMatrices();
-                break;
-            case 7:
-                analyzeClusteringOfTEDMatrices();
-                break;
-            case 8:
-                doWhateverIsInMyFunctionBody();
-                break;
-            default:
-                System.out.println("calcType not valid");
-                break;
-        }
+//
+//        CommandLineParsing.parseArguments(args);
+//
+//        switch (appProperties.getCalcType()) {
+//            case 0:
+//                preprocessSWCDirectory();
+//                break;
+//            case 1:
+//                queryLucene();
+//                break;
+//            case 2:
+//                queryByFileDialog();
+//                break;
+//            case 3:
+//                queryByUniqueMetadata();
+//                break;
+//            case 4:
+//                calculateTEDMatrix();
+//                break;
+//            case 5:
+//                calculateTEDMatrixAndDendrogram();
+//                break;
+//            case 6:
+//                calculateDendrogramsForTEDMatrices();
+//                break;
+//            case 7:
+//                analyzeClusteringOfTEDMatrices();
+//                break;
+//            case 8:
+//                doWhateverIsInMyFunctionBody();
+//                break;
+//            default:
+//                System.out.println("calcType not valid");
+//                break;
+//        }
     }
 
     /**
