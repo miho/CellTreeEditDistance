@@ -10,15 +10,21 @@ import javafx.util.Pair;
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
+import java.text.Collator;
+import java.util.Collections;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class DendrogramCreator {
 
     public static void showDendrogram(Pair<double[][], String[]> result, File metadataDirectory, boolean replaceDendrogramNames) throws IOException {
         String[] fileNames = result.getValue();
+        String[] neuronMetadataNames = new String[fileNames.length];
 
         if (replaceDendrogramNames) {
-            fileNames = renameFileNamesToUniqueMetadataNames(fileNames, metadataDirectory);
+            Pair<String[], String[]> renameResult = renameFileNamesToUniqueMetadataNames(fileNames, metadataDirectory);
+            fileNames = renameResult.getKey();
+            neuronMetadataNames = renameResult.getValue();
         }
 
         // create cluster with matrix and adjusted names
@@ -27,22 +33,22 @@ public class DendrogramCreator {
         // generate dendrogram
         clustering.showCluster(cluster);
         if (replaceDendrogramNames) {
-            showFileNameMapping(result.getValue(), fileNames);
+            showFileNameMapping(result.getValue(), fileNames, neuronMetadataNames);
         }
     }
 
-    private static void showFileNameMapping(String[] oldFileNames, String[] newFileNames) {
+    private static void showFileNameMapping(String[] oldFileNames, String[] newFileNames, String[] neuronMetadataNames) {
         JFrame frame = new JFrame();
-        Tables fileNameMapping = new Tables(newFileNames, oldFileNames, new String[]{"Names", "original FileNames"});
+        Tables fileNameMapping = new Tables(newFileNames, oldFileNames, neuronMetadataNames, new String[]{"shown Names", "original FileNames", "neuronMetadata Names"});
         frame.add(fileNameMapping);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(500,350);
+        frame.setSize(1000,1000);
         frame.setVisible(true);
         frame.setTitle("FileName-Mapping");
     }
 
-    private static String[] renameFileNamesToUniqueMetadataNames(String[] oldFileNames, File metadataDirectory) throws IOException {
+    private static Pair<String[], String[]> renameFileNamesToUniqueMetadataNames(String[] oldFileNames, File metadataDirectory) throws IOException {
         String[] newFileNames = new String[oldFileNames.length];
+        String[] neuronMetadataNames = new String[oldFileNames.length];
         // put metadata in hashMap
         NeuronMetadataMapper neuronMetadataMapper = new NeuronMetadataMapper();
         Map<String, NeuronMetadataR> neuronMetadata = neuronMetadataMapper.mapAllFromMetadataDirectory(metadataDirectory);
@@ -56,7 +62,8 @@ public class DendrogramCreator {
             uniqueMetadata = uniqueMetadataContainer.addNeuronMetadata(neuronMetadataR);
             // uniqueMetadataId, archive, neuronId
             newFileNames[i] = uniqueMetadata.getUniqueMetadataId() + ", " + neuronMetadataR.getArchive() + ", " + neuronMetadataR.getNeuronId();
+            neuronMetadataNames[i] = neuronMetadataR.getSpecies() + " | " + neuronMetadataR.getBrainRegion().stream().sorted().collect(Collectors.joining(", ")) + " | " + neuronMetadataR.getCellType().stream().sorted().collect(Collectors.joining(", "));
         }
-        return newFileNames;
+        return new Pair<>(newFileNames, neuronMetadataNames);
     }
 }

@@ -11,7 +11,18 @@ import java.util.List;
 public class NeuronFilesWrapper {
 
     @JsonProperty
+    private String _comment;
+
+    @JsonProperty
     private List<String> neuronFiles;
+
+    public String get_comment() {
+        return _comment;
+    }
+
+    public void set_comment(String _comment) {
+        this._comment = _comment;
+    }
 
     public List<String> getNeuronFiles() {
         return neuronFiles;

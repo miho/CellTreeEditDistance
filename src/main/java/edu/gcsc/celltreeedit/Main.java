@@ -143,7 +143,7 @@ public class Main {
         System.out.println("> Starting file dialog");
         List<File> files = Utils.chooseSWCFiles();
         // write to json
-        JsonUtils.writeToJSON(files, appProperties.getDestinationDirectory(), appProperties.getJsonName());
+        JsonUtils.writeToJSON(files,"queried by file dialog", appProperties.getDestinationDirectory(), appProperties.getJsonName());
     }
 
     // TODO: Inhalt auslagern??, uniqueMetadata Anzahl der Neuronen stimmt nicht
@@ -191,7 +191,7 @@ public class Main {
 
         List<File> selectedNeuronFiles = Utils.getFilesForNeuronNames(selectedNeuronNames, appProperties.getSwcFileDirectory());
         // write to json
-        JsonUtils.writeToJSON(selectedNeuronFiles, appProperties.getSwcFileDirectory(), appProperties.getOutputDirectory(), appProperties.getJsonName());
+        JsonUtils.writeToJSON(selectedNeuronFiles, "queried by uniqueMetadata", appProperties.getSwcFileDirectory(), appProperties.getOutputDirectory(), appProperties.getJsonName());
     }
 
     private static List<String> pickNRandom(List<String> lst, int n) {

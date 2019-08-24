@@ -71,7 +71,7 @@ public class Tables extends JPanel implements Serializable{
         add(pane);
     }
 
-    public Tables(String[] firstColumn, String[] secondColumn, String[] columnNames){
+    public Tables(String[] firstColumn, String[] secondColumn, String[] thirdColumn, String[] columnNames){
         int rowSize = firstColumn.length;
         int colSize = columnNames.length;
 
@@ -85,9 +85,15 @@ public class Tables extends JPanel implements Serializable{
         for (int i = 0; i < rowSize; i++) {
             table.setValueAt(firstColumn[i], i, 0);
             table.setValueAt(secondColumn[i], i, 1);
+            table.setValueAt(thirdColumn[i], i, 2);
         }
 
+        table.setPreferredScrollableViewportSize(new Dimension(1000,1000));
+        table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+        table.setFillsViewportHeight(true);
         JScrollPane pane= new JScrollPane(table);
+        pane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+        pane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         add(pane);
     }
 }

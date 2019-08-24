@@ -88,7 +88,7 @@ public class FileIOTest {
         File swcFileDirectory = new File(BaseDirectory.baseDirectory.getPath() + "/TestDirectory/");
         File outputDirectory = new File(BaseDirectory.baseDirectory.getPath() + "/Test/TestWorkingDir");
         String jsonName = "jsonTest.json";
-        JsonUtils.writeToJSON(fileDirectoriesToWrite, swcFileDirectory, outputDirectory, jsonName);
+        JsonUtils.writeToJSON(fileDirectoriesToWrite, "", swcFileDirectory, outputDirectory, jsonName);
         File savedFile = new File(BaseDirectory.baseDirectory.getPath() + "/Test/TestWorkingDir/jsonTest.json");
         File[] fileDirectoriesRead = JsonUtils.parseJsonToFiles(savedFile);
 

@@ -46,13 +46,14 @@ public class JsonUtils {
         return files.toArray(new File[1]);
     }
 
-    public static void writeToJSON(List<File> files, File swcFileDirectory, File outputDirectory, String jsonName) throws IOException {
+    public static void writeToJSON(List<File> files, String comment, File swcFileDirectory, File outputDirectory, String jsonName) throws IOException {
         files = removeSwcFileDirectoryFromPaths(files, swcFileDirectory);
-        writeToJSON(files, outputDirectory, jsonName);
+        writeToJSON(files, comment, outputDirectory, jsonName);
     }
 
-    public static void writeToJSON(List<File> files, File destinationDirectory, String jsonName) throws IOException {
+    public static void writeToJSON(List<File> files, String comment, File destinationDirectory, String jsonName) throws IOException {
         NeuronFilesWrapper neuronFilesWrapper = new NeuronFilesWrapper();
+        neuronFilesWrapper.set_comment(comment);
         neuronFilesWrapper.setNeuronFiles(files.stream().map(File::getPath).collect(Collectors.toList()));
         ObjectMapper mapper = new ObjectMapper();
         File file = Utils.incrementFileNameIfNecessary(destinationDirectory, FilenameUtils.removeExtension(jsonName) + ".json");
