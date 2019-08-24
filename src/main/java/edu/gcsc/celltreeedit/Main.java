@@ -215,14 +215,14 @@ public class Main {
     private static void calculateTEDMatrixAndDendrogram() throws IOException {
         System.out.println("> Starting TED calculation and Dendrogram calculation\n");
         Pair<double[][], String[]> result = calculateTEDMatrix();
-        DendrogramCreator.showDendrogram(result, appProperties.getMetadataDirectory());
+        DendrogramCreator.showDendrogram(result, appProperties.getMetadataDirectory(), appProperties.isReplaceDendrogramNames());
     }
 
     private static void calculateDendrogramsForTEDMatrices() throws IOException {
         System.out.println("> Starting Dendrogram calculation for TEDMatrices");
         List<Pair<double[][], String[]>> results = Utils.readMatricesFromTxt();
         for (Pair<double[][], String[]> result : results) {
-            DendrogramCreator.showDendrogram(result, appProperties.getMetadataDirectory());
+            DendrogramCreator.showDendrogram(result, appProperties.getMetadataDirectory(), appProperties.isReplaceDendrogramNames());
         }
     }
 

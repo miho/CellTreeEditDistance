@@ -10,7 +10,8 @@ enum AppParameter {
     DESTINATION_DIRECTORY("d", "destination", true, "defines the directory where files shall be saved if no base directory is given"),
     JSON_FILE("f", "jsonfile", true, "defines the json-file describing the swc-files used for calculating TED"),
     JSON_NAME("j", "jsonname", true, "defines the name used for naming the swc-file which stores the query-results"),
-    MATRIX_NAME("m", "matrixname", true, "defines the name used for naming the matrix-file which stores the TED-results");
+    MATRIX_NAME("m", "matrixname", true, "defines the name used for naming the matrix-file which stores the TED-results"),
+    REPLACE_DENDROGRAM_NAMES("r", "replaceDendrogramNames", false, "if true, dendrogram is plotted with filenames replaced by a combination of neuronMetadata");
 
     final String shortname;
     final String name;

@@ -14,16 +14,21 @@ import java.util.Map;
 
 public class DendrogramCreator {
 
-    public static void showDendrogram(Pair<double[][], String[]> result, File metadataDirectory) throws IOException {
-        String[] oldFileNames = result.getValue();
-        String[] newFileNames = renameFileNamesToUniqueMetadataNames(oldFileNames, metadataDirectory);
+    public static void showDendrogram(Pair<double[][], String[]> result, File metadataDirectory, boolean replaceDendrogramNames) throws IOException {
+        String[] fileNames = result.getValue();
+
+        if (replaceDendrogramNames) {
+            fileNames = renameFileNamesToUniqueMetadataNames(fileNames, metadataDirectory);
+        }
 
         // create cluster with matrix and adjusted names
         Clustering clustering = Clustering.getInstance();
-        Cluster cluster = clustering.createCluster(result.getKey(), newFileNames);
+        Cluster cluster = clustering.createCluster(result.getKey(), fileNames);
         // generate dendrogram
         clustering.showCluster(cluster);
-        showFileNameMapping(oldFileNames, newFileNames);
+        if (replaceDendrogramNames) {
+            showFileNameMapping(result.getValue(), fileNames);
+        }
     }
 
     private static void showFileNameMapping(String[] oldFileNames, String[] newFileNames) {

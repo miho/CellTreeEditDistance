@@ -50,6 +50,9 @@ public class CommandLineParsing {
             if (hasOption(line, AppParameter.MATRIX_NAME)) {
                 properties.matrixName = extractString(line, AppParameter.MATRIX_NAME);
             }
+            if (hasOption(line, AppParameter.REPLACE_DENDROGRAM_NAMES)) {
+                properties.replaceDendrogramNames = true;
+            }
         } catch (final ParseException exp) {
             printHelp(allowedOptions);
             System.out.flush();
@@ -122,8 +125,8 @@ public class CommandLineParsing {
                 }
                 break;
             case 6:
-                if (!hasOption(line, AppParameter.BASE_DIRECTORY) || hasOption(line, AppParameter.DESTINATION_DIRECTORY) || hasOption(line, AppParameter.JSON_FILE) || hasOption(line, AppParameter.JSON_NAME) || hasOption(line, AppParameter.MATRIX_NAME)) {
-                    throw new ParseException("calc=6: Argument 'base' needed. No other arguments allowed.");
+                if ((!hasOption(line, AppParameter.BASE_DIRECTORY) && hasOption(line, AppParameter.REPLACE_DENDROGRAM_NAMES)) || hasOption(line, AppParameter.DESTINATION_DIRECTORY) || hasOption(line, AppParameter.JSON_FILE) || hasOption(line, AppParameter.JSON_NAME) || hasOption(line, AppParameter.MATRIX_NAME)) {
+                    throw new ParseException("calc=6: Argument 'base' needed if 'renameDendrogramNames' is used. No other arguments allowed.");
                 }
                 break;
             case 7:

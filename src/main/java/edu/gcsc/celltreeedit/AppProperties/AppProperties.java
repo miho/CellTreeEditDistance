@@ -25,6 +25,7 @@ public final class AppProperties {
     File jsonFile = new File("");
     String jsonName = "swcFiles.json";
     String matrixName = "DistanceMatrix.txt";
+    boolean replaceDendrogramNames = false;
 
     // nur getter, keine setter um nachträgliche änderung zu verhindern. getter für dataDirectory etc aber keine variable -> im getter zusammenbasteln. package-private machen! --> einfaches ändern in CommandLineParsing
     public int getCalcType() {
@@ -60,6 +61,8 @@ public final class AppProperties {
     public String getJsonName() { return jsonName; }
 
     public String getMatrixName() { return matrixName; }
+
+    public boolean isReplaceDendrogramNames() { return replaceDendrogramNames; }
 }
 
 
