@@ -4,46 +4,56 @@ import com.apporiented.algorithm.clustering.Cluster;
 import edu.gcsc.celltreeedit.NeuronMetadata.NeuronMetadataMapper;
 import edu.gcsc.celltreeedit.NeuronMetadata.NeuronMetadataR;
 import edu.gcsc.celltreeedit.NeuronMetadata.UniqueMetadataContainer;
+import edu.gcsc.celltreeedit.TEDResult;
 import edu.gcsc.celltreeedit.Tables;
 import javafx.util.Pair;
+import org.apache.commons.io.FilenameUtils;
 
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
-import java.text.Collator;
-import java.util.Collections;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 public class DendrogramCreator {
 
-    public static void showDendrogram(Pair<double[][], String[]> result, File metadataDirectory, boolean replaceDendrogramNames) throws IOException {
-        String[] fileNames = result.getValue();
-        String[] neuronMetadataNames = new String[fileNames.length];
+    public static void createDendrogram(TEDResult result, File metadataDirectory, File outputDirectory, String outputFilename, boolean replaceDendrogramNames, boolean saveOutput) throws IOException {
+        String[] fileNames = result.getFileNames();
 
         if (replaceDendrogramNames) {
-            Pair<String[], String[]> renameResult = renameFileNamesToUniqueMetadataNames(fileNames, metadataDirectory);
-            fileNames = renameResult.getKey();
-            neuronMetadataNames = renameResult.getValue();
+            fileNames = createFilenameMapping(fileNames, metadataDirectory, outputDirectory, outputFilename, saveOutput);
         }
 
         // create cluster with matrix and adjusted names
         Clustering clustering = Clustering.getInstance();
-        Cluster cluster = clustering.createCluster(result.getKey(), fileNames);
+        Cluster cluster = clustering.createCluster(result.getDistanceMatrix(), fileNames);
         // generate dendrogram
-        clustering.showCluster(cluster);
-        if (replaceDendrogramNames) {
-            showFileNameMapping(result.getValue(), fileNames, neuronMetadataNames);
-        }
+        clustering.createDendrogram(cluster, outputDirectory, outputFilename, saveOutput); // TODO: implement save
     }
 
-    private static void showFileNameMapping(String[] oldFileNames, String[] newFileNames, String[] neuronMetadataNames) {
-        JFrame frame = new JFrame();
+    private static String[] createFilenameMapping(String[] oldFileNames, File metadataDirectory, File outputDirectory, String outputFilename, boolean saveOutput) throws IOException {
+        Pair<String[], String[]> renameResult = renameFileNamesToUniqueMetadataNames(oldFileNames, metadataDirectory);
+        String[] newFileNames = renameResult.getKey();
+        String[] neuronMetadataNames = renameResult.getValue();
+        outputFilename = FilenameUtils.removeExtension(outputFilename) + "_FilenameMapping";
+
         Tables fileNameMapping = new Tables(newFileNames, oldFileNames, neuronMetadataNames, new String[]{"shown Names", "original FileNames", "neuronMetadata Names"});
-        frame.add(fileNameMapping);
-        frame.setSize(1000,1000);
-        frame.setVisible(true);
-        frame.setTitle("FileName-Mapping");
+        if (saveOutput) {
+            fileNameMapping.printTable(outputDirectory, outputFilename);
+        } else {
+            JFrame frame = new JFrame();
+            JPanel rowPane = new JPanel();
+            frame.add(rowPane);
+            frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.PAGE_AXIS));
+            JLabel label1 = new JLabel(outputFilename);
+            frame.add(label1);
+            frame.add(fileNameMapping);
+            frame.setSize(1000,1000);
+            frame.setVisible(true);
+            frame.setTitle(outputFilename);
+        }
+
+        return newFileNames;
     }
 
     private static Pair<String[], String[]> renameFileNamesToUniqueMetadataNames(String[] oldFileNames, File metadataDirectory) throws IOException {

@@ -1,5 +1,6 @@
 package edu.gcsc.celltreeedit.TEDCalculation;
 
+import edu.gcsc.celltreeedit.TEDResult;
 import edu.gcsc.celltreeedit.Utils;
 import eu.mihosoft.ext.apted.distance.APTED;
 import eu.mihosoft.ext.apted.node.Node;
@@ -25,11 +26,11 @@ public class CellTreeEditDistance implements java.io.Serializable{
     private double[][] results;
     private File[] files;
 
-    public Pair<double[][], String[]> compareFilesFromFiles(File[] files, int labelId) {
+    public TEDResult compareFilesFromFiles(File[] files, int labelId) {
         this.files = files;
         String[] fileNames = Utils.getNeuronNamesForFiles(files);
         this.compareFiles(labelId);
-        return new Pair<>(results, fileNames);
+        return new TEDResult(results, fileNames);
     }
 
     static class MyTask implements Runnable {

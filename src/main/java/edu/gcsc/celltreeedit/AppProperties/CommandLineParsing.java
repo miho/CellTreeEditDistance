@@ -53,6 +53,9 @@ public class CommandLineParsing {
             if (hasOption(line, AppParameter.REPLACE_DENDROGRAM_NAMES)) {
                 properties.replaceDendrogramNames = true;
             }
+            if (hasOption(line, AppParameter.SAVE_OUTPUT)) {
+                properties.saveOutput = true;
+            }
         } catch (final ParseException exp) {
             printHelp(allowedOptions);
             System.out.flush();

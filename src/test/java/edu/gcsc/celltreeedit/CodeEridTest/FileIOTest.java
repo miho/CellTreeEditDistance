@@ -1,6 +1,7 @@
 package edu.gcsc.celltreeedit.CodeEridTest;
 
 import edu.gcsc.celltreeedit.JsonIO.JsonUtils;
+import edu.gcsc.celltreeedit.TEDResult;
 import edu.gcsc.celltreeedit.Utils;
 import javafx.util.Pair;
 import org.junit.Test;
@@ -49,9 +50,9 @@ public class FileIOTest {
         String matrixName = "matrixTest.txt";
         Utils.printMatrixToTxt(matrixToWrite, fileNamesToWrite, outputDirectory, matrixName);
         File savedFile = new File(outputDirectory.getPath() + "/" + matrixName);
-        Pair<double[][], String[]> result = Utils.readMatrixFromTxt(savedFile);
+        TEDResult result = Utils.readMatrixFromTxt(savedFile);
 
-        double[][] matrixRead = result.getKey();
+        double[][] matrixRead = result.getDistanceMatrix();
         for (int i = 0; i < matrixToWrite.length; i++) {
             for (int j = 0; j < matrixToWrite.length; j++) {
                 assertEquals(matrixToWrite[i][j], matrixRead[i][j], 0d);
@@ -60,7 +61,7 @@ public class FileIOTest {
             }
         }
 
-        String[] fileNamesRead = result.getValue();
+        String[] fileNamesRead = result.getFileNames();
         for (int i = 0; i < fileNamesToWrite.length; i++) {
             assertEquals(fileNamesToWrite[i], fileNamesRead[i]);
             System.out.println("expected: " + fileNamesToWrite[i]);

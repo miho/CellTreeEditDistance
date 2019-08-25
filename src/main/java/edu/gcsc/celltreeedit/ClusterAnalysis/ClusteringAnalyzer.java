@@ -4,6 +4,7 @@ import com.apporiented.algorithm.clustering.Cluster;
 import edu.gcsc.celltreeedit.Clustering.Clustering;
 import edu.gcsc.celltreeedit.NeuronMetadata.NeuronMetadataR;
 import edu.gcsc.celltreeedit.NeuronMetadata.UniqueMetadataContainer;
+import edu.gcsc.celltreeedit.TEDResult;
 import javafx.util.Pair;
 
 import javax.swing.*;
@@ -13,9 +14,9 @@ import java.util.stream.Collectors;
 public class ClusteringAnalyzer {
 
     // TODO: improve class for testing issues. return value of function only needed for testing purposes
-    public static Pair<double[][], List<UniqueMetadataContainer.UniqueMetadata>> analyzeClusteringOfTEDResult(Pair<double[][], String[]> result, Map<String, NeuronMetadataR> neuronMetadata) {
-        double[][] matrix = result.getKey();
-        String[] fileNames = result.getValue();
+    public static Pair<double[][], List<UniqueMetadataContainer.UniqueMetadata>> analyzeClusteringOfTEDResult(TEDResult result, Map<String, NeuronMetadataR> neuronMetadata) {
+        double[][] matrix = result.getDistanceMatrix();
+        String[] fileNames = result.getFileNames();
 
         // Create uniqueMetadataContainer and add neuronMetadata for filenames to know original clusters of filenames and their number
         UniqueMetadataContainer uniqueMetadataContainer = new UniqueMetadataContainer();

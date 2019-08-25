@@ -11,7 +11,8 @@ enum AppParameter {
     JSON_FILE("f", "jsonfile", true, "defines the json-file describing the swc-files used for calculating TED"),
     JSON_NAME("j", "jsonname", true, "defines the name used for naming the swc-file which stores the query-results"),
     MATRIX_NAME("m", "matrixname", true, "defines the name used for naming the matrix-file which stores the TED-results"),
-    REPLACE_DENDROGRAM_NAMES("r", "replaceDendrogramNames", false, "if true, dendrogram is plotted with filenames replaced by a combination of neuronMetadata");
+    REPLACE_DENDROGRAM_NAMES("r", "replaceDendrogramNames", false, "if used, filenames in dendrogram are replaced by a combination of neuronMetadata"),
+    SAVE_OUTPUT("s", "saveOutput", false, "if used, dendrogram and filemapping-table are saved to a file");
 
     final String shortname;
     final String name;

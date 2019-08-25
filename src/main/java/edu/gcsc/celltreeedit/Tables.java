@@ -3,6 +3,7 @@ package edu.gcsc.celltreeedit;
 import javax.swing.*;
 import javax.swing.table.TableColumn;
 import java.awt.*;
+import java.io.File;
 import java.io.Serializable;
 
 public class Tables extends JPanel implements Serializable{
@@ -95,5 +96,9 @@ public class Tables extends JPanel implements Serializable{
         pane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
         pane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         add(pane);
+    }
+
+    public void printTable(File outputDirectory, String filename) {
+        Utils.printTableToTXT(this.table, outputDirectory, filename);
     }
 }

@@ -110,18 +110,18 @@ public class Utils {
     }
 
 
-    public static List<Pair<double[][], String[]>> readMatricesFromTxt() throws IOException {
+    public static List<TEDResult> readMatricesFromTxt() throws IOException {
         // choose distancematrix files
         File[] matrixFiles = chooseTxtFiles();
 
-        List<Pair<double[][], String[]>> result = new ArrayList<>();
+        List<TEDResult> result = new ArrayList<>();
         for (File matrixFile: matrixFiles) {
             result.add(readMatrixFromTxt(matrixFile));
         }
         return result;
     }
 
-    public static Pair<double[][], String[]> readMatrixFromTxt(File matrixFile) throws FileNotFoundException {
+    public static TEDResult readMatrixFromTxt(File matrixFile) throws FileNotFoundException {
         // read first line to get dimensions of matrix
         Scanner scanner = new Scanner(matrixFile);
         String line = scanner.nextLine();
@@ -146,7 +146,7 @@ public class Utils {
             i++;
         }
         scanner.close();
-        return new Pair<>(matrix, filenames);
+        return new TEDResult(matrix, filenames, FilenameUtils.removeExtension(matrixFile.getName()));
     }
 
     public static List<Set<String>> readRArrayFromTxt(File arrayFile) throws FileNotFoundException {
@@ -282,5 +282,30 @@ public class Utils {
         double largest = (b > a) ? b : a;
         // get ulp of largest. when difference of doubles is smaller than ulp * allowed number of ulp
         return (absDiff <= Math.ulp(largest) * maxUlpsDiff);
+    }
+
+    public static void printTableToTXT(JTable table, File outputDirectory, String filename) {
+        int rowSize = table.getRowCount();
+        int colSize = table.getColumnCount();
+
+        File file = incrementFileNameIfNecessary(outputDirectory, FilenameUtils.removeExtension(filename) + ".txt");
+        try {
+            FileWriter export = new FileWriter(file.getPath());
+            BufferedWriter br = new BufferedWriter(export);
+
+            for (int i = 0; i < rowSize; i++) {
+                for (int j = 0; j < colSize; j++) {
+                    if (j < colSize - 1)
+                        br.write(table.getValueAt(i, j) + ";");
+                    else
+                        br.write(table.getValueAt(i, j) + "");
+                }
+                br.newLine();
+            }
+            br.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println("Table saved to: " + file.getPath());
     }
 }

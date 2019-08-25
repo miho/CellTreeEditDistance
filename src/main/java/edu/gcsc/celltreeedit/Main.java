@@ -13,7 +13,6 @@ import edu.gcsc.celltreeedit.NeuronMetadata.UniqueMetadataContainer;
 import edu.gcsc.celltreeedit.TEDCalculation.CellTreeEditDistance;
 import javafx.util.Pair;
 import org.apache.commons.cli.ParseException;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
@@ -202,29 +201,29 @@ public class Main {
         return n > copy.size() ? copy.subList(0, copy.size()) : copy.subList(0, n);
     }
 
-    private static Pair<double[][], String[]> calculateTEDMatrix() throws IOException {
+    private static TEDResult calculateTEDMatrix() throws IOException {
         System.out.println("> Starting TED calculation\n");
         CellTreeEditDistance cellTreeEditDistance = new CellTreeEditDistance();
         File[] files = JsonUtils.parseJsonToFiles(appProperties.getJsonFile());
         for (int i = 0; i < files.length; i++) {
             files[i] = new File(appProperties.getSwcFileDirectory() + "/" + files[i].getPath());
         }
-        Pair<double[][], String[]> result = cellTreeEditDistance.compareFilesFromFiles(files, 9);
-        Utils.printMatrixToTxt(result.getKey(), result.getValue(), appProperties.getOutputDirectory(), appProperties.getMatrixName());
+        TEDResult result = cellTreeEditDistance.compareFilesFromFiles(files, 9);
+        Utils.printMatrixToTxt(result.getDistanceMatrix(), result.getFileNames(), appProperties.getOutputDirectory(), appProperties.getMatrixName());
         return result;
     }
 
     private static void calculateTEDMatrixAndDendrogram() throws IOException {
         System.out.println("> Starting TED calculation and Dendrogram calculation\n");
-        Pair<double[][], String[]> result = calculateTEDMatrix();
-        DendrogramCreator.showDendrogram(result, appProperties.getMetadataDirectory(), appProperties.isReplaceDendrogramNames());
+        TEDResult result = calculateTEDMatrix();
+        DendrogramCreator.createDendrogram(result, appProperties.getMetadataDirectory(), appProperties.getOutputDirectory(), result.getName(), appProperties.isReplaceDendrogramNames(), appProperties.isSaveOutput());
     }
 
     private static void calculateDendrogramsForTEDMatrices() throws IOException {
         System.out.println("> Starting Dendrogram calculation for TEDMatrices");
-        List<Pair<double[][], String[]>> results = Utils.readMatricesFromTxt();
-        for (Pair<double[][], String[]> result : results) {
-            DendrogramCreator.showDendrogram(result, appProperties.getMetadataDirectory(), appProperties.isReplaceDendrogramNames());
+        List<TEDResult> results = Utils.readMatricesFromTxt();
+        for (TEDResult result : results) {
+            DendrogramCreator.createDendrogram(result, appProperties.getMetadataDirectory(), appProperties.getOutputDirectory(), result.getName(), appProperties.isReplaceDendrogramNames(), appProperties.isSaveOutput());
         }
     }
 
@@ -236,13 +235,13 @@ public class Main {
     private static void analyzeClusteringOfTEDMatrices() throws IOException {
         System.out.println("> Starting Analysis of Clustering for TEDMatrices");
 
-        List<Pair<double[][], String[]>> results = Utils.readMatricesFromTxt();
+        List<TEDResult> results = Utils.readMatricesFromTxt();
 
         // put metadata in hashMap
         NeuronMetadataMapper neuronMetadataMapper = new NeuronMetadataMapper();
         Map<String, NeuronMetadataR> neuronMetadata = neuronMetadataMapper.mapAllFromMetadataDirectory(appProperties.getMetadataDirectory());
 
-        for (Pair<double[][], String[]> result : results) {
+        for (TEDResult result : results) {
             ClusteringAnalyzer.analyzeClusteringOfTEDResult(result, neuronMetadata);
         }
     }
@@ -296,7 +295,7 @@ public class Main {
             }
             DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
             CellTreeEditDistance cellTreeEditDistance;
-            Pair<double[][], String[]> result;
+            TEDResult result;
 //        // calculate distances of Selection of SWC-Files for every possible label
 //        File[] files = JsonUtils.parseJsonToFiles(new File("/media/exdisk/Sem06/BA/ProgramData/swcFiles.json"));
 //        for (int i = 0; i < files.length; i++) {
@@ -307,7 +306,7 @@ public class Main {
                 System.out.println(dateFormat.format(date) + " selected Label " + i);
                 cellTreeEditDistance = new CellTreeEditDistance();
                 result = cellTreeEditDistance.compareFilesFromFiles(files, i);
-                Utils.printMatrixToTxt(result.getKey(), result.getValue(), appProperties.getOutputDirectory(), "Matrix_" + FilenameUtils.removeExtension(jsonFile.getName()) + "_Label" + i + ".txt");
+                Utils.printMatrixToTxt(result.getDistanceMatrix(), result.getFileNames(), appProperties.getOutputDirectory(), "Matrix_" + FilenameUtils.removeExtension(jsonFile.getName()) + "_Label" + i + ".txt");
             }
         }
 

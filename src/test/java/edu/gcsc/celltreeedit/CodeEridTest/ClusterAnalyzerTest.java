@@ -20,7 +20,7 @@ public class ClusterAnalyzerTest {
     // TODO: fails because order of result matrix is not correct. needs to be changed anyhow.
 //    @Test
 //    public void clusterAnalyzerTest() throws IOException {
-//        Pair<double[][], String[]> result = new Pair<>(distanceMatrix, fileNames);
+//        TEDResult result = new TEDResult(distanceMatrix, fileNames);
 //
 //        // put metadata in hashMap
 //        NeuronMetadataMapper neuronMetadataMapper = new NeuronMetadataMapper();
