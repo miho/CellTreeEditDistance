@@ -4,6 +4,7 @@ import com.apporiented.algorithm.clustering.*;
 import com.apporiented.algorithm.clustering.visualization.DendrogramPanel;
 
 import javax.swing.*;
+import java.awt.*;
 
 public final class Clustering {
 
