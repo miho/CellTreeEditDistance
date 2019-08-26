@@ -44,7 +44,11 @@ public final class Clustering {
         JLabel label1 = new JLabel(outputFilename);
         contentPane.add(label1, BorderLayout.NORTH);
         contentPane.add(dp, BorderLayout.CENTER);
-
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
 
         if (saveOutput) {
             Container content = frame.getContentPane();

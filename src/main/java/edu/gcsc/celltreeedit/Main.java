@@ -653,7 +653,7 @@ public class Main {
             }
         }
         for (TEDResult result : results) {
-            DendrogramCreator.createDendrogram(result, appProperties.getMetadataDirectory(), appProperties.getOutputDirectory(), result.getName(), false, false);
+            DendrogramCreator.createDendrogram(result, appProperties.getMetadataDirectory(), appProperties.getOutputDirectory(), result.getName(), false, true);
         }
     }
 
