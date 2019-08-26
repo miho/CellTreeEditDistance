@@ -138,9 +138,10 @@ public class CommandLineParsing {
                 }
                 break;
             case 8:
+            case 9:
                 break;
             default:
-                throw new ParseException("'calc' can only have value between 0 and 8");
+                throw new ParseException("'calc' can only have value between 0 and 9");
         }
     }
 }
