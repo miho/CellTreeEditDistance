@@ -208,7 +208,7 @@ public class Main {
         for (int i = 0; i < files.length; i++) {
             files[i] = new File(appProperties.getSwcFileDirectory() + "/" + files[i].getPath());
         }
-        TEDResult result = cellTreeEditDistance.compareFilesFromFiles(files, 9);
+        TEDResult result = cellTreeEditDistance.compareFilesFromFiles(files, 22);
         Utils.printMatrixToTxt(result.getDistanceMatrix(), result.getFileNames(), appProperties.getOutputDirectory(), appProperties.getMatrixName());
         return result;
     }

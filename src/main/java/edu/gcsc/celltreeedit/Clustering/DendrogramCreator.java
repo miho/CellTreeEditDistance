@@ -10,6 +10,7 @@ import javafx.util.Pair;
 import org.apache.commons.io.FilenameUtils;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
@@ -42,15 +43,18 @@ public class DendrogramCreator {
             fileNameMapping.printTable(outputDirectory, outputFilename);
         } else {
             JFrame frame = new JFrame();
-            JPanel rowPane = new JPanel();
-            frame.add(rowPane);
-            frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.PAGE_AXIS));
-            JLabel label1 = new JLabel(outputFilename);
-            frame.add(label1);
-            frame.add(fileNameMapping);
+            Container contentPane = frame.getContentPane();
+            contentPane.setLayout(new BorderLayout());
             frame.setSize(1000,1000);
             frame.setVisible(true);
             frame.setTitle(outputFilename);
+
+            JLabel label1 = new JLabel(outputFilename);
+            contentPane.add(label1, BorderLayout.NORTH);
+
+//            JPanel rowPane = new JPanel();
+//            frame.add(rowPane);
+            contentPane.add(fileNameMapping, BorderLayout.CENTER);
         }
 
         return newFileNames;

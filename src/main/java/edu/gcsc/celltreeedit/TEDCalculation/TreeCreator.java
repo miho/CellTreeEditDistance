@@ -530,7 +530,7 @@ public class TreeCreator implements InputParser <NodeData> , Serializable {
                     noOfCalculations--;
                 } else {
                     double cosAngle = MathArrays.cosAngle(v1, v2);
-                    if (Utils.doublesAlmostEqual(Math.abs(cosAngle), 1d, 0d, 1)) {
+                    if (Utils.doublesAlmostEqual(Math.abs(cosAngle), 1d, 0d, 3)) {
                         sum += (cosAngle > 0) ? 0d : Math.PI;
                     } else {
                         sum += Math.acos(cosAngle);

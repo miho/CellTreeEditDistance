@@ -33,14 +33,18 @@ public final class Clustering {
         outputFilename = FilenameUtils.removeExtension(outputFilename) + "_Dendrogram";
         DendrogramPanel dp = new DendrogramPanel();
         dp.setModel(cluster);
+        dp.setBackground(Color.WHITE);
         JFrame frame = new JFrame();
-        frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.PAGE_AXIS));
-        JLabel label1 = new JLabel(outputFilename);
-        frame.add(label1);
-        frame.add(dp);
-        frame.setSize(1024,768);
+        frame.setSize(1000,800);
         frame.setTitle(outputFilename);
         frame.setVisible(true);
+        Container contentPane = frame.getContentPane();
+        contentPane.setLayout(new BorderLayout());
+        contentPane.setBackground(Color.WHITE);
+        JLabel label1 = new JLabel(outputFilename);
+        contentPane.add(label1, BorderLayout.NORTH);
+        contentPane.add(dp, BorderLayout.CENTER);
+
 
         if (saveOutput) {
             Container content = frame.getContentPane();
@@ -54,6 +58,7 @@ public final class Clustering {
             try {
                 File fileToSave = Utils.incrementFileNameIfNecessary(outputDirectory, outputFilename + ".png");
                 ImageIO.write(img, "png", fileToSave);
+                System.out.println("Dendrogram saved to: " + fileToSave);
             } catch (IOException ex) {
                 ex.printStackTrace();
             }

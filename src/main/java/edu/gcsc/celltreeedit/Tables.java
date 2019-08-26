@@ -1,6 +1,7 @@
 package edu.gcsc.celltreeedit;
 
 import javax.swing.*;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.io.File;
@@ -76,7 +77,17 @@ public class Tables extends JPanel implements Serializable{
         int rowSize = firstColumn.length;
         int colSize = columnNames.length;
 
-        table = new JTable(rowSize, colSize);
+        table = new JTable(rowSize, colSize){
+            @Override
+            public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+                Component component = super.prepareRenderer(renderer, row, column);
+                int rendererWidth = component.getPreferredSize().width;
+                TableColumn tableColumn = getColumnModel().getColumn(column);
+                tableColumn.setPreferredWidth(Math.max(rendererWidth + getIntercellSpacing().width, tableColumn.getPreferredWidth()));
+                return component;
+            }
+        };
+        table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
         TableColumn tc;
         for (int i = 0; i < colSize; i++) {
@@ -89,8 +100,6 @@ public class Tables extends JPanel implements Serializable{
             table.setValueAt(thirdColumn[i], i, 2);
         }
 
-        table.setPreferredScrollableViewportSize(new Dimension(1000,1000));
-        table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         table.setFillsViewportHeight(true);
         JScrollPane pane= new JScrollPane(table);
         pane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
