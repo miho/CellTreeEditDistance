@@ -305,7 +305,7 @@ public class Main {
 //        for (int i = 0; i < files.length; i++) {
 //            files[i] = new File(appProperties.getSwcFileDirectory() + "/" + files[i].getPath());
 //        }
-            for (int i = 22; i < 23; i += 1) {
+            for (int i = 1; i < 23; i += 1) {
                 Date date = new Date();
                 System.out.println(dateFormat.format(date) + " selected Label " + i);
                 cellTreeEditDistance = new CellTreeEditDistance();
