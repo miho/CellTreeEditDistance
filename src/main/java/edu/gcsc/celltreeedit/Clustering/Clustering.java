@@ -45,7 +45,7 @@ public final class Clustering {
         contentPane.add(label1, BorderLayout.NORTH);
         contentPane.add(dp, BorderLayout.CENTER);
         try {
-            Thread.sleep(500);
+            Thread.sleep(600);
         } catch (InterruptedException ex) {
             ex.printStackTrace();
         }

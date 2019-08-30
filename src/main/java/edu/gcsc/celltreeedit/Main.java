@@ -305,12 +305,18 @@ public class Main {
 //        for (int i = 0; i < files.length; i++) {
 //            files[i] = new File(appProperties.getSwcFileDirectory() + "/" + files[i].getPath());
 //        }
+            String labelNumber;
             for (int i = 1; i < 23; i += 1) {
                 Date date = new Date();
                 System.out.println(dateFormat.format(date) + " selected Label " + i);
                 cellTreeEditDistance = new CellTreeEditDistance();
                 result = cellTreeEditDistance.compareFilesFromFiles(files, i);
-                Utils.printMatrixToTxt(result.getDistanceMatrix(), result.getFileNames(), appProperties.getOutputDirectory(), "Matrix_" + FilenameUtils.removeExtension(jsonFile.getName()) + "_Label" + i + ".txt");
+                if (i < 10) {
+                    labelNumber = "0" + i;
+                } else {
+                    labelNumber = Integer.toString(i);
+                }
+                Utils.printMatrixToTxt(result.getDistanceMatrix(), result.getFileNames(), appProperties.getOutputDirectory(), "Matrix_" + FilenameUtils.removeExtension(jsonFile.getName()) + "_Label" + labelNumber + ".txt");
             }
         }
 
