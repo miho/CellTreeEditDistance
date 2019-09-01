@@ -13,14 +13,18 @@ import edu.gcsc.celltreeedit.NeuronMetadata.UniqueMetadataContainer;
 import edu.gcsc.celltreeedit.TEDCalculation.CellTreeEditDistance;
 import javafx.util.Pair;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Created by Erid on 12.02.2018.
@@ -102,6 +106,9 @@ public class Main {
                 break;
             case 9:
                 doWhateverIsInMyFunctionBody02();
+                break;
+            case 10:
+                printMetadataForJson();
                 break;
             default:
                 System.out.println("calcType not valid");
@@ -318,6 +325,7 @@ public class Main {
                 }
                 Utils.printMatrixToTxt(result.getDistanceMatrix(), result.getFileNames(), appProperties.getOutputDirectory(), "Matrix_" + FilenameUtils.removeExtension(jsonFile.getName()) + "_Label" + labelNumber + ".txt");
             }
+
         }
 
 
@@ -669,6 +677,52 @@ public class Main {
             if (fileNames[i] == null) {
                 throw new RuntimeException();
             }
+        }
+    }
+
+    public static void printMetadataForJson() throws IOException {
+
+        // input: jsonFiles
+        // output: file with Filenames to metadata mapping
+        // filename, archive, species, brainRegions, cellTypes, ageClassification, minAge, maxAge, physicalIntegrity, domain, attributes, protocol, reconstructionSoftware, experimentCondition, filesize
+        File[] jsonFiles = Utils.chooseJSONFiles();
+
+        for (File jsonFile : jsonFiles) {
+            System.out.println("\nJsonFile: " + jsonFile.getName());
+            File[] files = JsonUtils.parseJsonToFiles(jsonFile);
+            for (int i = 0; i < files.length; i++) {
+                files[i] = new File(appProperties.getSwcFileDirectory() + "/" + files[i].getPath());
+            }
+            NeuronMetadataMapper neuronMetadataMapper = new NeuronMetadataMapper();
+            Map<String, NeuronMetadataR> neuronMetadata = neuronMetadataMapper.mapExistingFromMetadataDirectory(appProperties.getMetadataDirectory(), appProperties.getSwcFileDirectory());
+            try {
+                File file = new File(FilenameUtils.removeExtension(jsonFile.toString()) + "_Metadata" + ".csv");
+                FileWriter export = new FileWriter(file.getAbsolutePath());
+                BufferedWriter br = new BufferedWriter(export);
+                br.write("filename" + "; " + "archive" + "; " + "species" + "; " + "brainRegions" + "; " + "cellTypes" + "; " + "ageClassification" + "; " + "minAge" + "; " + "maxAge" + "; " + "physicalIntegrity" + "; " + "domain" + "; " + "attributes" + "; " + "protocol" + "; " + "reconstructionSoftware" + "; " + "experimentCondition" + "; " + "filesize");
+                br.newLine();
+
+                for (File neuronFile: files) {
+                    String filename = FilenameUtils.removeExtension(FilenameUtils.removeExtension(neuronFile.getName()));
+                    System.out.println(filename);
+                    NeuronMetadataR neuronMetadataObject = neuronMetadata.get(filename);
+                    List<String> brainRegions = neuronMetadataObject.getBrainRegion();
+                    if (brainRegions == null) {
+                        brainRegions = new ArrayList<>();
+                    }
+                    List<String> cellTypes = neuronMetadataObject.getCellType();
+                    if (cellTypes == null) {
+                        cellTypes = new ArrayList<>();
+                    }
+                    String formattedSize = String.format("%.2f", (double) FileUtils.sizeOf(neuronFile)/(1024*1024));
+                    br.write(filename + "; " + neuronMetadataObject.getArchive() + "; " + neuronMetadataObject.getSpecies() + "; " + brainRegions.stream().filter(s -> s != null && !s.isEmpty()).collect(Collectors.joining("|")) + "; " + cellTypes.stream().filter(s -> s != null && !s.isEmpty()).collect(Collectors.joining("|")) + "; " + neuronMetadataObject.getAgeClassification() + "; " + neuronMetadataObject.getMinAge() + "; " + neuronMetadataObject.getMaxAge() + "; " + neuronMetadataObject.getPhysicalIntegrity() + "; " + neuronMetadataObject.getDomain() + "; " + neuronMetadataObject.getAttributes() + "; " + neuronMetadataObject.getProtocol() + "; " + neuronMetadataObject.getReconstructionSoftware() + "; " + neuronMetadataObject.getExperimentCondition() + "; " + formattedSize + "MB");
+                    br.newLine();
+                }
+                br.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
         }
     }
 }
