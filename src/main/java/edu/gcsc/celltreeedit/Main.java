@@ -704,7 +704,6 @@ public class Main {
 
                 for (File neuronFile: files) {
                     String filename = FilenameUtils.removeExtension(FilenameUtils.removeExtension(neuronFile.getName()));
-                    System.out.println(filename);
                     NeuronMetadataR neuronMetadataObject = neuronMetadata.get(filename);
                     List<String> brainRegions = neuronMetadataObject.getBrainRegion();
                     if (brainRegions == null) {
@@ -718,11 +717,12 @@ public class Main {
                     if (experimentConditions == null) {
                         experimentConditions = new ArrayList<>();
                     }
-                    String formattedSize = String.format("%.3f", (double) FileUtils.sizeOf(neuronFile)/(1024*1024));
+                    String formattedSize = String.format("%.2f", (double) FileUtils.sizeOf(neuronFile)/(1024*1024));
                     br.write(filename + "; " + neuronMetadataObject.getArchive() + "; " + neuronMetadataObject.getSpecies() + "; " + brainRegions.stream().filter(s -> s != null && !s.isEmpty()).collect(Collectors.joining(", ")) + "; " + cellTypes.stream().filter(s -> s != null && !s.isEmpty()).collect(Collectors.joining(", ")) + "; " + neuronMetadataObject.getAgeClassification() + "; " + neuronMetadataObject.getMinAge() + "; " + neuronMetadataObject.getMaxAge() + "; " + neuronMetadataObject.getPhysicalIntegrity() + "; " + neuronMetadataObject.getDomain() + "; " + neuronMetadataObject.getAttributes() + "; " + neuronMetadataObject.getProtocol() + "; " + neuronMetadataObject.getReconstructionSoftware() + "; " + experimentConditions.stream().filter(s -> s != null && !s.isEmpty()).collect(Collectors.joining(", ")) + "; " + formattedSize + "MB");
                     br.newLine();
                 }
                 br.close();
+                System.out.println("File saved to: " + file.getAbsolutePath());
             } catch (IOException e) {
                 e.printStackTrace();
             }
