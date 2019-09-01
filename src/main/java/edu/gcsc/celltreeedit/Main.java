@@ -687,19 +687,21 @@ public class Main {
         // filename, archive, species, brainRegions, cellTypes, ageClassification, minAge, maxAge, physicalIntegrity, domain, attributes, protocol, reconstructionSoftware, experimentCondition, filesize
         File[] jsonFiles = Utils.chooseJSONFiles();
 
+        NeuronMetadataMapper neuronMetadataMapper = new NeuronMetadataMapper();
+        Map<String, NeuronMetadataR> neuronMetadata = neuronMetadataMapper.mapExistingFromMetadataDirectory(appProperties.getMetadataDirectory(), appProperties.getSwcFileDirectory());
+
         for (File jsonFile : jsonFiles) {
             System.out.println("\nJsonFile: " + jsonFile.getName());
             File[] files = JsonUtils.parseJsonToFiles(jsonFile);
             for (int i = 0; i < files.length; i++) {
                 files[i] = new File(appProperties.getSwcFileDirectory() + "/" + files[i].getPath());
             }
-            NeuronMetadataMapper neuronMetadataMapper = new NeuronMetadataMapper();
-            Map<String, NeuronMetadataR> neuronMetadata = neuronMetadataMapper.mapExistingFromMetadataDirectory(appProperties.getMetadataDirectory(), appProperties.getSwcFileDirectory());
+
             try {
                 File file = new File(FilenameUtils.removeExtension(jsonFile.toString()) + "_Metadata" + ".csv");
                 FileWriter export = new FileWriter(file.getAbsolutePath());
                 BufferedWriter br = new BufferedWriter(export);
-                br.write("filename" + "; " + "archive" + "; " + "species" + "; " + "brainRegions" + "; " + "cellTypes" + "; " + "ageClassification" + "; " + "minAge" + "; " + "maxAge" + "; " + "physicalIntegrity" + "; " + "domain" + "; " + "attributes" + "; " + "protocol" + "; " + "reconstructionSoftware" + "; " + "experimentCondition" + "; " + "filesize");
+                br.write("neuronId"+ "; " + "filename" + "; " + "archive" + "; " + "species" + "; " + "brainRegions" + "; " + "cellTypes" + "; " + "ageClassification" + "; " + "minAge" + "; " + "maxAge" + "; " + "physicalIntegrity" + "; " + "domain" + "; " + "attributes" + "; " + "protocol" + "; " + "reconstructionSoftware" + "; " + "experimentCondition" + "; " + "filesize");
                 br.newLine();
 
                 for (File neuronFile: files) {
@@ -718,7 +720,7 @@ public class Main {
                         experimentConditions = new ArrayList<>();
                     }
                     String formattedSize = String.format("%.2f", (double) FileUtils.sizeOf(neuronFile)/(1024*1024));
-                    br.write(filename + "; " + neuronMetadataObject.getArchive() + "; " + neuronMetadataObject.getSpecies() + "; " + brainRegions.stream().filter(s -> s != null && !s.isEmpty()).collect(Collectors.joining(", ")) + "; " + cellTypes.stream().filter(s -> s != null && !s.isEmpty()).collect(Collectors.joining(", ")) + "; " + neuronMetadataObject.getAgeClassification() + "; " + neuronMetadataObject.getMinAge() + "; " + neuronMetadataObject.getMaxAge() + "; " + neuronMetadataObject.getPhysicalIntegrity() + "; " + neuronMetadataObject.getDomain() + "; " + neuronMetadataObject.getAttributes() + "; " + neuronMetadataObject.getProtocol() + "; " + neuronMetadataObject.getReconstructionSoftware() + "; " + experimentConditions.stream().filter(s -> s != null && !s.isEmpty()).collect(Collectors.joining(", ")) + "; " + formattedSize + "MB");
+                    br.write(neuronMetadataObject.getNeuronId() + "; " + filename + "; " + neuronMetadataObject.getArchive() + "; " + neuronMetadataObject.getSpecies() + "; " + brainRegions.stream().filter(s -> s != null && !s.isEmpty()).collect(Collectors.joining(", ")) + "; " + cellTypes.stream().filter(s -> s != null && !s.isEmpty()).collect(Collectors.joining(", ")) + "; " + neuronMetadataObject.getAgeClassification() + "; " + neuronMetadataObject.getMinAge() + "; " + neuronMetadataObject.getMaxAge() + "; " + neuronMetadataObject.getPhysicalIntegrity() + "; " + neuronMetadataObject.getDomain() + "; " + neuronMetadataObject.getAttributes() + "; " + neuronMetadataObject.getProtocol() + "; " + neuronMetadataObject.getReconstructionSoftware() + "; " + experimentConditions.stream().filter(s -> s != null && !s.isEmpty()).collect(Collectors.joining(", ")) + "; " + formattedSize + "MB");
                     br.newLine();
                 }
                 br.close();
