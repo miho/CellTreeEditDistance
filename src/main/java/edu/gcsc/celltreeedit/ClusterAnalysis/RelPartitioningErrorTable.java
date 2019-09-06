@@ -3,6 +3,7 @@ package edu.gcsc.celltreeedit.ClusterAnalysis;
 import edu.gcsc.celltreeedit.NeuronMetadata.UniqueMetadataContainer;
 
 import javax.swing.*;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.io.Serializable;
@@ -25,7 +26,18 @@ public class RelPartitioningErrorTable extends JPanel implements Serializable {
 
         // first column is used for uniqueMetadataObject-Id -> size+1 columns
         int size = relPartitioningErrors.length;
-        table = new JTable(size, size + 1);
+
+        table = new JTable(size, size + 1){
+            @Override
+            public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+                Component component = super.prepareRenderer(renderer, row, column);
+                int rendererWidth = component.getPreferredSize().width;
+                TableColumn tableColumn = getColumnModel().getColumn(column);
+                tableColumn.setPreferredWidth(Math.max(rendererWidth + getIntercellSpacing().width, tableColumn.getPreferredWidth()));
+                return component;
+            }
+        };
+        table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
         // set header and first column
         TableColumn tc;
@@ -45,10 +57,16 @@ public class RelPartitioningErrorTable extends JPanel implements Serializable {
                 table.setValueAt(df.format(relPartitioningErrors[i][j - 1]), i, j);
             }
         }
-        table.setPreferredScrollableViewportSize(new Dimension(850, 200));
-        table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+//        table.setPreferredScrollableViewportSize(new Dimension(850, 200));
+//        table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+//        table.setFillsViewportHeight(true);
+//        JScrollPane pane = new JScrollPane(table);
+//        pane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+//        pane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+//        add(pane);
+
         table.setFillsViewportHeight(true);
-        JScrollPane pane = new JScrollPane(table);
+        JScrollPane pane= new JScrollPane(table);
         pane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
         pane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         add(pane);

@@ -11,7 +11,6 @@ import edu.gcsc.celltreeedit.NeuronMetadata.NeuronMetadataMapper;
 import edu.gcsc.celltreeedit.NeuronMetadata.NeuronMetadataR;
 import edu.gcsc.celltreeedit.NeuronMetadata.UniqueMetadataContainer;
 import edu.gcsc.celltreeedit.TEDCalculation.CellTreeEditDistance;
-import javafx.util.Pair;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -20,6 +19,9 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -109,6 +111,9 @@ public class Main {
                 break;
             case 10:
                 printMetadataForJson();
+                break;
+            case 11:
+                copySWCFilesFromJsonToDirectory();
                 break;
             default:
                 System.out.println("calcType not valid");
@@ -729,6 +734,44 @@ public class Main {
                 e.printStackTrace();
             }
 
+        }
+    }
+
+    public static void copySWCFilesFromJsonToDirectory() throws IOException {
+        File[] jsonFiles = Utils.chooseJSONFiles();
+        String outputDirectory;
+        for (File jsonFile : jsonFiles) {
+            File[] files = JsonUtils.parseJsonToFiles(jsonFile);
+
+            for (int i = 0; i < files.length; i++) {
+                files[i] = new File(appProperties.getSwcFileDirectory() + "/" + files[i].getPath());
+            }
+            // get directory name from jsonFileName
+            // create Directory
+            String newFolder = FilenameUtils.removeExtension(FilenameUtils.getName(jsonFile.getName()));
+            outputDirectory = appProperties.getOutputDirectory().getAbsolutePath() + "/" + newFolder;
+            new File(outputDirectory).mkdirs();
+
+            FileWriter export = new FileWriter(outputDirectory + "/" + "relativePaths");
+            BufferedWriter br = new BufferedWriter(export);
+
+            for (int i = 0; i < files.length; i++) {
+                // copy File to directory
+                copyFile(files[i], outputDirectory);
+                br.write("./" + newFolder + "/" + files[i].getName() + " ");
+            }
+            br.close();
+        }
+    }
+
+    private static void copyFile(File file, String outputDirectory) {
+        // move file to subdirectory
+        try {
+            // copy file to defined directory
+            Files.copy(Paths.get(file.getAbsolutePath()), Paths.get(outputDirectory + "/" + file.getName()), StandardCopyOption.REPLACE_EXISTING);
+            System.out.println("File: " + file.getAbsolutePath() + "  Copied to: " + outputDirectory + "/" + file.getName());
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
     }
 }
