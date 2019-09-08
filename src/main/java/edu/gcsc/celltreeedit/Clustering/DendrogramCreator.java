@@ -29,7 +29,7 @@ public class DendrogramCreator {
         Clustering clustering = Clustering.getInstance();
         Cluster cluster = clustering.createCluster(result.getDistanceMatrix(), fileNames);
         // generate dendrogram
-        clustering.createDendrogram(cluster, outputDirectory, outputFilename, saveOutput); // TODO: implement save
+        clustering.createDendrogram(cluster, outputDirectory, outputFilename, saveOutput);
     }
 
     private static String[] createFilenameMapping(String[] oldFileNames, File metadataDirectory, File outputDirectory, String outputFilename, boolean saveOutput) throws IOException {

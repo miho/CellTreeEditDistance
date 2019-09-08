@@ -1,6 +1,7 @@
 package edu.gcsc.celltreeedit.Clustering;
 
 import com.apporiented.algorithm.clustering.*;
+import com.apporiented.algorithm.clustering.visualization.ClusterColorRegex;
 import com.apporiented.algorithm.clustering.visualization.DendrogramPanel;
 import edu.gcsc.celltreeedit.Utils;
 import org.apache.commons.io.FilenameUtils;
@@ -11,6 +12,9 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.regex.Pattern;
 
 public final class Clustering {
 
@@ -32,6 +36,16 @@ public final class Clustering {
     public void createDendrogram(Cluster cluster, File outputDirectory, String outputFilename, boolean saveOutput) {
         outputFilename = FilenameUtils.removeExtension(outputFilename) + "_Dendrogram";
         DendrogramPanel dp = new DendrogramPanel();
+        List<ClusterColorRegex> clusterColorRegexes = Arrays.asList(
+                new ClusterColorRegex(Pattern.compile("^1,.*"), Color.BLACK),
+                new ClusterColorRegex(Pattern.compile("^2,.*"), new Color(35, 106, 185)),
+                new ClusterColorRegex(Pattern.compile("^3,.*"), new Color(186, 26, 70)),
+                new ClusterColorRegex(Pattern.compile("^4,.*"), new Color(68, 141, 118)),
+                new ClusterColorRegex(Pattern.compile("^5,.*"), new Color(118, 60, 118)),
+                new ClusterColorRegex(Pattern.compile("^6,.*"), Color.GRAY),
+                new ClusterColorRegex(Pattern.compile("^7,.*"), new Color(160, 100, 0))
+        );
+        dp.setClusterColorRegexes(clusterColorRegexes);
         dp.setModel(cluster);
         dp.setBackground(Color.WHITE);
         JFrame frame = new JFrame();
