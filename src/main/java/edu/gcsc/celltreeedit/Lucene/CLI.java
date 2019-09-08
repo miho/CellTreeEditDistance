@@ -46,7 +46,7 @@ public class CLI {
             }
             if (s.equals("s")) {
                 JsonUtils.writeToJSON(selectedNeuronFiles, comment.toString(), swcFileDirectory, outputDirectory, jsonName);
-                comment = new StringBuilder("Queried by Lucene.");
+                comment = new StringBuilder("Parsed Lucene Queries: ");
                 selectedNeuronFiles = new ArrayList<>();
                 continue;
             }
@@ -71,11 +71,11 @@ public class CLI {
                     if (s.toLowerCase().equals("d")) {
                         break;
                     } else if (s.toLowerCase().equals("c")) {
-                        comment.append(" Query: ").append(query);
+                        comment.append(" ; ").append(query);
                         selectedNeuronFiles.addAll(getFilesForQueryResult(indexSearcher, topDocs, swcFileDirectory, -1));
                         break;
                     } else if (s.matches("(0|[1-9]\\d*)")) {
-                        comment.append(" Query: ").append(query);
+                        comment.append(" ; ").append(query);
                         int limitSize = Integer.parseInt(s);
                         limitSize = (limitSize > totalHits) ? -1 : limitSize;
                         selectedNeuronFiles.addAll(getFilesForQueryResult(indexSearcher, topDocs, swcFileDirectory, limitSize));
