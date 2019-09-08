@@ -1,6 +1,5 @@
 package edu.gcsc.celltreeedit.Clustering;
 
-import com.apporiented.algorithm.clustering.Cluster;
 import com.apporiented.algorithm.clustering.visualization.ClusterColorRegex;
 import edu.gcsc.celltreeedit.NeuronMetadata.NeuronMetadataMapper;
 import edu.gcsc.celltreeedit.NeuronMetadata.NeuronMetadataR;
@@ -9,7 +8,6 @@ import edu.gcsc.celltreeedit.TEDResult;
 import edu.gcsc.celltreeedit.Tables;
 import edu.gcsc.celltreeedit.Utils;
 import javafx.util.Pair;
-import org.apache.commons.io.FilenameUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -51,7 +49,7 @@ public class DendrogramCreator {
         }
     }
 
-    private static String[] createFilenameMapping(String[] oldFileNames, Map<String, NeuronMetadataR> neuronMetadata, String outputFilename) throws IOException {
+    private static String[] createFilenameMapping(String[] oldFileNames, Map<String, NeuronMetadataR> neuronMetadata, String outputFilename) {
         Pair<String[], String[]> renameResult = renameFileNamesToUniqueMetadataNames(oldFileNames, neuronMetadata);
         String[] newFileNames = renameResult.getKey();
         String[] neuronMetadataNames = renameResult.getValue();
@@ -72,7 +70,7 @@ public class DendrogramCreator {
         return newFileNames;
     }
 
-    private static Pair<String[], String[]> renameFileNamesToUniqueMetadataNames(String[] oldFileNames, Map<String, NeuronMetadataR> neuronMetadata) throws IOException {
+    private static Pair<String[], String[]> renameFileNamesToUniqueMetadataNames(String[] oldFileNames, Map<String, NeuronMetadataR> neuronMetadata) {
         String[] newFileNames = new String[oldFileNames.length];
         String[] neuronMetadataNames = new String[oldFileNames.length];
 

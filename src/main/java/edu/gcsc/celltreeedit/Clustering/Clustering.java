@@ -50,7 +50,6 @@ public class Clustering {
         JFrame frame = new JFrame();
         frame.setSize(1000, 800);
         frame.setTitle(outputFilename);
-        frame.setVisible(true);
         Container contentPane = frame.getContentPane();
         contentPane.setLayout(new BorderLayout());
         contentPane.setBackground(Color.WHITE);
@@ -58,18 +57,21 @@ public class Clustering {
         JLabel label1 = new JLabel(outputFilename);
         contentPane.add(label1, BorderLayout.NORTH);
         contentPane.add(dp, BorderLayout.CENTER);
-        try {
-            Thread.sleep(600);
-        } catch (InterruptedException ex) {
-            ex.printStackTrace();
-        }
+
+//        try {
+//            Thread.sleep(600);
+//        } catch (InterruptedException ex) {
+//            ex.printStackTrace();
+//        }
 
         if (saveOutput) {
-            Container content = frame.getContentPane();
-            BufferedImage img = new BufferedImage(content.getWidth(), content.getHeight(), BufferedImage.TYPE_INT_RGB);
+            contentPane.setSize(1000, 800);
+            contentPane.doLayout();
+            BufferedImage img = new BufferedImage(contentPane.getWidth(), contentPane.getHeight(), BufferedImage.TYPE_INT_RGB);
+
             Graphics2D g2d = img.createGraphics();
 
-            content.printAll(g2d);
+            contentPane.printAll(g2d);
 
             g2d.dispose();
 
@@ -82,6 +84,7 @@ public class Clustering {
             }
             frame.dispose();
         } else {
+            frame.setVisible(true);
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         }
     }
