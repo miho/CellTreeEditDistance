@@ -3,6 +3,7 @@ package edu.gcsc.celltreeedit.Clustering;
 import com.apporiented.algorithm.clustering.*;
 import com.apporiented.algorithm.clustering.visualization.ClusterColorRegex;
 import com.apporiented.algorithm.clustering.visualization.DendrogramPanel;
+import edu.gcsc.celltreeedit.TEDResult;
 import edu.gcsc.celltreeedit.Utils;
 import org.apache.commons.io.FilenameUtils;
 
@@ -12,49 +13,48 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Pattern;
 
-public final class Clustering {
+/**
+ * Can be used to create a Cluster from a DistanceMatrix and show the result in a dendrogram
+ */
+public class Clustering {
 
-    // Thread-save Singleton
-    private static final Clustering INSTANCE = new Clustering();
-
-    public static Clustering getInstance() {
-        return INSTANCE;
+    public Cluster getRootCluster() {
+        return rootCluster;
     }
 
-    private Clustering() {}
+    private Cluster rootCluster;
 
-    public Cluster createCluster(double[][] matrix, String[] fileNames) {
+    public void createCluster(double[][] distanceMatrix, String[] filenames) {
         ClusteringAlgorithm alg = new DefaultClusteringAlgorithm();
-        return alg.performClustering(matrix, fileNames,
+        this.rootCluster = alg.performClustering(distanceMatrix, filenames,
                 new WardLinkageStrategy());
     }
 
-    public void createDendrogram(Cluster cluster, File outputDirectory, String outputFilename, boolean saveOutput) {
+    public void showDendrogram(String outputFilename, List<ClusterColorRegex> clusterColorRegexes) {
+        this.createDendrogram(new File(""), outputFilename, false, clusterColorRegexes);
+    }
+
+    public void saveDendrogram(File outputDirectory, String outputFilename, List<ClusterColorRegex> clusterColorRegexes) {
+        this.createDendrogram(outputDirectory, outputFilename, true, clusterColorRegexes);
+    }
+
+    private void createDendrogram(File outputDirectory, String outputFilename, boolean saveOutput, List<ClusterColorRegex> clusterColorRegexes) {
         outputFilename = FilenameUtils.removeExtension(outputFilename) + "_Dendrogram";
         DendrogramPanel dp = new DendrogramPanel();
-        List<ClusterColorRegex> clusterColorRegexes = Arrays.asList(
-                new ClusterColorRegex(Pattern.compile("^1,.*"), Color.BLACK),
-                new ClusterColorRegex(Pattern.compile("^2,.*"), new Color(35, 106, 185)),
-                new ClusterColorRegex(Pattern.compile("^3,.*"), new Color(186, 26, 70)),
-                new ClusterColorRegex(Pattern.compile("^4,.*"), new Color(68, 141, 118)),
-                new ClusterColorRegex(Pattern.compile("^5,.*"), new Color(118, 60, 118)),
-                new ClusterColorRegex(Pattern.compile("^6,.*"), Color.GRAY),
-                new ClusterColorRegex(Pattern.compile("^7,.*"), new Color(160, 100, 0))
-        );
         dp.setClusterColorRegexes(clusterColorRegexes);
-        dp.setModel(cluster);
+        dp.setModel(this.rootCluster);
         dp.setBackground(Color.WHITE);
+
         JFrame frame = new JFrame();
-        frame.setSize(1000,800);
+        frame.setSize(1000, 800);
         frame.setTitle(outputFilename);
         frame.setVisible(true);
         Container contentPane = frame.getContentPane();
         contentPane.setLayout(new BorderLayout());
         contentPane.setBackground(Color.WHITE);
+
         JLabel label1 = new JLabel(outputFilename);
         contentPane.add(label1, BorderLayout.NORTH);
         contentPane.add(dp, BorderLayout.CENTER);

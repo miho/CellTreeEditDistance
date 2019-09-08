@@ -20,12 +20,13 @@ import javax.rmi.CORBA.Util;
 
 /**
  * Created by Erid on 12.04.2018.
+ * Used to create a tree from a list of swcSegments
  */
 public class TreeCreator implements InputParser <NodeData> , Serializable {
 
-    private List <Node<NodeData>> nodeList = new ArrayList <> ();
+    private List<Node<NodeData>> nodeList = new ArrayList <> ();
     private int[] firstChild, nextSibling; // Helparrays for finding out wether there is a branching point or an end structure
-    private List <SWCSegment> swcSegments;
+    private List<SWCSegment> swcSegments;
 
     public TreeCreator(InputStream inputStream) {
         try {
@@ -52,20 +53,20 @@ public class TreeCreator implements InputParser <NodeData> , Serializable {
         }
     }
 
-    public Node <NodeData> createTree(int label) {
-        Node <NodeData> node = this.createTreeStructure(0);
+    public Node<NodeData> createTree(int label) {
+        Node<NodeData> node = this.createTreeStructure(0);
         this.setNodeLabel(label);
         return node;
     }
 
-    public Node <NodeData> createTreeStructure(int segNr) { // bei 0 anfangen    mit Listennummerierung anzugeben
+    public Node<NodeData> createTreeStructure(int segNr) { // bei 0 anfangen    mit Listennummerierung anzugeben
         // Vaterknoten wird mitgenommen
-        List <Integer> Index = new ArrayList <> ();
-        List <Double> PosX = new ArrayList <> ();
-        List <Double> PosY = new ArrayList <> ();
-        List <Double> PosZ = new ArrayList <> ();
-        List <Double> R = new ArrayList <> ();
-        List <Integer> Parent = new ArrayList <> ();
+        List<Integer> Index = new ArrayList<>();
+        List<Double> PosX = new ArrayList<>();
+        List<Double> PosY = new ArrayList<>();
+        List<Double> PosZ = new ArrayList<>();
+        List<Double> R = new ArrayList<>();
+        List<Integer> Parent = new ArrayList<>();
         int vaterID = swcSegments.get(segNr).getParent();
         // System.out.println("vaterseg: "+vaterID);
 

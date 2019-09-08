@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- *
+ * Data for a Node from APTED-library. Contains information of the summarized segment from swcFile.
  */
 public class NodeData implements Serializable{
 

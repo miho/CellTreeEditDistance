@@ -6,7 +6,7 @@ import eu.mihosoft.ext.apted.costmodel.CostModel;
 import eu.mihosoft.ext.apted.node.Node;
 
 /**
- *
+ * Defines the Costfunctions used by APTED-Algorithm
  */
 public class TreeCostModel implements CostModel<NodeData>, Serializable {
 

@@ -5,7 +5,6 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.gcsc.celltreeedit.Utils;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
@@ -47,7 +46,7 @@ public class JsonUtils {
     }
 
     public static void writeToJSON(List<File> files, String comment, File swcFileDirectory, File outputDirectory, String jsonName) throws IOException {
-        files = removeSwcFileDirectoryFromPaths(files, swcFileDirectory);
+        files = Utils.removeSwcFileDirectoryFromPaths(files, swcFileDirectory);
         writeToJSON(files, comment, outputDirectory, jsonName);
     }
 
@@ -61,11 +60,5 @@ public class JsonUtils {
         System.out.println("File saved to: " + file.getAbsolutePath());
     }
 
-    private static List<File> removeSwcFileDirectoryFromPaths(List<File> files, File swcFileDirectory) {
-        List<File> newFiles = new ArrayList<>();
-        for (File file : files) {
-            newFiles.add(new File(file.getAbsolutePath().replace(swcFileDirectory.getAbsolutePath() + "/", "")));
-        }
-        return newFiles;
-    }
+
 }

@@ -11,6 +11,9 @@ import javax.swing.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Takes a TEDResult and extracts clusters out of it regarding the number of uniqueMetadataObjects. Produces a table containing the relativePartitioningErrors for wrongly clustered neurons
+ */
 public class ClusteringAnalyzer {
 
     // TODO: improve class for testing issues. return value of function only needed for testing purposes
@@ -34,10 +37,10 @@ public class ClusteringAnalyzer {
         int noOfUniqueMetadata = uniqueMetadataObjects.size();
 
         // Calculate Clustering
-        Clustering clustering = Clustering.getInstance();
-        Cluster cluster = clustering.createCluster(matrix, fileNames);
+        Clustering clustering = new Clustering();
+        clustering.createCluster(matrix, fileNames);
         // get clusters according to size of uniqueMetadata
-        List<Cluster> limitedClusters = limitClusterBySize(cluster, noOfUniqueMetadata);
+        List<Cluster> limitedClusters = limitClusterBySize(clustering.getRootCluster(), noOfUniqueMetadata);
 
         // calculate partitioning error and match clusters to uniqueMetadata
         // HungarianDouble takes DistanceMatrix of values

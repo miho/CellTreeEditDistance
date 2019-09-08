@@ -1,5 +1,7 @@
 package edu.gcsc.celltreeedit;
 
+import edu.gcsc.celltreeedit.NeuronMetadata.NeuronMetadataR;
+import edu.gcsc.celltreeedit.NeuronMetadata.UniqueMetadataContainer;
 import javafx.util.Pair;
 import org.apache.commons.io.FilenameUtils;
 
@@ -7,6 +9,7 @@ import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 /**
@@ -307,5 +310,58 @@ public class Utils {
             e.printStackTrace();
         }
         System.out.println("Table saved to: " + file.getPath());
+    }
+
+    public static List<File> removeSwcFileDirectoryFromPaths(List<File> files, File swcFileDirectory) {
+        List<File> newFiles = new ArrayList<>();
+        for (File file : files) {
+            newFiles.add(new File(file.getAbsolutePath().replace(swcFileDirectory.getAbsolutePath() + "/", "")));
+        }
+        return newFiles;
+    }
+
+    public static String[] printMetadataForFilenames(String[] filenames, Map<String, NeuronMetadataR> neuronMetadata, File outputDirectory, String metadataFilename) {
+        String[] newFileNames = new String[filenames.length];
+
+        UniqueMetadataContainer uniqueMetadataContainer = new UniqueMetadataContainer();
+        UniqueMetadataContainer.UniqueMetadata uniqueMetadata;
+
+        try {
+            File file = new File(outputDirectory.getAbsolutePath() + "/" + metadataFilename + "_Metadata" + ".csv");
+            FileWriter export = new FileWriter(file.getAbsolutePath());
+            BufferedWriter br = new BufferedWriter(export);
+            br.write("metadataId" + "; " + "neuronId"+ "; " + "filename" + "; " + "archive" + "; " + "species" + "; " + "brainRegions" + "; " + "cellTypes" + "; " + "ageClassification" + "; " + "minAge" + "; " + "maxAge" + "; " + "physicalIntegrity" + "; " + "domain" + "; " + "attributes" + "; " + "protocol" + "; " + "reconstructionSoftware" + "; " + "experimentCondition"); //  + "; " + "filesize"
+            br.newLine();
+
+            for (int i = 0; i < filenames.length; i++) {
+                String filename = filenames[i];
+                NeuronMetadataR neuronMetadataObject = neuronMetadata.get(filename);
+
+                // create unique metadata of files
+                uniqueMetadata = uniqueMetadataContainer.addNeuronMetadata(neuronMetadataObject);
+
+                List<String> brainRegions = neuronMetadataObject.getBrainRegion();
+                if (brainRegions == null) {
+                    brainRegions = new ArrayList<>();
+                }
+                List<String> cellTypes = neuronMetadataObject.getCellType();
+                if (cellTypes == null) {
+                    cellTypes = new ArrayList<>();
+                }
+                List<String> experimentConditions = neuronMetadataObject.getExperimentCondition();
+                if (experimentConditions == null) {
+                    experimentConditions = new ArrayList<>();
+                }
+                newFileNames[i] = uniqueMetadata.getUniqueMetadataId() + ", " + neuronMetadataObject.getArchive() + ", " + neuronMetadataObject.getNeuronId();
+//                    String formattedSize = String.format("%.2f", (double) FileUtils.sizeOf(swcFile)/(1024*1024));
+                br.write(uniqueMetadata.getUniqueMetadataId() + "; " + neuronMetadataObject.getNeuronId() + "; " + filename + "; " + neuronMetadataObject.getArchive() + "; " + neuronMetadataObject.getSpecies() + "; " + brainRegions.stream().filter(s -> s != null && !s.isEmpty()).collect(Collectors.joining(", ")) + "; " + cellTypes.stream().filter(s -> s != null && !s.isEmpty()).collect(Collectors.joining(", ")) + "; " + neuronMetadataObject.getAgeClassification() + "; " + neuronMetadataObject.getMinAge() + "; " + neuronMetadataObject.getMaxAge() + "; " + neuronMetadataObject.getPhysicalIntegrity() + "; " + neuronMetadataObject.getDomain() + "; " + neuronMetadataObject.getAttributes() + "; " + neuronMetadataObject.getProtocol() + "; " + neuronMetadataObject.getReconstructionSoftware() + "; " + experimentConditions.stream().filter(s -> s != null && !s.isEmpty()).collect(Collectors.joining(", "))); //  + "; " + formattedSize + "MB"
+                br.newLine();
+            }
+            br.close();
+            System.out.println("File saved to: " + file.getAbsolutePath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return newFileNames;
     }
 }

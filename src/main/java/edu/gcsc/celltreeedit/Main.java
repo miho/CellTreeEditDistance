@@ -1,5 +1,6 @@
 package edu.gcsc.celltreeedit;
 
+import com.apporiented.algorithm.clustering.visualization.ClusterColorRegex;
 import edu.gcsc.celltreeedit.AppProperties.AppProperties;
 import edu.gcsc.celltreeedit.AppProperties.CommandLineParsing;
 import edu.gcsc.celltreeedit.ClusterAnalysis.ClusteringAnalyzer;
@@ -12,9 +13,9 @@ import edu.gcsc.celltreeedit.NeuronMetadata.NeuronMetadataR;
 import edu.gcsc.celltreeedit.NeuronMetadata.UniqueMetadataContainer;
 import edu.gcsc.celltreeedit.TEDCalculation.CellTreeEditDistance;
 import org.apache.commons.cli.ParseException;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
+import java.awt.*;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -25,8 +26,8 @@ import java.nio.file.StandardCopyOption;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.List;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * Created by Erid on 12.02.2018.
@@ -237,9 +238,18 @@ public class Main {
 
     private static void calculateDendrogramsForTEDMatrices() throws IOException {
         System.out.println("> Starting Dendrogram calculation for TEDMatrices");
+        List<ClusterColorRegex> clusterColorRegexes = Arrays.asList(
+                new ClusterColorRegex(Pattern.compile("^[12345678],.*"), Color.BLACK),
+                new ClusterColorRegex(Pattern.compile(".*"), new Color(35, 106, 185)),
+                new ClusterColorRegex(Pattern.compile("^3,.*"), new Color(186, 26, 70)),
+                new ClusterColorRegex(Pattern.compile("^4,.*"), new Color(68, 141, 118)),
+                new ClusterColorRegex(Pattern.compile("^5,.*"), new Color(118, 60, 118)),
+                new ClusterColorRegex(Pattern.compile("^6,.*"), Color.GRAY),
+                new ClusterColorRegex(Pattern.compile("^7,.*"), new Color(160, 100, 0))
+        );
         List<TEDResult> results = Utils.readMatricesFromTxt();
         for (TEDResult result : results) {
-            DendrogramCreator.createDendrogram(result, appProperties.getMetadataDirectory(), appProperties.getOutputDirectory(), result.getName(), appProperties.isReplaceDendrogramNames(), appProperties.isSaveOutput());
+            DendrogramCreator.createDendrogram(result, appProperties.getMetadataDirectory(), appProperties.getOutputDirectory(), result.getName(), appProperties.isReplaceDendrogramNames(), appProperties.isSaveOutput(), clusterColorRegexes);
         }
     }
 
@@ -698,42 +708,11 @@ public class Main {
         for (File jsonFile : jsonFiles) {
             System.out.println("\nJsonFile: " + jsonFile.getName());
             File[] files = JsonUtils.parseJsonToFiles(jsonFile);
+            String[] filenames = new String[files.length];
             for (int i = 0; i < files.length; i++) {
-                files[i] = new File(appProperties.getSwcFileDirectory() + "/" + files[i].getPath());
+                filenames[i] = Utils.removeSWCFileExtensions(files[i].getName());
             }
-
-            try {
-                File file = new File(FilenameUtils.removeExtension(jsonFile.toString()) + "_Metadata" + ".csv");
-                FileWriter export = new FileWriter(file.getAbsolutePath());
-                BufferedWriter br = new BufferedWriter(export);
-                br.write("neuronId"+ "; " + "filename" + "; " + "archive" + "; " + "species" + "; " + "brainRegions" + "; " + "cellTypes" + "; " + "ageClassification" + "; " + "minAge" + "; " + "maxAge" + "; " + "physicalIntegrity" + "; " + "domain" + "; " + "attributes" + "; " + "protocol" + "; " + "reconstructionSoftware" + "; " + "experimentCondition" + "; " + "filesize");
-                br.newLine();
-
-                for (File neuronFile: files) {
-                    String filename = FilenameUtils.removeExtension(FilenameUtils.removeExtension(neuronFile.getName()));
-                    NeuronMetadataR neuronMetadataObject = neuronMetadata.get(filename);
-                    List<String> brainRegions = neuronMetadataObject.getBrainRegion();
-                    if (brainRegions == null) {
-                        brainRegions = new ArrayList<>();
-                    }
-                    List<String> cellTypes = neuronMetadataObject.getCellType();
-                    if (cellTypes == null) {
-                        cellTypes = new ArrayList<>();
-                    }
-                    List<String> experimentConditions = neuronMetadataObject.getExperimentCondition();
-                    if (experimentConditions == null) {
-                        experimentConditions = new ArrayList<>();
-                    }
-                    String formattedSize = String.format("%.2f", (double) FileUtils.sizeOf(neuronFile)/(1024*1024));
-                    br.write(neuronMetadataObject.getNeuronId() + "; " + filename + "; " + neuronMetadataObject.getArchive() + "; " + neuronMetadataObject.getSpecies() + "; " + brainRegions.stream().filter(s -> s != null && !s.isEmpty()).collect(Collectors.joining(", ")) + "; " + cellTypes.stream().filter(s -> s != null && !s.isEmpty()).collect(Collectors.joining(", ")) + "; " + neuronMetadataObject.getAgeClassification() + "; " + neuronMetadataObject.getMinAge() + "; " + neuronMetadataObject.getMaxAge() + "; " + neuronMetadataObject.getPhysicalIntegrity() + "; " + neuronMetadataObject.getDomain() + "; " + neuronMetadataObject.getAttributes() + "; " + neuronMetadataObject.getProtocol() + "; " + neuronMetadataObject.getReconstructionSoftware() + "; " + experimentConditions.stream().filter(s -> s != null && !s.isEmpty()).collect(Collectors.joining(", ")) + "; " + formattedSize + "MB");
-                    br.newLine();
-                }
-                br.close();
-                System.out.println("File saved to: " + file.getAbsolutePath());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
+            Utils.printMetadataForFilenames(filenames, neuronMetadata, appProperties.getOutputDirectory(), FilenameUtils.removeExtension(jsonFile.getName()));
         }
     }
 
