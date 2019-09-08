@@ -71,11 +71,11 @@ public class CLI {
                     if (s.toLowerCase().equals("d")) {
                         break;
                     } else if (s.toLowerCase().equals("c")) {
-                        comment.append(" Parsed Query: ").append(parsedQuery);
+                        comment.append(" Query: ").append(query);
                         selectedNeuronFiles.addAll(getFilesForQueryResult(indexSearcher, topDocs, swcFileDirectory, -1));
                         break;
                     } else if (s.matches("(0|[1-9]\\d*)")) {
-                        comment.append(" Parsed Query: ").append(parsedQuery);
+                        comment.append(" Query: ").append(query);
                         int limitSize = Integer.parseInt(s);
                         limitSize = (limitSize > totalHits) ? -1 : limitSize;
                         selectedNeuronFiles.addAll(getFilesForQueryResult(indexSearcher, topDocs, swcFileDirectory, limitSize));
