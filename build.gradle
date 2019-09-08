@@ -39,25 +39,6 @@ dependencies {
     compile group: 'org.apache.lucene', name: 'lucene-core', version: '8.1.1'
     compile group: 'org.apache.lucene', name: 'lucene-analyzers-common', version: '8.1.1'
     compile group: 'org.apache.lucene', name: 'lucene-queryparser', version: '8.1.1'
-    // https://mvnrepository.com/artifact/com.apporiented/hierarchical-clustering
-//    compile group: 'com.apporiented', name: 'hierarchical-clustering', version: '1.2.0'
-    // https://mvnrepository.com/artifact/nz.ac.waikato.cms.weka/weka-stable
-//    compile group: 'nz.ac.waikato.cms.weka', name: 'weka-stable', version: '3.8.3'
-
-    // https://mvnrepository.com/artifact/de.lmu.ifi.dbs.elki/elki
-    compile group: 'de.lmu.ifi.dbs.elki', name: 'elki', version: '0.7.5'
-// https://mvnrepository.com/artifact/de.lmu.ifi.dbs.elki/elki-core-util
-    compile group: 'de.lmu.ifi.dbs.elki', name: 'elki-core-util', version: '0.7.5'
-
-    // https://mvnrepository.com/artifact/de.lmu.ifi.dbs.elki/elki-clustering
-    compile group: 'de.lmu.ifi.dbs.elki', name: 'elki-clustering', version: '0.7.5'
-// https://mvnrepository.com/artifact/de.lmu.ifi.dbs.elki/elki-database
-    compile group: 'de.lmu.ifi.dbs.elki', name: 'elki-database', version: '0.7.5'
-    // https://mvnrepository.com/artifact/de.lmu.ifi.dbs.elki/elki-batik-visualization
-    compile group: 'de.lmu.ifi.dbs.elki', name: 'elki-batik-visualization', version: '0.7.5'
-
-
-
 
 
 
