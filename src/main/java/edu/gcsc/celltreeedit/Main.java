@@ -239,8 +239,8 @@ public class Main {
     private static void calculateDendrogramsForTEDMatrices() throws IOException {
         System.out.println("> Starting Dendrogram calculation for TEDMatrices");
         List<ClusterColorRegex> clusterColorRegexes = Arrays.asList(
-                new ClusterColorRegex(Pattern.compile("^[12345678],.*"), Color.BLACK),
-                new ClusterColorRegex(Pattern.compile(".*"), new Color(35, 106, 185)),
+                new ClusterColorRegex(Pattern.compile("^[12345],.*"), Color.BLACK),
+                new ClusterColorRegex(Pattern.compile("^.*"), new Color(35, 106, 185)),
                 new ClusterColorRegex(Pattern.compile("^3,.*"), new Color(186, 26, 70)),
                 new ClusterColorRegex(Pattern.compile("^4,.*"), new Color(68, 141, 118)),
                 new ClusterColorRegex(Pattern.compile("^5,.*"), new Color(118, 60, 118)),
@@ -328,7 +328,7 @@ public class Main {
 //            files[i] = new File(appProperties.getSwcFileDirectory() + "/" + files[i].getPath());
 //        }
             String labelNumber;
-            for (int i = 1; i < 23; i += 1) {
+            for (int i = 1; i < 25; i += 1) {
                 Date date = new Date();
                 System.out.println(dateFormat.format(date) + " selected Label " + i);
                 cellTreeEditDistance = new CellTreeEditDistance();

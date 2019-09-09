@@ -214,7 +214,25 @@ public class TreeCreator implements InputParser <NodeData> , Serializable {
             calculate_a_sec(nodeList.get(0));
         }
 
-        if (label > 22) {
+        if (label == 23) { // r_sec average radius of segment
+            nodeList.forEach(node -> {
+                node.getNodeData().setLabel(calculate_r_sec(node));
+            });
+        }
+
+        if (label == 24) {
+            double radiusSum = 0;
+            for (Node<NodeData> node: nodeList) {
+                double r = calculate_r_sec(node);
+                node.getNodeData().setLabel(r);
+                radiusSum += r;
+            }
+            for (Node<NodeData> node: nodeList) {
+                node.getNodeData().setLabel(node.getNodeData().getLabel() / radiusSum);
+            }
+        }
+
+        if (label > 24) {
             System.out.println("Label nicht erkannt");
         }
     }
@@ -549,6 +567,20 @@ public class TreeCreator implements InputParser <NodeData> , Serializable {
         for (Node<NodeData> childNode : childNodes) {
             calculate_a_sec(childNode);
         }
+    }
+
+    /**
+     * Calculates label r_sec for currentNode.
+     * @param currentNode
+     * @return
+     */
+    private double calculate_r_sec(Node<NodeData> currentNode) {
+        double radius = 0;
+        // j=1 --> parent node skipped
+        for (int j = 1; j < currentNode.getNodeData().getPosX().size(); j++) {
+            radius += currentNode.getNodeData().radius.get(j);
+        }
+        return radius / currentNode.getNodeData().getPosX().size();
     }
 
     private double[] getVectorOfChild(Node<NodeData> childNode) {

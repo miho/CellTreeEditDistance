@@ -29,10 +29,11 @@ public class DendrogramCreator {
         if (replaceDendrogramNames || saveOutput) {
             NeuronMetadataMapper neuronMetadataMapper = new NeuronMetadataMapper();
             Map<String, NeuronMetadataR> neuronMetadata = neuronMetadataMapper.mapAllFromMetadataDirectory(metadataDirectory);
+            String metadataFilename = outputFilename.replaceAll("_Label..", "");
             if (replaceDendrogramNames && saveOutput) {
-                fileNames = Utils.printMetadataForFilenames(fileNames, neuronMetadata, outputDirectory, outputFilename);
+                fileNames = Utils.printMetadataForFilenames(fileNames, neuronMetadata, outputDirectory, metadataFilename);
             } else if (!replaceDendrogramNames && saveOutput) {
-                Utils.printMetadataForFilenames(fileNames, neuronMetadata, outputDirectory, outputFilename);
+                Utils.printMetadataForFilenames(fileNames, neuronMetadata, outputDirectory, metadataFilename);
             } else {
                 fileNames = createFilenameMapping(fileNames, neuronMetadata, outputFilename);
             }
