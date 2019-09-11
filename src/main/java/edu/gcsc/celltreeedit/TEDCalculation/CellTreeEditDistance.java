@@ -33,33 +33,6 @@ public class CellTreeEditDistance implements java.io.Serializable{
         return new TEDResult(results, fileNames);
     }
 
-    static class MyTask implements Runnable {
-
-        private final List<Node<NodeData>> nodeData;
-        private int i;
-        private int j;
-        private double[][] results;
-        private APTED apted;
-
-        public MyTask(int i, int j, double[][] results, APTED apted, List<Node<NodeData>> nodeData) {
-            this.i = i;
-            this.j = j;
-            this.results = results;
-            this.apted = apted;
-            this.nodeData = nodeData;
-        }
-
-        @Override
-        public void run() {
-
-            float result = apted.computeEditDistance(nodeData.get(i), nodeData.get(j));
-
-            // TODO sync
-            results[i][j] = result;
-            results[j][i] = result;
-        }
-    }
-
     private void compareFiles(@ParamInfo(name="Label", style="load-folder-dialog")int choice) {
 
         long runtimeInS;
@@ -137,5 +110,32 @@ public class CellTreeEditDistance implements java.io.Serializable{
         final long runtimeInNanos = System.nanoTime() - start;
         runtimeInS = TimeUnit.NANOSECONDS.toSeconds(runtimeInNanos);
         System.out.println("Runtime in seconds: " + runtimeInS);
+    }
+
+    static class MyTask implements Runnable {
+
+        private final List<Node<NodeData>> nodeData;
+        private int i;
+        private int j;
+        private double[][] results;
+        private APTED apted;
+
+        MyTask(int i, int j, double[][] results, APTED apted, List<Node<NodeData>> nodeData) {
+            this.i = i;
+            this.j = j;
+            this.results = results;
+            this.apted = apted;
+            this.nodeData = nodeData;
+        }
+
+        @Override
+        public void run() {
+
+            float result = apted.computeEditDistance(nodeData.get(i), nodeData.get(j));
+
+            // TODO sync
+            results[i][j] = result;
+//            results[j][i] = result;
+        }
     }
 }

@@ -39,8 +39,9 @@ public class ClusteringTest {
 
         String[] fileNames = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"};
 
-        Clustering clustering = Clustering.getInstance();
-        Cluster rootCluster = clustering.createCluster(distanceMatrix, fileNames);
+        Clustering clustering = new Clustering();
+        clustering.createCluster(distanceMatrix, fileNames);
+        Cluster rootCluster = clustering.getRootCluster();
 
         // height of clusters from bottom to top: 0.1573864 0.2422061 0.2664122 0.2901741 0.3030634 0.3083869 0.3589344 0.3830281 0.3832023 0.5753823 0.6840459 0.7258152 0.7469914 0.7647439 0.8042245 0.8751259 1.2043397 1.5665053 1.8584163
 
