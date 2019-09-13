@@ -2,6 +2,7 @@ package edu.gcsc.celltreeedit.AppProperties;
 
 
 import org.apache.commons.cli.*;
+import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
 
@@ -42,7 +43,7 @@ public class CommandLineParsing {
                 properties.fileInput = extractFile(line, AppParameter.FILE_INPUT);
             }
             if (hasOption(line, AppParameter.NAME_OUTPUT)) {
-                properties.nameOutput = extractString(line, AppParameter.NAME_OUTPUT);
+                properties.nameOutput = FilenameUtils.removeExtension(extractString(line, AppParameter.NAME_OUTPUT));
             }
             if (hasOption(line, AppParameter.LABEL)) {
                 properties.label = extractInt(line, AppParameter.LABEL);

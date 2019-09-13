@@ -23,7 +23,7 @@ public final class AppProperties {
     File workingDirectory = new File("");
     File outputDirectory = new File("");
     File fileInput = new File("");
-    String nameOutput = "swcFiles.json";
+    String nameOutput = "";
     boolean renameDendrogram = false;
     boolean saveOutput = false;
 

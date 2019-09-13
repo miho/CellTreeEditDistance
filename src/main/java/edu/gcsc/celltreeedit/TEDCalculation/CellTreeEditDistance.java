@@ -6,7 +6,6 @@ import eu.mihosoft.ext.apted.distance.APTED;
 import eu.mihosoft.ext.apted.node.Node;
 import eu.mihosoft.vrl.annotation.ComponentInfo;
 import eu.mihosoft.vrl.annotation.ParamInfo;
-import javafx.util.Pair;
 
 import java.io.*;
 import java.util.*;
@@ -28,7 +27,7 @@ public class CellTreeEditDistance implements java.io.Serializable{
 
     public TEDResult compareFilesFromFiles(File[] files, int labelId) {
         this.files = files;
-        String[] fileNames = Utils.getNeuronNamesForFiles(files);
+        String[] fileNames = Utils.getNeuronnamesForFiles(files);
         this.compareFiles(labelId);
         return new TEDResult(results, fileNames);
     }

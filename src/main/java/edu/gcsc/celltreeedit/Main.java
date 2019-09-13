@@ -157,7 +157,7 @@ public class Main {
         File indexDirectory = new File(appProperties.getWorkingDirectory() + "/LuceneIndex");
         LuceneIndexWriter luceneIndexWriter = new LuceneIndexWriter(indexDirectory);
         luceneIndexWriter.createIndex(neuronMetadata);
-        CLI.startCLI(indexDirectory, appProperties.getBaseDirectory(), appProperties.getOutputDirectory(), appProperties.getSwcFileDirectory(), appProperties.getNameOutput());
+        CLI.startCLI(indexDirectory, appProperties.getOutputDirectory(), appProperties.getSwcFileDirectory(), appProperties.getNameOutput());
     }
 
 
@@ -189,7 +189,7 @@ public class Main {
             System.out.println("species: " + uniqueMetadata.getSpecies() + "; " + "brainRegion" + String.join(", ", uniqueMetadata.getBrainRegions()) + "; " + "cellTypes: " + String.join(", ", uniqueMetadata.getCellTypes()) + "; " + "noOfNeurons: " + existingUniqueMetadataContainer.getUniqueMetadataMap().get(uniqueMetadata).getNoOfNeurons() + "; " + "noOfArchives: " + existingUniqueMetadataContainer.getUniqueMetadataMap().get(uniqueMetadata).getArchives().size());
         }
 
-        List<File> selectedNeuronFiles = Utils.getFilesForNeuronNames(selectedNeuronNames, appProperties.getSwcFileDirectory());
+        List<File> selectedNeuronFiles = Utils.getFilesForNeuronnames(selectedNeuronNames, appProperties.getSwcFileDirectory());
         // write to json
         JsonUtils.writeToJSON(selectedNeuronFiles, "queried by uniqueMetadata", appProperties.getSwcFileDirectory(), appProperties.getOutputDirectory(), appProperties.getNameOutput());
     }
@@ -256,7 +256,7 @@ public class Main {
                 } else {
                     labelNumber = Integer.toString(i);
                 }
-                Utils.printMatrixToTxt(result.getDistanceMatrix(), result.getFileNames(), appProperties.getOutputDirectory(), "Matrix_" + FilenameUtils.removeExtension(jsonFile.getName()) + "_Label" + labelNumber + ".txt");
+                Utils.printMatrixToTxt(result.getDistanceMatrix(), result.getFileNames(), appProperties.getOutputDirectory(), FilenameUtils.removeExtension(jsonFile.getName()) + "_Label" + labelNumber + ".txt");
             }
         }
     }
@@ -266,21 +266,23 @@ public class Main {
 
         List<TEDResult> results = Utils.readMatricesFromTxt();
         for (TEDResult result : results) {
-            DendrogramCreator.createDendrogram(result, appProperties.getMetadataDirectory(), appProperties.getOutputDirectory(), result.getName(), appProperties.isRenameDendrogram(), appProperties.isSaveOutput(), clusterColorRegexes);
+            DendrogramCreator.createDendrogram(result, appProperties.getMetadataDirectory(), appProperties.getOutputDirectory(), result.getName().replaceAll("_Matrix",""), appProperties.isRenameDendrogram(), appProperties.isSaveOutput(), clusterColorRegexes);
         }
     }
 
-    // TODO: implement dendrogramgeneration
     private static void calculateTEDMatrixAndDendrogramByFileDialog() {
         System.out.println("> Starting TED calculation and Dendrogram calculation by file-dialog");
         // Files in File[] speichern
         File[] files = Utils.chooseJSONFiles();
+        File outputDirectory = new File(files[0].getAbsolutePath());
+        String outputName = appProperties.getNameOutput();
         // calculateTED
         CellTreeEditDistance cellTreeEditDistance = new CellTreeEditDistance();
         TEDResult result = cellTreeEditDistance.compareFilesFromFiles(files, appProperties.getLabel());
         if (appProperties.isSaveOutput()) {
-            Utils.printMatrixToTxt(result.getDistanceMatrix(), result.getFileNames(), new File(files[0].getAbsolutePath()), appProperties.getNameOutput());
+            outputName = FilenameUtils.removeExtension(Utils.printMatrixToTxt(result.getDistanceMatrix(), result.getFileNames(), outputDirectory, outputName).getName());
         }
+        DendrogramCreator.createDendrogram(result, outputDirectory, outputName, appProperties.isSaveOutput(), clusterColorRegexes);
     }
 
     /**

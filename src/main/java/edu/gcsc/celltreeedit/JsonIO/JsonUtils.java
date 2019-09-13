@@ -50,12 +50,13 @@ public class JsonUtils {
         writeToJSON(files, comment, outputDirectory, jsonName);
     }
 
-    public static void writeToJSON(List<File> files, String comment, File destinationDirectory, String jsonName) throws IOException {
+    public static void writeToJSON(List<File> files, String comment, File outputDirectory, String jsonName) throws IOException {
         NeuronFilesWrapper neuronFilesWrapper = new NeuronFilesWrapper();
         neuronFilesWrapper.set_comment(comment);
         neuronFilesWrapper.setNeuronFiles(files.stream().map(File::getPath).collect(Collectors.toList()));
         ObjectMapper mapper = new ObjectMapper();
-        File file = Utils.incrementFileNameIfNecessary(destinationDirectory, FilenameUtils.removeExtension(jsonName) + ".json");
+        jsonName = (jsonName.isEmpty()) ? "swcFile" : FilenameUtils.removeExtension(jsonName);
+        File file = Utils.incrementFileNameIfNecessary(outputDirectory, jsonName + ".json");
         mapper.writeValue(file, neuronFilesWrapper);
         System.out.println("File saved to: " + file.getAbsolutePath());
     }

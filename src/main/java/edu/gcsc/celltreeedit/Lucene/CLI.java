@@ -24,7 +24,7 @@ import java.util.List;
  */
 public class CLI {
 
-    public static void startCLI(File indexDirectory, File baseDirectory, File outputDirectory, File swcFileDirectory, String jsonName) throws IOException {
+    public static void startCLI(File indexDirectory, File outputDirectory, File swcFileDirectory, String jsonName) throws IOException {
         // preparation for queryparsing
         Directory luceneDirectory = FSDirectory.open(indexDirectory.toPath());
         IndexReader indexReader = DirectoryReader.open(luceneDirectory);
@@ -104,6 +104,6 @@ public class CLI {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-        return Utils.getFilesForNeuronNames(neuronNames, swcFileDirectory);
+        return Utils.getFilesForNeuronnames(neuronNames, swcFileDirectory);
     }
 }

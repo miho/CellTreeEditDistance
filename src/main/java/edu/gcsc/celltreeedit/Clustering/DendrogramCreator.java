@@ -8,6 +8,7 @@ import edu.gcsc.celltreeedit.TEDResult;
 import edu.gcsc.celltreeedit.Tables;
 import edu.gcsc.celltreeedit.Utils;
 import javafx.util.Pair;
+import org.apache.commons.io.FilenameUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,17 +23,26 @@ import java.util.stream.Collectors;
  */
 public class DendrogramCreator {
 
-//    public static void createDendrogram(TEDResult result, File outputDirectory, String outputFilename, boolean saveOutput) throws IOException {
-//        createDendrogram(result, metadataDirectory, outputDirectory, outputFilename, replaceDendrogramNames, saveOutput, null);
-//    }
+    public static void createDendrogram(TEDResult result, File outputDirectory, String outputFilename, boolean saveOutput, List<ClusterColorRegex> clusterColorRegexes) {
+        // create cluster with matrix and adjusted names
+        Clustering clustering = new Clustering();
+        clustering.createCluster(result.getDistanceMatrix(), result.getFileNames());
+
+        if (saveOutput) {
+            clustering.saveDendrogram(outputDirectory, outputFilename, clusterColorRegexes);
+        } else {
+            clustering.showDendrogram(outputFilename, clusterColorRegexes);
+        }
+    }
 
     public static void createDendrogram(TEDResult result, File metadataDirectory, File outputDirectory, String outputFilename, boolean replaceDendrogramNames, boolean saveOutput, List<ClusterColorRegex> clusterColorRegexes) throws IOException {
         String[] fileNames = result.getFileNames();
+        outputFilename = (outputFilename.isEmpty()) ? "Dendrogram" : FilenameUtils.removeExtension(outputFilename);
 
         if (replaceDendrogramNames || saveOutput) {
             NeuronMetadataMapper neuronMetadataMapper = new NeuronMetadataMapper();
             Map<String, NeuronMetadataR> neuronMetadata = neuronMetadataMapper.mapAllFromMetadataDirectory(metadataDirectory);
-            String metadataFilename = outputFilename.replaceAll("_Label..", "");
+            String metadataFilename = outputFilename.replaceAll("_Label", "");
             if (replaceDendrogramNames && saveOutput) {
                 fileNames = Utils.printMetadataForFilenames(fileNames, neuronMetadata, outputDirectory, metadataFilename);
             } else if (!replaceDendrogramNames && saveOutput) {
@@ -53,11 +63,11 @@ public class DendrogramCreator {
         }
     }
 
-    private static String[] createFilenameMapping(String[] oldFileNames, Map<String, NeuronMetadataR> neuronMetadata, String outputFilename) {
+    private static String[] createFilenameMapping(String[] oldFileNames, Map<String, NeuronMetadataR> neuronMetadata, String tablename) {
         Pair<String[], String[]> renameResult = renameFileNamesToUniqueMetadataNames(oldFileNames, neuronMetadata);
         String[] newFileNames = renameResult.getKey();
         String[] neuronMetadataNames = renameResult.getValue();
-        String tablename = outputFilename + "_FilenameMapping";
+        tablename = (tablename.isEmpty()) ? "FilenameMapping" : tablename + "_FilenameMapping";
 
         Tables fileNameMapping = new Tables(newFileNames, oldFileNames, neuronMetadataNames, new String[]{"shown Names", "original FileNames", "neuronMetadata"});
         JFrame frame = new JFrame();

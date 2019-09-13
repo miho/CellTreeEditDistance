@@ -2,7 +2,6 @@ package edu.gcsc.celltreeedit;
 
 import edu.gcsc.celltreeedit.NeuronMetadata.NeuronMetadataR;
 import edu.gcsc.celltreeedit.NeuronMetadata.UniqueMetadataContainer;
-import javafx.util.Pair;
 import org.apache.commons.io.FilenameUtils;
 
 import javax.swing.*;
@@ -24,6 +23,8 @@ public class Utils {
 
     private static List<File> swcFiles;
 
+    //##################################################################################################################
+    // Functions for file choosing
     /**
      * @return a list of files which were selected
      */
@@ -60,7 +61,7 @@ public class Utils {
      */
     public static File[] chooseJSONFiles() {
         JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES); //accept files and directories as input
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY); //accept files and directories as input
         FileNameExtensionFilter json = new FileNameExtensionFilter("json", "json");
         fileChooser.addChoosableFileFilter(json);                            // filter on swc files
         fileChooser.setAcceptAllFileFilterUsed(false);                     // show only swc files
@@ -80,20 +81,44 @@ public class Utils {
         }
     }
 
-    public static File incrementFileNameIfNecessary(File destinationDirectory, String fileName) {
-        destinationDirectory.mkdirs();
-        File file = new File(destinationDirectory.getAbsolutePath() + "/" + fileName);
-        // increment fileName if necessary
-        int count = 1;
-        while (file.exists()) {
-            file = new File(destinationDirectory.getAbsolutePath() + "/" + FilenameUtils.removeExtension(fileName) + "_" + count + "." + FilenameUtils.getExtension(fileName));
-            count++;
+    /**
+     * @return a txt-file
+     */
+    private static File[] chooseTxtFiles() {
+        JFrame jFrame = new JFrame();
+        jFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY); //accept files and directories as input
+        FileNameExtensionFilter json = new FileNameExtensionFilter("txt", "txt");
+        fileChooser.addChoosableFileFilter(json);                            // filter on txt files
+        fileChooser.setAcceptAllFileFilterUsed(false);                     // show only txt files
+        fileChooser.setMultiSelectionEnabled(true);                       // accept only single file as input
+        fileChooser.showOpenDialog(jFrame);
+
+
+        File[] chosenFiles;
+
+        if (fileChooser.getSelectedFile().isFile())
+            chosenFiles = fileChooser.getSelectedFiles();
+        else {
+            File folder = new File(fileChooser.getSelectedFile().getAbsolutePath());
+            chosenFiles = folder.listFiles(new FilenameFilter() {              // return only swc files
+                @Override
+                public boolean accept(File dir, String name) {
+                    return name.endsWith(".txt");
+                }
+            });
         }
-        return file;
+        jFrame.dispose();
+        return (chosenFiles != null) ? chosenFiles : new File[]{};
     }
 
-    public static void printMatrixToTxt(double[][] results, String[] filenames, File outputDirectory, String matrixName) {
-        File file = incrementFileNameIfNecessary(outputDirectory, FilenameUtils.removeExtension(matrixName) + ".txt");
+    //##################################################################################################################
+    // IO-Functions for reading or writing files
+
+    public static File printMatrixToTxt(double[][] results, String[] filenames, File outputDirectory, String matrixName) {
+        matrixName = (matrixName.isEmpty()) ? "Matrix" : FilenameUtils.removeExtension(matrixName) + "_Matrix";
+        File file = incrementFileNameIfNecessary(outputDirectory, matrixName + ".txt");
         try {
             FileWriter export = new FileWriter(file.getPath());
             BufferedWriter br = new BufferedWriter(export);
@@ -113,6 +138,7 @@ public class Utils {
             e.printStackTrace();
         }
         System.out.println("Matrix saved to: " + file.getPath());
+        return file;
     }
 
 
@@ -183,113 +209,6 @@ public class Utils {
         return new ArrayList<>(clusterMap.values());
     }
 
-    /**
-     * @return a txt-file
-     */
-    private static File[] chooseTxtFiles() {
-        JFrame jFrame = new JFrame();
-        jFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY); //accept files and directories as input
-        FileNameExtensionFilter json = new FileNameExtensionFilter("txt", "txt");
-        fileChooser.addChoosableFileFilter(json);                            // filter on txt files
-        fileChooser.setAcceptAllFileFilterUsed(false);                     // show only txt files
-        fileChooser.setMultiSelectionEnabled(true);                       // accept only single file as input
-        fileChooser.showOpenDialog(jFrame);
-
-
-        File[] chosenFiles;
-
-        if (fileChooser.getSelectedFile().isFile())
-            chosenFiles = fileChooser.getSelectedFiles();
-        else {
-            File folder = new File(fileChooser.getSelectedFile().getAbsolutePath());
-            chosenFiles = folder.listFiles(new FilenameFilter() {              // return only swc files
-                @Override
-                public boolean accept(File dir, String name) {
-                    return name.endsWith(".txt");
-                }
-            });
-        }
-        jFrame.dispose();
-        return (chosenFiles != null) ? chosenFiles : new File[]{};
-    }
-
-    public static File chooseDirectory() {
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY); //accept only directories as input
-        fileChooser.showOpenDialog(null);
-        return fileChooser.getSelectedFile();
-    }
-
-    public static String removeSWCFileExtensions(String filename) {
-        if (filename.toLowerCase().endsWith(".cng.swc")) {
-            filename = filename.substring(0, filename.toLowerCase().lastIndexOf(".cng.swc"));
-        } else if (filename.toLowerCase().endsWith(".ims.swc")) {
-            filename = filename.substring(0, filename.toLowerCase().lastIndexOf(".ims.swc"));
-        } else if (filename.toLowerCase().endsWith(".swc")) {
-            filename = filename.substring(0, filename.toLowerCase().lastIndexOf(".swc"));
-        } else {
-            System.out.println("wrong fileending: " + filename);
-        }
-        return filename;
-    }
-
-    // TODO: TESTEN
-    public static List<File> getFilesForNeuronNames(List<String> selectedNeuronNames, File swcFileDirectory) {
-        swcFiles = new ArrayList<>();
-        Set<String> neuronNamesToFind = new HashSet<>(selectedNeuronNames);
-        getFilesForNeuronNamesRec(swcFileDirectory, neuronNamesToFind);
-        return swcFiles;
-    }
-
-    private static void getFilesForNeuronNamesRec(File directory, Set<String> neuronNamesToFind) {
-        File[] subFiles = directory.listFiles();
-        if (subFiles == null) {
-            return;
-        }
-        for (File subFile : subFiles) {
-            if (subFile.isFile()) {
-                String fileNameWithoutSWCFileExtension = Utils.removeSWCFileExtensions(subFile.getName());
-                if (neuronNamesToFind.contains(fileNameWithoutSWCFileExtension)) {
-                    swcFiles.add(subFile);
-                }
-            } else {
-                if (subFile.getName().equals("00_Ignore")) {
-                    continue;
-                }
-                // recursively check next directory
-                getFilesForNeuronNamesRec(subFile, neuronNamesToFind);
-            }
-        }
-    }
-
-    public static String[] getNeuronNamesForFiles(File[] files) {
-        String[] fileNames = new String[files.length];
-        for (int i = 0; i < files.length; i++) {
-            fileNames[i] = removeSWCFileExtensions(files[i].getName());
-        }
-        return fileNames;
-    }
-
-    public static boolean doublesAlmostEqual(double a, double b, double maxDiff, double maxUlpsDiff) {
-        // Check if the numbers are really close -- needed when comparing numbers near zero as their difference could be greatly bigger than zero
-        double absDiff = Math.abs(a - b);
-        if (absDiff <= maxDiff)
-            return true;
-
-        // Different signs means they do not match.
-        if (a < 0 != b < 0)
-            return false;
-
-        // find larger number
-        a = Math.abs(a);
-        b = Math.abs(b);
-        double largest = (b > a) ? b : a;
-        // get ulp of largest. when difference of doubles is smaller than ulp * allowed number of ulp
-        return (absDiff <= Math.ulp(largest) * maxUlpsDiff);
-    }
-
     public static void printTableToTXT(JTable table, File outputDirectory, String filename) {
         int rowSize = table.getRowCount();
         int colSize = table.getColumnCount();
@@ -315,6 +234,34 @@ public class Utils {
         System.out.println("Table saved to: " + file.getPath());
     }
 
+    //##################################################################################################################
+    // Filename-Functions
+
+    public static File incrementFileNameIfNecessary(File outputDirectory, String fileName) {
+        outputDirectory.mkdirs();
+        File file = new File(outputDirectory.getAbsolutePath() + "/" + fileName);
+        // increment fileName if necessary
+        int count = 1;
+        while (file.exists()) {
+            file = new File(outputDirectory.getAbsolutePath() + "/" + FilenameUtils.removeExtension(fileName) + "_" + count + "." + FilenameUtils.getExtension(fileName));
+            count++;
+        }
+        return file;
+    }
+
+    public static String removeSWCFileExtensions(String filename) {
+        if (filename.toLowerCase().endsWith(".cng.swc")) {
+            filename = filename.substring(0, filename.toLowerCase().lastIndexOf(".cng.swc"));
+        } else if (filename.toLowerCase().endsWith(".ims.swc")) {
+            filename = filename.substring(0, filename.toLowerCase().lastIndexOf(".ims.swc"));
+        } else if (filename.toLowerCase().endsWith(".swc")) {
+            filename = filename.substring(0, filename.toLowerCase().lastIndexOf(".swc"));
+        } else {
+            System.out.println("wrong fileending: " + filename);
+        }
+        return filename;
+    }
+
     public static List<File> removeSwcFileDirectoryFromPaths(List<File> files, File swcFileDirectory) {
         List<File> newFiles = new ArrayList<>();
         for (File file : files) {
@@ -322,6 +269,70 @@ public class Utils {
         }
         return newFiles;
     }
+
+
+    //##################################################################################################################
+    // Functions for changing Filenames to Neuronnames or otherwise
+
+    // TODO: TESTEN
+    public static List<File> getFilesForNeuronnames(List<String> selectedNeuronNames, File swcFileDirectory) {
+        swcFiles = new ArrayList<>();
+        Set<String> neuronNamesToFind = new HashSet<>(selectedNeuronNames);
+        getFilesForNeuronnamesRec(swcFileDirectory, neuronNamesToFind);
+        return swcFiles;
+    }
+
+    private static void getFilesForNeuronnamesRec(File directory, Set<String> neuronNamesToFind) {
+        File[] subFiles = directory.listFiles();
+        if (subFiles == null) {
+            return;
+        }
+        for (File subFile : subFiles) {
+            if (subFile.isFile()) {
+                String fileNameWithoutSWCFileExtension = Utils.removeSWCFileExtensions(subFile.getName());
+                if (neuronNamesToFind.contains(fileNameWithoutSWCFileExtension)) {
+                    swcFiles.add(subFile);
+                }
+            } else {
+                if (subFile.getName().equals("00_Ignore")) {
+                    continue;
+                }
+                // recursively check next directory
+                getFilesForNeuronnamesRec(subFile, neuronNamesToFind);
+            }
+        }
+    }
+
+    public static String[] getNeuronnamesForFiles(File[] files) {
+        String[] fileNames = new String[files.length];
+        for (int i = 0; i < files.length; i++) {
+            fileNames[i] = removeSWCFileExtensions(files[i].getName());
+        }
+        return fileNames;
+    }
+
+
+    //##################################################################################################################
+    // Other functions
+
+    public static boolean doublesAlmostEqual(double a, double b, double maxDiff, double maxUlpsDiff) {
+        // Check if the numbers are really close -- needed when comparing numbers near zero as their difference could be greatly bigger than zero
+        double absDiff = Math.abs(a - b);
+        if (absDiff <= maxDiff)
+            return true;
+
+        // Different signs means they do not match.
+        if (a < 0 != b < 0)
+            return false;
+
+        // find larger number
+        a = Math.abs(a);
+        b = Math.abs(b);
+        double largest = (b > a) ? b : a;
+        // get ulp of largest. when difference of doubles is smaller than ulp * allowed number of ulp
+        return (absDiff <= Math.ulp(largest) * maxUlpsDiff);
+    }
+
 
     public static String[] printMetadataForFilenames(String[] filenames, Map<String, NeuronMetadataR> neuronMetadata, File outputDirectory, String metadataFilename) {
         String[] newFileNames = new String[filenames.length];

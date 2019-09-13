@@ -31,16 +31,16 @@ public class Clustering {
                 new WardLinkageStrategy());
     }
 
-    public void showDendrogram(String titleName, List<ClusterColorRegex> clusterColorRegexes) {
+    void showDendrogram(String titleName, List<ClusterColorRegex> clusterColorRegexes) {
         this.createDendrogram(new File(""), titleName, false, clusterColorRegexes);
     }
 
-    public void saveDendrogram(File outputDirectory, String outputFilename, List<ClusterColorRegex> clusterColorRegexes) {
+    void saveDendrogram(File outputDirectory, String outputFilename, List<ClusterColorRegex> clusterColorRegexes) {
         this.createDendrogram(outputDirectory, outputFilename, true, clusterColorRegexes);
     }
 
     private void createDendrogram(File outputDirectory, String outputFilename, boolean saveOutput, List<ClusterColorRegex> clusterColorRegexes) {
-        outputFilename = FilenameUtils.removeExtension(outputFilename) + "_Dendrogram";
+        outputFilename = (outputFilename.isEmpty() || outputFilename.equals("Dendrogram")) ? "Dendrogram" : FilenameUtils.removeExtension(outputFilename) + "_Dendrogram";
         DendrogramPanel dp = new DendrogramPanel();
         dp.setClusterColorRegexes(clusterColorRegexes);
         dp.setModel(this.rootCluster);
