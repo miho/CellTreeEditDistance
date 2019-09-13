@@ -104,7 +104,7 @@ public class CommandLineParsing {
                 break;
             case 2:
                 if (!hasOption(line, AppParameter.BASE_DIRECTORY)) {
-                    throw new ParseException("calc=2: Argument 'destination' needed. Argument 'nameOutput' optional. All others will be ignored.");
+                    throw new ParseException("calc=2: Argument 'base' needed. Argument 'nameOutput' optional. All others will be ignored.");
                 }
                 break;
             case 3:

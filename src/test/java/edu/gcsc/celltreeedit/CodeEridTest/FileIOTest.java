@@ -3,7 +3,6 @@ package edu.gcsc.celltreeedit.CodeEridTest;
 import edu.gcsc.celltreeedit.JsonIO.JsonUtils;
 import edu.gcsc.celltreeedit.TEDResult;
 import edu.gcsc.celltreeedit.Utils;
-import javafx.util.Pair;
 import org.junit.Test;
 
 import java.io.File;
@@ -47,9 +46,9 @@ public class FileIOTest {
         };
 
         File outputDirectory = new File(BaseDirectory.baseDirectory.getPath() + "/Test/TestWorkingDir/");
-        String matrixName = "matrixTest.txt";
+        String matrixName = "matrixTest";
         Utils.printMatrixToTxt(matrixToWrite, fileNamesToWrite, outputDirectory, matrixName);
-        File savedFile = new File(outputDirectory.getPath() + "/" + matrixName);
+        File savedFile = new File(outputDirectory.getPath() + "/" + matrixName + "_Matrix.txt");
         TEDResult result = Utils.readMatrixFromTxt(savedFile);
 
         double[][] matrixRead = result.getDistanceMatrix();
@@ -88,7 +87,7 @@ public class FileIOTest {
         ));
         File swcFileDirectory = new File(BaseDirectory.baseDirectory.getPath() + "/TestDirectory/");
         File outputDirectory = new File(BaseDirectory.baseDirectory.getPath() + "/Test/TestWorkingDir");
-        String jsonName = "jsonTest.json";
+        String jsonName = "jsonTest";
         JsonUtils.writeToJSON(fileDirectoriesToWrite, "", swcFileDirectory, outputDirectory, jsonName);
         File savedFile = new File(BaseDirectory.baseDirectory.getPath() + "/Test/TestWorkingDir/jsonTest.json");
         File[] fileDirectoriesRead = JsonUtils.parseJsonToFiles(savedFile);

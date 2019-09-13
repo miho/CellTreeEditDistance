@@ -118,10 +118,10 @@ public class Main {
                 analyzeClusteringOfTEDMatrices();
                 break;
             case 10:
-                printMetadataForJson();
+                printMetadataOfJsonFiles();
                 break;
             case 11:
-                copySWCFilesFromJsonToDirectory();
+                copySWCFilesOfJsonFilesToOutput();
                 break;
             default:
                 System.out.println("calcType not valid");
@@ -203,7 +203,8 @@ public class Main {
     private static void calculateTEDMatrix() throws IOException {
         System.out.println("> Starting TED calculation\n");
         TEDResult result = calculateTEDMatrixForJson();
-        Utils.printMatrixToTxt(result.getDistanceMatrix(), result.getFileNames(), appProperties.getOutputDirectory(), appProperties.getNameOutput());
+        String nameOutput = (appProperties.getNameOutput().isEmpty()) ? result.getName() : appProperties.getNameOutput();
+        Utils.printMatrixToTxt(result.getDistanceMatrix(), result.getFileNames(), appProperties.getOutputDirectory(), nameOutput);
     }
 
     private static TEDResult calculateTEDMatrixForJson() throws IOException {
@@ -218,10 +219,11 @@ public class Main {
     private static void calculateTEDMatrixAndDendrogram() throws IOException {
         System.out.println("> Starting TED calculation and Dendrogram calculation\n");
         TEDResult result = calculateTEDMatrixForJson();
+        String nameOutput = (appProperties.getNameOutput().isEmpty()) ? result.getName() : appProperties.getNameOutput();
         if (appProperties.isSaveOutput()) {
-            Utils.printMatrixToTxt(result.getDistanceMatrix(), result.getFileNames(), appProperties.getOutputDirectory(), appProperties.getNameOutput());
+            Utils.printMatrixToTxt(result.getDistanceMatrix(), result.getFileNames(), appProperties.getOutputDirectory(), nameOutput);
         }
-        DendrogramCreator.createDendrogram(result, appProperties.getMetadataDirectory(), appProperties.getOutputDirectory(), result.getName(), appProperties.isRenameDendrogram(), appProperties.isSaveOutput(), clusterColorRegexes);
+        DendrogramCreator.createDendrogram(result, appProperties.getMetadataDirectory(), appProperties.getOutputDirectory(), nameOutput, appProperties.isRenameDendrogram(), appProperties.isSaveOutput(), clusterColorRegexes);
     }
 
     private static void calculateDendrogram() throws IOException {
@@ -273,16 +275,16 @@ public class Main {
     private static void calculateTEDMatrixAndDendrogramByFileDialog() {
         System.out.println("> Starting TED calculation and Dendrogram calculation by file-dialog");
         // Files in File[] speichern
-        File[] files = Utils.chooseJSONFiles();
+        File[] files = Utils.chooseSWCFiles();
         File outputDirectory = new File(files[0].getAbsolutePath());
-        String outputName = appProperties.getNameOutput();
+        String nameOutput = appProperties.getNameOutput();
         // calculateTED
         CellTreeEditDistance cellTreeEditDistance = new CellTreeEditDistance();
         TEDResult result = cellTreeEditDistance.compareFilesFromFiles(files, appProperties.getLabel());
         if (appProperties.isSaveOutput()) {
-            outputName = FilenameUtils.removeExtension(Utils.printMatrixToTxt(result.getDistanceMatrix(), result.getFileNames(), outputDirectory, outputName).getName());
+            nameOutput = FilenameUtils.removeExtension(Utils.printMatrixToTxt(result.getDistanceMatrix(), result.getFileNames(), outputDirectory, nameOutput).getName());
         }
-        DendrogramCreator.createDendrogram(result, outputDirectory, outputName, appProperties.isSaveOutput(), clusterColorRegexes);
+        DendrogramCreator.createDendrogram(result, outputDirectory, nameOutput, appProperties.isSaveOutput(), clusterColorRegexes);
     }
 
     /**
@@ -305,7 +307,7 @@ public class Main {
     }
 
 
-    public static void printMetadataForJson() throws IOException {
+    public static void printMetadataOfJsonFiles() throws IOException {
         System.out.println("> Starting print Metadata for Json-files");
         // input: jsonFiles
         // output: file with Filenames to metadata mapping
@@ -326,7 +328,7 @@ public class Main {
         }
     }
 
-    public static void copySWCFilesFromJsonToDirectory() throws IOException {
+    public static void copySWCFilesOfJsonFilesToOutput() throws IOException {
         System.out.println("> Starting copy of SWC-Files from Json to Output-directory");
         File[] jsonFiles = Utils.chooseJSONFiles();
         String outputDirectory;
