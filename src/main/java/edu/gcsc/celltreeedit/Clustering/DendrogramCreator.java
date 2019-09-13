@@ -17,11 +17,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * Class that helps to create a Dendrogram using Clustering-library. Contains the logic when to show, save dendrograms or whether filenames are replaced.
+ */
 public class DendrogramCreator {
 
-    public static void createDendrogram(TEDResult result, File metadataDirectory, File outputDirectory, String outputFilename, boolean replaceDendrogramNames, boolean saveOutput) throws IOException {
-        createDendrogram(result, metadataDirectory, outputDirectory, outputFilename, replaceDendrogramNames, saveOutput, null);
-    }
+//    public static void createDendrogram(TEDResult result, File outputDirectory, String outputFilename, boolean saveOutput) throws IOException {
+//        createDendrogram(result, metadataDirectory, outputDirectory, outputFilename, replaceDendrogramNames, saveOutput, null);
+//    }
 
     public static void createDendrogram(TEDResult result, File metadataDirectory, File outputDirectory, String outputFilename, boolean replaceDendrogramNames, boolean saveOutput, List<ClusterColorRegex> clusterColorRegexes) throws IOException {
         String[] fileNames = result.getFileNames();

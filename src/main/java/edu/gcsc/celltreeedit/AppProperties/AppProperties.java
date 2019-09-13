@@ -16,21 +16,24 @@ public final class AppProperties {
 
     // Default-Values, might get replaced by CommandLineArguments
     int calcType;
+    int label = 18;
     File baseDirectory = new File("");
     File metadataDirectory = new File("");
     File swcFileDirectory = new File("");
     File workingDirectory = new File("");
     File outputDirectory = new File("");
-    File destinationDirectory = new File("");
-    File jsonFile = new File("");
-    String jsonName = "swcFiles.json";
-    String matrixName = "DistanceMatrix.txt";
-    boolean replaceDendrogramNames = false;
+    File fileInput = new File("");
+    String nameOutput = "swcFiles.json";
+    boolean renameDendrogram = false;
     boolean saveOutput = false;
 
-    // nur getter, keine setter um nachträgliche änderung zu verhindern. getter für dataDirectory etc aber keine variable -> im getter zusammenbasteln. package-private machen! --> einfaches ändern in CommandLineParsing
+    // only getter to prevent overwriting
     public int getCalcType() {
         return calcType;
+    }
+
+    public int getLabel() {
+        return label;
     }
 
     public File getBaseDirectory() {
@@ -53,19 +56,21 @@ public final class AppProperties {
         return outputDirectory;
     }
 
-    public File getDestinationDirectory() { return destinationDirectory; }
-
-    public File getJsonFile() {
-        return jsonFile;
+    public File getFileInput() {
+        return fileInput;
     }
 
-    public String getJsonName() { return jsonName; }
+    public String getNameOutput() {
+        return nameOutput;
+    }
 
-    public String getMatrixName() { return matrixName; }
+    public boolean isRenameDendrogram() {
+        return renameDendrogram;
+    }
 
-    public boolean isReplaceDendrogramNames() { return replaceDendrogramNames; }
-
-    public boolean isSaveOutput() { return saveOutput; }
+    public boolean isSaveOutput() {
+        return saveOutput;
+    }
 }
 
 

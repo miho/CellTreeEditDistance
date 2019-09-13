@@ -2,7 +2,6 @@ package edu.gcsc.celltreeedit.AppProperties;
 
 
 import org.apache.commons.cli.*;
-import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
 
@@ -29,6 +28,8 @@ public class CommandLineParsing {
             // check if option is used
             if (hasOption(line, AppParameter.CALC_TYPE)) {
                 properties.calcType = extractInt(line, AppParameter.CALC_TYPE);
+            } else {
+                throw new ParseException("Argument 'calc' needed.");
             }
 
             validateCommandLineArguments(line, properties.calcType);
@@ -37,21 +38,17 @@ public class CommandLineParsing {
                 properties.baseDirectory = extractFile(line, AppParameter.BASE_DIRECTORY);
                 setDirectoriesAccordingToBaseDirectory(properties.baseDirectory.getAbsolutePath());
             }
-            if (hasOption(line, AppParameter.DESTINATION_DIRECTORY)) {
-                properties.destinationDirectory = extractFile(line, AppParameter.DESTINATION_DIRECTORY);
+            if (hasOption(line, AppParameter.FILE_INPUT)) {
+                properties.fileInput = extractFile(line, AppParameter.FILE_INPUT);
             }
-            if (hasOption(line, AppParameter.JSON_FILE)) {
-                properties.jsonFile = extractFile(line, AppParameter.JSON_FILE);
-                setDirectoriesAccordingToBaseDirectory(FilenameUtils.getFullPathNoEndSeparator(properties.jsonFile.getAbsolutePath()));
+            if (hasOption(line, AppParameter.NAME_OUTPUT)) {
+                properties.nameOutput = extractString(line, AppParameter.NAME_OUTPUT);
             }
-            if (hasOption(line, AppParameter.JSON_NAME)) {
-                properties.jsonName = extractString(line, AppParameter.JSON_NAME);
+            if (hasOption(line, AppParameter.LABEL)) {
+                properties.label = extractInt(line, AppParameter.LABEL);
             }
-            if (hasOption(line, AppParameter.MATRIX_NAME)) {
-                properties.matrixName = extractString(line, AppParameter.MATRIX_NAME);
-            }
-            if (hasOption(line, AppParameter.REPLACE_DENDROGRAM_NAMES)) {
-                properties.replaceDendrogramNames = true;
+            if (hasOption(line, AppParameter.RENAME_DENDROGRAM)) {
+                properties.renameDendrogram = true;
             }
             if (hasOption(line, AppParameter.SAVE_OUTPUT)) {
                 properties.saveOutput = true;
@@ -75,10 +72,6 @@ public class CommandLineParsing {
         return line.hasOption(parameter.name);
     }
 
-    private static boolean extractBoolean(final CommandLine line, final AppParameter parameter) {
-        return Boolean.parseBoolean(line.getOptionValue(parameter.name));
-    }
-
     private static int extractInt(final CommandLine line, final AppParameter parameter) {
         return Integer.parseInt(line.getOptionValue(parameter.name));
     }
@@ -97,53 +90,66 @@ public class CommandLineParsing {
     }
 
     private static void validateCommandLineArguments(CommandLine line, int calcType) throws ParseException {
+
         switch (calcType) {
             case 0:
-                if (!hasOption(line, AppParameter.BASE_DIRECTORY) || hasOption(line, AppParameter.DESTINATION_DIRECTORY) || hasOption(line, AppParameter.JSON_FILE) || hasOption(line, AppParameter.JSON_NAME) || hasOption(line, AppParameter.MATRIX_NAME)) {
-                    throw new ParseException("calc=0: Argument 'base' needed. All others not allowed.");
+                if (!hasOption(line, AppParameter.BASE_DIRECTORY)) {
+                    throw new ParseException("calc=0: Argument 'base' needed. All others will be ignored.");
                 }
             case 1:
-                if (!hasOption(line, AppParameter.BASE_DIRECTORY) || hasOption(line, AppParameter.DESTINATION_DIRECTORY) || hasOption(line, AppParameter.JSON_FILE) || hasOption(line, AppParameter.MATRIX_NAME)) {
-                    throw new ParseException("calc=1: Argument 'base' needed. Argument 'jsonname' optional. All others not allowed.");
+                if (!hasOption(line, AppParameter.BASE_DIRECTORY)) {
+                    throw new ParseException("calc=1: Argument 'base' needed. Argument 'nameOutput' optional. All others will be ignored.");
                 }
                 break;
             case 2:
-                if (!hasOption(line, AppParameter.DESTINATION_DIRECTORY) || hasOption(line, AppParameter.BASE_DIRECTORY) || hasOption(line, AppParameter.JSON_FILE) || hasOption(line, AppParameter.MATRIX_NAME)) {
-                    throw new ParseException("calc=2: Argument 'destination' needed. Argument 'jsonname' optional. All others not allowed.");
+                if (!hasOption(line, AppParameter.BASE_DIRECTORY)) {
+                    throw new ParseException("calc=2: Argument 'destination' needed. Argument 'nameOutput' optional. All others will be ignored.");
                 }
                 break;
             case 3:
-                if (!hasOption(line, AppParameter.BASE_DIRECTORY) || hasOption(line, AppParameter.DESTINATION_DIRECTORY) || hasOption(line, AppParameter.JSON_FILE) || hasOption(line, AppParameter.MATRIX_NAME)) {
-                    throw new ParseException("calc=3: Argument 'base' needed. Argument 'jsonname' optional. All others not allowed.");
+                if (!hasOption(line, AppParameter.BASE_DIRECTORY) || !hasOption(line, AppParameter.FILE_INPUT)) {
+                    throw new ParseException("calc=3: Argument 'base' and 'fileInput' needed. Argument 'label' optional. All others will be ignored.");
                 }
                 break;
             case 4:
-                if (!hasOption(line, AppParameter.JSON_FILE) || hasOption(line, AppParameter.DESTINATION_DIRECTORY) || hasOption(line, AppParameter.BASE_DIRECTORY) || hasOption(line, AppParameter.JSON_NAME)) {
-                    throw new ParseException("calc=4: Argument 'jsonfile' needed. Argument 'matrixname' optional. All others not allowed.");
+                if (!hasOption(line, AppParameter.BASE_DIRECTORY) || !hasOption(line, AppParameter.FILE_INPUT)) {
+                    throw new ParseException("calc=4: Argument 'base' and 'fileInput' needed. Arguments 'label', 'save', 'renameDendrogram' optional. All others will be ignored.");
                 }
                 break;
             case 5:
-                if (!hasOption(line, AppParameter.JSON_FILE) || hasOption(line, AppParameter.DESTINATION_DIRECTORY) || hasOption(line, AppParameter.BASE_DIRECTORY) || hasOption(line, AppParameter.JSON_NAME)) {
-                    throw new ParseException("calc=5: Argument 'jsonfile' needed. Argument 'matrixname' optional. All others not allowed.");
+                if (!hasOption(line, AppParameter.BASE_DIRECTORY) || !hasOption(line, AppParameter.FILE_INPUT)) {
+                    throw new ParseException("calc=5: Argument 'base' and 'fileInput' needed. Arguments 'save', 'renameDendrogram' optional. All others will be ignored.");
                 }
                 break;
             case 6:
-                if ((!hasOption(line, AppParameter.BASE_DIRECTORY) && hasOption(line, AppParameter.REPLACE_DENDROGRAM_NAMES)) || hasOption(line, AppParameter.DESTINATION_DIRECTORY) || hasOption(line, AppParameter.JSON_FILE) || hasOption(line, AppParameter.JSON_NAME) || hasOption(line, AppParameter.MATRIX_NAME)) {
-                    throw new ParseException("calc=6: Argument 'base' needed if 'renameDendrogramNames' is used. No other arguments allowed.");
+                if (!hasOption(line, AppParameter.BASE_DIRECTORY)) {
+                    throw new ParseException("calc=6: Argument 'base' needed. All others will be ignored.");
                 }
                 break;
             case 7:
-                if (!hasOption(line, AppParameter.BASE_DIRECTORY) || hasOption(line, AppParameter.DESTINATION_DIRECTORY) || hasOption(line, AppParameter.JSON_FILE) || hasOption(line, AppParameter.JSON_NAME) || hasOption(line, AppParameter.MATRIX_NAME)) {
-                    throw new ParseException("calc=7: Argument 'base' needed. All others not allowed.");
+                if (!hasOption(line, AppParameter.BASE_DIRECTORY)) {
+                    throw new ParseException("calc=7: Argument 'base' needed. Arguments 'save', 'renameDendrogram' optional. All others will be ignored.");
                 }
                 break;
             case 8:
+                break;
             case 9:
+                if (!hasOption(line, AppParameter.BASE_DIRECTORY)) {
+                    throw new ParseException("calc=9: Argument 'base' needed. All others will be ignored.");
+                }
+                break;
             case 10:
+                if (!hasOption(line, AppParameter.BASE_DIRECTORY)) {
+                    throw new ParseException("calc=10: Argument 'base' needed. All others will be ignored.");
+                }
+                break;
             case 11:
+                if (!hasOption(line, AppParameter.BASE_DIRECTORY)) {
+                    throw new ParseException("calc=11: Argument 'base' needed. All others will be ignored.");
+                }
                 break;
             default:
-                throw new ParseException("'calc' can only have value between 0 and 9");
+                throw new ParseException("'calc' can only have value between 0 and 11");
         }
     }
 }

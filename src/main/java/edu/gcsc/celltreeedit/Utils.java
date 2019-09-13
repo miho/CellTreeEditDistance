@@ -8,6 +8,9 @@ import org.apache.commons.io.FilenameUtils;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -363,5 +366,16 @@ public class Utils {
             e.printStackTrace();
         }
         return newFileNames;
+    }
+
+    public static void copyFile(File file, String outputDirectory) {
+        // move file to subdirectory
+        try {
+            // copy file to defined directory
+            Files.copy(Paths.get(file.getAbsolutePath()), Paths.get(outputDirectory + "/" + file.getName()), StandardCopyOption.REPLACE_EXISTING);
+            System.out.println("File: " + file.getAbsolutePath() + "  Copied to: " + outputDirectory + "/" + file.getName());
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 }

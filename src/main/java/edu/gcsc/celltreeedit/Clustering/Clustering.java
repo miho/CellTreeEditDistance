@@ -31,8 +31,8 @@ public class Clustering {
                 new WardLinkageStrategy());
     }
 
-    public void showDendrogram(String outputFilename, List<ClusterColorRegex> clusterColorRegexes) {
-        this.createDendrogram(new File(""), outputFilename, false, clusterColorRegexes);
+    public void showDendrogram(String titleName, List<ClusterColorRegex> clusterColorRegexes) {
+        this.createDendrogram(new File(""), titleName, false, clusterColorRegexes);
     }
 
     public void saveDendrogram(File outputDirectory, String outputFilename, List<ClusterColorRegex> clusterColorRegexes) {
