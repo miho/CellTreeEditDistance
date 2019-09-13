@@ -4,7 +4,7 @@ import java.util.*;
 
 
 /** TODO: maybe rename class?
- * Outer class provides logic for adding UniqueMetadata and makes them accessable
+ * Outer class provides logic for adding UniqueMetadata and makes them accessible
  */
 public class UniqueMetadataContainer {
 
@@ -29,11 +29,8 @@ public class UniqueMetadataContainer {
         
         // create new UniqueMetadata object
         newUniqueMetadata = new UniqueMetadata(
-                (neuronMetadataR.getCellType() != null) ? new HashSet<>(neuronMetadataR.getCellType()): new HashSet<>(),
-                (neuronMetadataR.getBrainRegion() != null) ? new HashSet<>(neuronMetadataR.getBrainRegion()): new HashSet<>(),
-                neuronMetadataR.getSpecies(),
-                neuronMetadataR.getNeuronName(),
-                neuronMetadataR.getArchive());
+                neuronMetadataR.getNeuronName(), neuronMetadataR.getArchive(), neuronMetadataR.getSpecies(), (neuronMetadataR.getBrainRegion() != null) ? new HashSet<>(neuronMetadataR.getBrainRegion()): new HashSet<>(), (neuronMetadataR.getCellType() != null) ? new HashSet<>(neuronMetadataR.getCellType()): new HashSet<>()
+        );
         
         // check if newUniqueMetadata already exists
         if (this.uniqueMetadataMap.containsKey(newUniqueMetadata)) {
@@ -54,30 +51,30 @@ public class UniqueMetadataContainer {
         }
     }
 
-    public UniqueMetadata createUniqueMetadataObject(Set<String> cellTypes, Set<String> brainRegion, String species, String neuronName, String archive) {
-        return new UniqueMetadata(cellTypes, brainRegion, species, neuronName, archive);
+    public UniqueMetadata createUniqueMetadataObject(String neuronName, String archive, String species, Set<String> brainRegions, Set<String> cellTypes) {
+        return new UniqueMetadata(neuronName, archive, species, brainRegions, cellTypes);
     }
 
 
     /**
-     * Class to get unique metadata combinations. metadata is considered unique if cellTypes, brainRegion and species are equal
+     * Class to get unique metadata combinations. metadata is considered unique if species, brainRegions and cellTypes are equal
      * equals()-method implements this constraint
      * compareTo()-method is not consistent with equals() as it sorts by number of Neurons having this unique metadata combination
      * */
     public class UniqueMetadata implements Comparable {
-        private Set<String> cellTypes;
-        private Set<String> brainRegion;
         private String species;
+        private Set<String> brainRegions;
+        private Set<String> cellTypes;
 
         private List<String> neuronNames;
         private Set<String> archives;
         private int noOfNeurons;
         private int uniqueMetadataId;
 
-        private UniqueMetadata(Set<String> cellTypes, Set<String> brainRegion, String species, String neuronName, String archive) {
-            this.cellTypes = cellTypes;
-            this.brainRegion = brainRegion;
+        private UniqueMetadata(String neuronName, String archive, String species, Set<String> brainRegions, Set<String> cellTypes) {
             this.species = species;
+            this.brainRegions = brainRegions;
+            this.cellTypes = cellTypes;
             this.neuronNames = new ArrayList<>(Arrays.asList(neuronName));
             this.archives = new HashSet<>(Arrays.asList(archive));
             this.noOfNeurons = 1;
@@ -89,13 +86,13 @@ public class UniqueMetadataContainer {
             if (!(o instanceof UniqueMetadata)) return false;
             UniqueMetadata that = (UniqueMetadata) o;
             return Objects.equals(getCellTypes(), that.getCellTypes()) &&
-                    Objects.equals(getBrainRegion(), that.getBrainRegion()) &&
+                    Objects.equals(getBrainRegions(), that.getBrainRegions()) &&
                     Objects.equals(getSpecies(), that.getSpecies());
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(getCellTypes(), getBrainRegion(), getSpecies());
+            return Objects.hash(getCellTypes(), getBrainRegions(), getSpecies());
         }
 
         @Override
@@ -108,8 +105,8 @@ public class UniqueMetadataContainer {
             return cellTypes;
         }
 
-        public Set<String> getBrainRegion() {
-            return brainRegion;
+        public Set<String> getBrainRegions() {
+            return brainRegions;
         }
 
         public String getSpecies() {

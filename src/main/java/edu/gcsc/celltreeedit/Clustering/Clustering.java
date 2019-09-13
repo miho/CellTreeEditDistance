@@ -3,7 +3,6 @@ package edu.gcsc.celltreeedit.Clustering;
 import com.apporiented.algorithm.clustering.*;
 import com.apporiented.algorithm.clustering.visualization.ClusterColorRegex;
 import com.apporiented.algorithm.clustering.visualization.DendrogramPanel;
-import edu.gcsc.celltreeedit.TEDResult;
 import edu.gcsc.celltreeedit.Utils;
 import org.apache.commons.io.FilenameUtils;
 

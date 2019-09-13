@@ -3,7 +3,6 @@ package edu.gcsc.celltreeedit.CodeEridTest;
 import edu.gcsc.celltreeedit.NeuronMetadata.NeuronMetadataMapper;
 import edu.gcsc.celltreeedit.NeuronMetadata.NeuronMetadataR;
 import edu.gcsc.celltreeedit.NeuronMetadata.UniqueMetadataContainer;
-import groovy.json.internal.IO;
 import org.junit.Test;
 
 import java.io.File;
@@ -151,7 +150,7 @@ public class MetadataTest {
                 }
             }
 
-            uniqueMetadata = new UniqueMetadataContainer().createUniqueMetadataObject(cellTypes, brainRegion, species, neuronName, archive);
+            uniqueMetadata = new UniqueMetadataContainer().createUniqueMetadataObject(neuronName, archive, species, brainRegion, cellTypes);
             assertEquals(uniqueMetadata, uniqueMetadataContainer.getFileNameToUniqueMetadataMap().get(neuronName));
             assertTrue(uniqueMetadataContainer.getUniqueMetadataMap().get(uniqueMetadata).getNeuronNames().contains(neuronName));
             assertTrue(uniqueMetadataContainer.getUniqueMetadataMap().get(uniqueMetadata).getArchives().contains(archive));

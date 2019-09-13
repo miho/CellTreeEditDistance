@@ -173,8 +173,8 @@ public class Main {
         // define which uniqueMetadata-groups shall be used
         UniqueMetadataContainer predefinedUniqueMetadataContainer = new UniqueMetadataContainer();
         Set<UniqueMetadataContainer.UniqueMetadata> predefinedUniqueMetadata = new HashSet<>();
-        predefinedUniqueMetadata.add(predefinedUniqueMetadataContainer.createUniqueMetadataObject(new HashSet<>(Arrays.asList("principal cell", "pyramidal")), new HashSet<>(Arrays.asList("hippocampus")), "rat", "", ""));
-        predefinedUniqueMetadata.add(predefinedUniqueMetadataContainer.createUniqueMetadataObject(new HashSet<>(Arrays.asList("principal cell", "granule")), new HashSet<>(Arrays.asList("dentate gyrus", "hippocampus")), "rat", "", ""));
+        predefinedUniqueMetadata.add(predefinedUniqueMetadataContainer.createUniqueMetadataObject("", "", "rat", new HashSet<>(Arrays.asList("hippocampus")), new HashSet<>(Arrays.asList("principal cell", "pyramidal"))));
+        predefinedUniqueMetadata.add(predefinedUniqueMetadataContainer.createUniqueMetadataObject("", "", "rat", new HashSet<>(Arrays.asList("dentate gyrus", "hippocampus")), new HashSet<>(Arrays.asList("principal cell", "granule"))));
 
 //        predefinedUniqueMetadata.add(predefinedUniqueMetadataContainer.createUniqueMetadataObject(new HashSet<>(Arrays.asList("principal cell", "pyramidal")), new HashSet<>(Arrays.asList("CA1", "hippocampus")), "rat", "", ""));
 //        predefinedUniqueMetadata.add(predefinedUniqueMetadataContainer.createUniqueMetadataObject(new HashSet<>(Arrays.asList("principal cell", "pyramidal")), new HashSet<>(Arrays.asList("CA3", "hippocampus")), "rat", "", ""));
@@ -204,7 +204,7 @@ public class Main {
         for (UniqueMetadataContainer.UniqueMetadata uniqueMetadata : predefinedUniqueMetadata) {
             // select noOfNeuronsPerType neurons randomly
             selectedNeuronNames.addAll(pickNRandom(existingUniqueMetadataContainer.getUniqueMetadataMap().get(uniqueMetadata).getNeuronNames(), noOfNeuronsPerType));
-            System.out.println("species: " + uniqueMetadata.getSpecies() + "; " + "brainRegion" + String.join(", ", uniqueMetadata.getBrainRegion()) + "; " + "cellTypes: " + String.join(", ", uniqueMetadata.getCellTypes()) + "; " + "noOfNeurons: " + existingUniqueMetadataContainer.getUniqueMetadataMap().get(uniqueMetadata).getNoOfNeurons() + "; " + "noOfArchives: " + existingUniqueMetadataContainer.getUniqueMetadataMap().get(uniqueMetadata).getArchives().size());
+            System.out.println("species: " + uniqueMetadata.getSpecies() + "; " + "brainRegion" + String.join(", ", uniqueMetadata.getBrainRegions()) + "; " + "cellTypes: " + String.join(", ", uniqueMetadata.getCellTypes()) + "; " + "noOfNeurons: " + existingUniqueMetadataContainer.getUniqueMetadataMap().get(uniqueMetadata).getNoOfNeurons() + "; " + "noOfArchives: " + existingUniqueMetadataContainer.getUniqueMetadataMap().get(uniqueMetadata).getArchives().size());
         }
 
         List<File> selectedNeuronFiles = Utils.getFilesForNeuronNames(selectedNeuronNames, appProperties.getSwcFileDirectory());
@@ -239,10 +239,10 @@ public class Main {
     private static void calculateDendrogramsForTEDMatrices() throws IOException {
         System.out.println("> Starting Dendrogram calculation for TEDMatrices");
         List<ClusterColorRegex> clusterColorRegexes = Arrays.asList(
-                new ClusterColorRegex(Pattern.compile("^[12345],.*"), Color.BLACK),
-                new ClusterColorRegex(Pattern.compile("^.*"), new Color(35, 106, 185)),
-                new ClusterColorRegex(Pattern.compile("^3,.*"), new Color(186, 26, 70)),
-                new ClusterColorRegex(Pattern.compile("^4,.*"), new Color(68, 141, 118)),
+                new ClusterColorRegex(Pattern.compile("^[x],.*"), Color.BLACK),
+                new ClusterColorRegex(Pattern.compile("^[1239],.*"), new Color(35, 106, 185)),
+                new ClusterColorRegex(Pattern.compile("^[45678],.*"), new Color(186, 26, 70)),
+                new ClusterColorRegex(Pattern.compile("^1,.*"), new Color(68, 141, 118)),
                 new ClusterColorRegex(Pattern.compile("^5,.*"), new Color(118, 60, 118)),
                 new ClusterColorRegex(Pattern.compile("^6,.*"), Color.GRAY),
                 new ClusterColorRegex(Pattern.compile("^7,.*"), new Color(160, 100, 0))

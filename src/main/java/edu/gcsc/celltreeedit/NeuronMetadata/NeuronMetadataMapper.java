@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * TODO: make methods static
  * Used to create NeuronMetadata from given Json-Files
  */
 public class NeuronMetadataMapper {
