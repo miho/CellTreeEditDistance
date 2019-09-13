@@ -48,7 +48,7 @@ public class FileIOTest {
         File outputDirectory = new File(BaseDirectory.baseDirectory.getPath() + "/Test/TestWorkingDir/");
         String matrixName = "matrixTest";
         Utils.printMatrixToTxt(matrixToWrite, fileNamesToWrite, outputDirectory, matrixName);
-        File savedFile = new File(outputDirectory.getPath() + "/" + matrixName + "_Matrix.txt");
+        File savedFile = new File(outputDirectory.getPath() + "/" + matrixName + ".txt");
         TEDResult result = Utils.readMatrixFromTxt(savedFile);
 
         double[][] matrixRead = result.getDistanceMatrix();

@@ -163,7 +163,7 @@ public class Main {
 
     // for querying a predefined combination
     private static void queryByUniqueMetadata() throws IOException {
-        System.out.println("Starting query by predefined UniqueMetadata\n");
+        System.out.println("> Starting query by predefined UniqueMetadata\n");
         int noOfNeuronsPerType = 143;
 
         // define which uniqueMetadata-groups shall be used
@@ -203,7 +203,7 @@ public class Main {
     private static void calculateTEDMatrix() throws IOException {
         System.out.println("> Starting TED calculation\n");
         TEDResult result = calculateTEDMatrixForJson();
-        String nameOutput = (appProperties.getNameOutput().isEmpty()) ? result.getName() : appProperties.getNameOutput();
+        String nameOutput = Utils.renameMatrixOutputWithJson(appProperties.getNameOutput(), appProperties.getFileInput().getName());
         Utils.printMatrixToTxt(result.getDistanceMatrix(), result.getFileNames(), appProperties.getOutputDirectory(), nameOutput);
     }
 
@@ -219,17 +219,19 @@ public class Main {
     private static void calculateTEDMatrixAndDendrogram() throws IOException {
         System.out.println("> Starting TED calculation and Dendrogram calculation\n");
         TEDResult result = calculateTEDMatrixForJson();
-        String nameOutput = (appProperties.getNameOutput().isEmpty()) ? result.getName() : appProperties.getNameOutput();
+        String nameOutput = Utils.renameMatrixOutputWithJson(appProperties.getNameOutput(), appProperties.getFileInput().getName());
         if (appProperties.isSaveOutput()) {
-            Utils.printMatrixToTxt(result.getDistanceMatrix(), result.getFileNames(), appProperties.getOutputDirectory(), nameOutput);
+            nameOutput = FilenameUtils.removeExtension(Utils.printMatrixToTxt(result.getDistanceMatrix(), result.getFileNames(), appProperties.getOutputDirectory(), nameOutput).getName());
         }
         DendrogramCreator.createDendrogram(result, appProperties.getMetadataDirectory(), appProperties.getOutputDirectory(), nameOutput, appProperties.isRenameDendrogram(), appProperties.isSaveOutput(), clusterColorRegexes);
     }
 
+
     private static void calculateDendrogram() throws IOException {
         System.out.println("> Starting Dendrogram calculation\n");
         TEDResult result = Utils.readMatrixFromTxt(appProperties.getFileInput());
-        DendrogramCreator.createDendrogram(result, appProperties.getMetadataDirectory(), appProperties.getOutputDirectory(), result.getName(), appProperties.isRenameDendrogram(), appProperties.isSaveOutput(), clusterColorRegexes);
+        String nameOutput = (appProperties.getNameOutput().isEmpty()) ? result.getName() : appProperties.getNameOutput();
+        DendrogramCreator.createDendrogram(result, appProperties.getMetadataDirectory(), appProperties.getOutputDirectory(), nameOutput, appProperties.isRenameDendrogram(), appProperties.isSaveOutput(), clusterColorRegexes);
     }
 
     // method to do some custom things which program should not be able to do in the end
@@ -258,7 +260,7 @@ public class Main {
                 } else {
                     labelNumber = Integer.toString(i);
                 }
-                Utils.printMatrixToTxt(result.getDistanceMatrix(), result.getFileNames(), appProperties.getOutputDirectory(), FilenameUtils.removeExtension(jsonFile.getName()) + "_Label" + labelNumber + ".txt");
+                Utils.printMatrixToTxt(result.getDistanceMatrix(), result.getFileNames(), appProperties.getOutputDirectory(), FilenameUtils.removeExtension(jsonFile.getName()) + "_Matrix_Label" + labelNumber + ".txt");
             }
         }
     }
@@ -268,7 +270,7 @@ public class Main {
 
         List<TEDResult> results = Utils.readMatricesFromTxt();
         for (TEDResult result : results) {
-            DendrogramCreator.createDendrogram(result, appProperties.getMetadataDirectory(), appProperties.getOutputDirectory(), result.getName().replaceAll("_Matrix",""), appProperties.isRenameDendrogram(), appProperties.isSaveOutput(), clusterColorRegexes);
+            DendrogramCreator.createDendrogram(result, appProperties.getMetadataDirectory(), appProperties.getOutputDirectory(), result.getName(), appProperties.isRenameDendrogram(), appProperties.isSaveOutput(), clusterColorRegexes);
         }
     }
 
@@ -276,8 +278,8 @@ public class Main {
         System.out.println("> Starting TED calculation and Dendrogram calculation by file-dialog");
         // Files in File[] speichern
         File[] files = Utils.chooseSWCFiles();
-        File outputDirectory = new File(files[0].getAbsolutePath());
-        String nameOutput = appProperties.getNameOutput();
+        File outputDirectory = new File("/" + FilenameUtils.getPath(files[0].getAbsolutePath()));
+        String nameOutput = Utils.renameMatrixOutput(appProperties.getNameOutput());
         // calculateTED
         CellTreeEditDistance cellTreeEditDistance = new CellTreeEditDistance();
         TEDResult result = cellTreeEditDistance.compareFilesFromFiles(files, appProperties.getLabel());
@@ -289,7 +291,7 @@ public class Main {
 
     /**
      * Analyzes Clusterings of multiple matrices and displays the results.
-     *
+     * TODO: Test and improve
      * @throws IOException
      */
     private static void analyzeClusteringOfTEDMatrices() throws IOException {

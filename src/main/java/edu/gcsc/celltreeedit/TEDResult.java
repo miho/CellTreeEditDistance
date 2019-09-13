@@ -15,7 +15,7 @@ public class TEDResult {
     public TEDResult(double[][] distanceMatrix, String[] fileNames) {
         this.distanceMatrix = distanceMatrix;
         this.fileNames = fileNames;
-        this.name = "Matrix";
+        this.name = "";
     }
 
     public double[][] getDistanceMatrix() {

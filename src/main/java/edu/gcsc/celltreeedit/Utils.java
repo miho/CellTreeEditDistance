@@ -65,7 +65,7 @@ public class Utils {
     // IO-Functions for reading or writing files
 
     public static File printMatrixToTxt(double[][] results, String[] filenames, File outputDirectory, String matrixName) {
-        matrixName = (matrixName.isEmpty()) ? "Matrix" : FilenameUtils.removeExtension(matrixName) + "_Matrix";
+        matrixName = (matrixName.isEmpty()) ? "Matrix" : FilenameUtils.removeExtension(matrixName);
         File file = incrementFileNameIfNecessary(outputDirectory, matrixName + ".txt");
         try {
             FileWriter export = new FileWriter(file.getPath());
@@ -216,6 +216,14 @@ public class Utils {
             newFiles.add(new File(file.getAbsolutePath().replace(swcFileDirectory.getAbsolutePath() + "/", "")));
         }
         return newFiles;
+    }
+
+    public static String renameMatrixOutput(String appPropertiesName) {
+        return (appPropertiesName.isEmpty() || appPropertiesName.equals("Matrix")) ? "Matrix" : appPropertiesName + "_Matrix";
+    }
+
+    public static String renameMatrixOutputWithJson(String appPropertiesName, String jsonName) {
+        return (appPropertiesName.isEmpty()) ? FilenameUtils.removeExtension(jsonName) + "_Matrix" : appPropertiesName + "_Matrix";
     }
 
 

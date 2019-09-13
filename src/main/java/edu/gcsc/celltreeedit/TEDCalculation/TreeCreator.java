@@ -233,7 +233,7 @@ public class TreeCreator implements InputParser <NodeData> , Serializable {
         }
 
         if (label > 24) {
-            System.out.println("Label nicht erkannt");
+            throw new RuntimeException("Label is not valid");
         }
     }
 
