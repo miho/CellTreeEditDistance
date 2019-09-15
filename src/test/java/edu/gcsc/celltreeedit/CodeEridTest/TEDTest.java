@@ -5,11 +5,15 @@ import edu.gcsc.celltreeedit.TEDCalculation.TreeCostModel;
 import edu.gcsc.celltreeedit.TEDCalculation.TreeCreator;
 import eu.mihosoft.ext.apted.distance.APTED;
 import eu.mihosoft.ext.apted.node.Node;
+import org.apache.commons.math3.util.MathArrays;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -249,9 +253,6 @@ public class TEDTest {
         double oldLengthOfSegment = Math.sqrt((v1[0]-v2[0]) * (v1[0]-v2[0]) + (v1[1]-v2[1]) * (v1[1]-v2[1]) + (v1[2]-v2[2]) * (v1[2]-v2[2]));
         double newLengthOfSegment = Math.sqrt((v1[0]-v2New[0]) * (v1[0]-v2New[0]) + (v1[1]-v2New[1]) * (v1[1]-v2New[1]) + (v1[2]-v2New[2]) * (v1[2]-v2New[2]));
         double diffLengthOfSegment = Math.abs(newLengthOfSegment - oldLengthOfSegment);
-        double oldLengthOfT = 20.6838908114423;
-        double newLengthOfT = oldLengthOfT + diffLengthOfSegment; // diffLengthOfSegment;
-        double oldLengthToSomaSum = 0.3 + 3.67375357771614 + 6.25445115782893 + 6.18063508696575 + 13.6246329358432 + 1.67167878623671;
 
         double oldVolumeOfSegment = oldLengthOfSegment*Math.PI/3*(r1*r1+r1*r2+r2*r2);
         double newVolumeOfSegment = newLengthOfSegment*Math.PI/3*(r1*r1+r1*r2New+r2New*r2New);
@@ -261,12 +262,24 @@ public class TEDTest {
         double newSurfaceOfSegment = (r1+r2New)*Math.PI*Math.sqrt((r1-r2New)*(r1-r2New)+newLengthOfSegment*newLengthOfSegment);
         double diffSurfaceOfSegment = Math.abs(newSurfaceOfSegment - oldSurfaceOfSegment);
 
+        double[] node4 = new double[]{-2.1, -1.0, 0.1};
+        double[] node5Old = new double[]{-4.2, -1.0, -1.4};
+        double[] node5New = new double[]{-4.2, -2.0, -1.4};
+        double[] node7 = new double[]{-2.8, -2.9, 1.0};
+        double[] node8 = new double[]{-10.2, 4.0, 3.0};
+        double[] v5Old = MathArrays.ebeSubtract(node5Old, node4);
+        double[] v5New = MathArrays.ebeSubtract(node5New, node4);
+        double[] v7 = MathArrays.ebeSubtract(node7, node4);
+        double[] v8 = MathArrays.ebeSubtract(node8, node4);
+        double oldAngleOfSegment = (Math.cos(MathArrays.cosAngle(v5Old, v7)) + Math.cos(MathArrays.cosAngle(v5Old, v8)) + Math.cos(MathArrays.cosAngle(v7, v8))) / 3;
+        double newAngleOfSegment = (Math.cos(MathArrays.cosAngle(v5New, v7)) + Math.cos(MathArrays.cosAngle(v5New, v8)) + Math.cos(MathArrays.cosAngle(v7, v8))) / 3;
+        double diffAngleOfSegment = Math.abs(newAngleOfSegment - oldAngleOfSegment);
+
         float result;
         double testTED;
 
-        // TODO: implement solution for labels 7-22
-        for (int i = 1; i < 7; i++) {
-            System.out.println(i);
+        List<Integer> implementedLabelsTest = new ArrayList<>(Arrays.asList(1, 2, 3, 4, 5, 9, 10, 15, 16, 22));
+        for (int i : implementedLabelsTest) {
             FileInputStream f1 = new FileInputStream(new File(BaseDirectory.baseDirectory.getPath() + "/Test/TEDTest01_simpleTree.swc"));
             TreeCreator t1 = new TreeCreator(f1);
             Node<NodeData> root1 = t1.createTree(i);
@@ -281,9 +294,6 @@ public class TEDTest {
             testTED = 0;
             switch (i) {
                 case 1:
-                    // must be 0 because same topology
-                    testTED = 0d;
-                    break;
                 case 2:
                     // must be 0 because same topology
                     testTED = 0d;
@@ -300,31 +310,24 @@ public class TEDTest {
                     // must be number of nodes (including node itself) that are ancestors of node with changed length * diffLengthOfSegment. because ancestor labels changed as well
                     testTED = 3 * diffLengthOfSegment;
                     break;
-                case 6:
-                    // must be number of nodes (including node itself) that are ancestors of node with changed length * diffLengthOfSegment
-                    testTED = (oldLengthOfT - oldLengthOfSegment) * Math.abs((newLengthOfT - oldLengthOfT) / (newLengthOfT * oldLengthOfT)) + Math.abs(oldLengthOfSegment / oldLengthOfT - newLengthOfSegment / newLengthOfT);
-                    break;
-                case 7:
-                    // must be number of nodes (including node itself) that are ancestors of node with changed length * diffLengthOfSegment
-                    testTED = (oldLengthToSomaSum) * Math.abs((newLengthOfT - oldLengthOfT) / (newLengthOfT * oldLengthOfT)) + Math.abs(oldLengthOfSegment / oldLengthOfT - newLengthOfSegment / newLengthOfT);
-                    break;
                 case 9:
+                    // must be diffVolumeOfSegment because only this volume to soma has changed
                     testTED = diffVolumeOfSegment;
                     break;
-                case 10:
-                    testTED = diffVolumeOfSegment;
-                    break;
+                    // case 10 would not work because difference is to small and would be lost because of floatingpoint precision
                 case 15:
-                    testTED = diffSurfaceOfSegment;
-                    break;
-                case 16:
+                    // must be diffSurfaceOfSegment because only this surface to soma has changed
                     testTED = diffSurfaceOfSegment;
                     break;
                 case 22:
-                    testTED = 0d;
+                    // must be diffAngleOfSegment because only angle of node 4 has changed
+                    testTED = diffAngleOfSegment;
+                    break;
+                default:
                     break;
             }
             float testTEDFloat = (float) testTED;
+            System.out.println(i);
             System.out.println("correctValue: " + testTED);
             System.out.println("actualValue: " + result);
             System.out.println("delta: " + deltaBySize(testTEDFloat, 1e-4f));
@@ -332,7 +335,6 @@ public class TEDTest {
         }
     }
 
-    // TODO: completeImplementation
     @Test
     public void checkTEDSameTreesLeafInserted() throws IOException {
 
@@ -344,7 +346,6 @@ public class TEDTest {
         double testTED;
 
         for (int i = 1; i < 23; i++) {
-            System.out.println(i);
             FileInputStream f1 = new FileInputStream(new File(BaseDirectory.baseDirectory.getPath() + "/Test/TEDTest01_superSimpleTree.swc"));
             TreeCreator t1 = new TreeCreator(f1);
             Node<NodeData> root1 = t1.createTree(i);
@@ -366,21 +367,18 @@ public class TEDTest {
                     testTED = 1d/4 + 3* (1d/3 - 1d/4);
                     break;
                 case 3:
-                    testTED = lengthOfSegment;
-                    break;
                 case 4:
+                    // cost for node insert
                     testTED = lengthOfSegment;
                     break;
                 case 9:
-                    testTED = volumeOfSegment;
-                    break;
                 case 10:
+                    // cost for node insert
                     testTED = volumeOfSegment;
                     break;
                 case 15:
-                    testTED = surfaceOfSegment;
-                    break;
                 case 16:
+                    // cost for node insert
                     testTED = surfaceOfSegment;
                     break;
                 case 22:
@@ -392,4 +390,5 @@ public class TEDTest {
             }
         }
     }
+
 }

@@ -12,9 +12,7 @@ import edu.gcsc.celltreeedit.Utils;
 import eu.mihosoft.ext.apted.node.Node;
 import eu.mihosoft.ext.apted.parser.InputParser;
 import eu.mihosoft.vswcreader.SWCSegment;
-import org.apache.commons.math3.exception.NotANumberException;
 import org.apache.commons.math3.util.MathArrays;
-import org.apache.commons.math3.util.MathUtils;
 
 import javax.rmi.CORBA.Util;
 

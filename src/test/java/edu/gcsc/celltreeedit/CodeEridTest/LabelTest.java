@@ -4,7 +4,6 @@ import edu.gcsc.celltreeedit.TEDCalculation.NodeData;
 import edu.gcsc.celltreeedit.TEDCalculation.TreeCreator;
 import edu.gcsc.celltreeedit.Utils;
 import eu.mihosoft.ext.apted.node.Node;
-import org.apache.commons.math3.analysis.function.Max;
 import org.apache.commons.math3.util.MathArrays;
 import org.junit.Test;
 
@@ -39,14 +38,8 @@ public class LabelTest {
     private double volumeOfT;
     private double surfaceOfT;
 
-    MaxUlps[] maxUlpsCheckLabels = new MaxUlps[22];
-    MaxUlps[] maxUlpsCheckLabelsProgramatically = new MaxUlps[22];
-
-    private double deltaBySize(double value, double epsilon) {
-        String scientificNotation = String.format("%1.1e", value);
-        int integerPlaces = Integer.parseInt(scientificNotation.substring(4));
-        return epsilon * Double.parseDouble("1e" + (integerPlaces));
-    }
+    private MaxUlps[] maxUlpsCheckLabels = new MaxUlps[22];
+    private MaxUlps[] maxUlpsCheckLabelsProgramatically = new MaxUlps[22];
 
     @Test
     public void checkLabels() throws IOException {
@@ -69,12 +62,11 @@ public class LabelTest {
 
     // currentNode and index in preorder
     private int checkLabel(Node<NodeData> currentNode, int labelId, int nodeIndex) {
-//        assertTrue(Utils.doublesAlmostEqual(this.correctLabels[nodeIndex][labelId - 1], currentNode.getNodeData().getLabel(), 1e-12, 5));
-//        System.out.println(currentNode.getNodeData().getLabel() + ", " + deltaBySize(currentNode.getNodeData().getLabel()));
-        assertEquals(this.correctLabels[nodeIndex][labelId - 1], currentNode.getNodeData().getLabel(), deltaBySize(currentNode.getNodeData().getLabel(), 1e-12));
-
-//        assertTrue(Utils.doublesAlmostEqual(this.correctLabels[nodeIndex][labelId - 1], currentNode.getNodeData().getLabel(), 0d, 32));
-        checkMaxUlps(maxUlpsCheckLabels[labelId - 1], this.correctLabels[nodeIndex][labelId - 1], currentNode.getNodeData().getLabel());
+        assertTrue(Utils.doublesAlmostEqual(this.correctLabels[nodeIndex][labelId - 1], currentNode.getNodeData().getLabel(), 0d, 33));
+        maxUlpsCheckLabels[labelId - 1].updateMaxUlps(this.correctLabels[nodeIndex][labelId - 1], currentNode.getNodeData().getLabel());
+        if (labelId == 10) {
+            System.out.println(this.correctLabels[nodeIndex][labelId - 1] + " ||| " + currentNode.getNodeData().getLabel());
+        }
 
         // if currentNode has no children return own index
         if (currentNode.getChildren() == null) {
@@ -224,18 +216,13 @@ public class LabelTest {
                 break;
         }
 
-        // labels should be similar
-        assertEquals(testLabel, node.getNodeData().getLabel(), deltaBySize(testLabel, 1e-12));
-
-//        Set<Integer> deltaClass01 = new HashSet<>(Arrays.asList(6));
-//        System.out.println(labelId);
-//        System.out.println("correct: " + testLabel + ", calculated: " + node.getNodeData().getLabel());
-//        if (deltaClass01.contains(labelId)) {
-//            assertTrue(Utils.doublesAlmostEqual(testLabel, node.getNodeData().getLabel(), 0d, 355));
-//        } else {
-//            assertTrue(Utils.doublesAlmostEqual(testLabel, node.getNodeData().getLabel(), 0d, 29));
-//        }
-        checkMaxUlps(maxUlpsCheckLabelsProgramatically[labelId - 1], testLabel, node.getNodeData().getLabel());
+        Set<Integer> deltaClass01 = new HashSet<>(Arrays.asList(6, 7, 12, 13, 18, 19));
+        if (deltaClass01.contains(labelId)) {
+            assertTrue(Utils.doublesAlmostEqual(testLabel, node.getNodeData().getLabel(), 0d, 355));
+        } else {
+            assertTrue(Utils.doublesAlmostEqual(testLabel, node.getNodeData().getLabel(), 0d, 37));
+        }
+        maxUlpsCheckLabelsProgramatically[labelId - 1].updateMaxUlps(testLabel, node.getNodeData().getLabel());
 
         // nunber of Children must be the same, prevent topology is false
         assertEquals(testNode.getChildren().size(), node.getChildren().size());
@@ -245,23 +232,23 @@ public class LabelTest {
         }
     }
 
-    private void checkMaxUlps(MaxUlps maxUlps, double correctValue, double wrongValue) {
-        double bigger = Math.max(correctValue, wrongValue);
-        double dif = Math.abs(correctValue - wrongValue);
-        int noOfUlp = (int) Math.round(Math.ceil(dif / Math.ulp(bigger)));
-        if (noOfUlp > maxUlps.noOfUlps) {
-            maxUlps.noOfUlps = noOfUlp;
-            maxUlps.correctValue = correctValue;
-            maxUlps.wrongValue = wrongValue;
-        }
-    }
-
     private class MaxUlps {
         private int noOfUlps = -1;
         private double correctValue = 0d;
         private double wrongValue = 0d;
 
         MaxUlps() { }
+
+        private void updateMaxUlps(double correctValue, double wrongValue) {
+            double bigger = Math.max(correctValue, wrongValue);
+            double dif = Math.abs(correctValue - wrongValue);
+            int noOfUlps = (int) Math.round(Math.ceil(dif / Math.ulp(bigger)));
+            if (noOfUlps > this.noOfUlps) {
+                this.noOfUlps = noOfUlps;
+                this.correctValue = correctValue;
+                this.wrongValue = wrongValue;
+            }
+        }
     }
 
 
