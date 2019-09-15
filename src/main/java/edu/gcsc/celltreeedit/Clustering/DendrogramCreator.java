@@ -4,7 +4,7 @@ import com.apporiented.algorithm.clustering.visualization.ClusterColorRegex;
 import edu.gcsc.celltreeedit.NeuronMetadata.NeuronMetadataMapper;
 import edu.gcsc.celltreeedit.NeuronMetadata.NeuronMetadataR;
 import edu.gcsc.celltreeedit.NeuronMetadata.UniqueMetadataContainer;
-import edu.gcsc.celltreeedit.TEDResult;
+import edu.gcsc.celltreeedit.TEDCalculation.TEDResult;
 import edu.gcsc.celltreeedit.Tables;
 import edu.gcsc.celltreeedit.Utils;
 import javafx.util.Pair;

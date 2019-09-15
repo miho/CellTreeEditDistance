@@ -1,4 +1,4 @@
-package edu.gcsc.celltreeedit;
+package edu.gcsc.celltreeedit.TEDCalculation;
 
 public class TEDResult {
 

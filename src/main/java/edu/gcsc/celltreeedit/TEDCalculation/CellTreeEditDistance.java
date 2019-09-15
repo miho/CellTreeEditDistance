@@ -1,6 +1,5 @@
 package edu.gcsc.celltreeedit.TEDCalculation;
 
-import edu.gcsc.celltreeedit.TEDResult;
 import edu.gcsc.celltreeedit.Utils;
 import eu.mihosoft.ext.apted.distance.APTED;
 import eu.mihosoft.ext.apted.node.Node;

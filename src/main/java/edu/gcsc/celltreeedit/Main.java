@@ -12,6 +12,7 @@ import edu.gcsc.celltreeedit.NeuronMetadata.NeuronMetadataMapper;
 import edu.gcsc.celltreeedit.NeuronMetadata.NeuronMetadataR;
 import edu.gcsc.celltreeedit.NeuronMetadata.UniqueMetadataContainer;
 import edu.gcsc.celltreeedit.TEDCalculation.CellTreeEditDistance;
+import edu.gcsc.celltreeedit.TEDCalculation.TEDResult;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FilenameUtils;
 

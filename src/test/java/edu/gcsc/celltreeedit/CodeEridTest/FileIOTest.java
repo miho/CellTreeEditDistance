@@ -1,7 +1,7 @@
 package edu.gcsc.celltreeedit.CodeEridTest;
 
 import edu.gcsc.celltreeedit.JsonIO.JsonUtils;
-import edu.gcsc.celltreeedit.TEDResult;
+import edu.gcsc.celltreeedit.TEDCalculation.TEDResult;
 import edu.gcsc.celltreeedit.Utils;
 import org.junit.Test;
 

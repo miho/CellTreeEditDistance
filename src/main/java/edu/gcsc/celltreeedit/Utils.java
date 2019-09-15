@@ -2,6 +2,7 @@ package edu.gcsc.celltreeedit;
 
 import edu.gcsc.celltreeedit.NeuronMetadata.NeuronMetadataR;
 import edu.gcsc.celltreeedit.NeuronMetadata.UniqueMetadataContainer;
+import edu.gcsc.celltreeedit.TEDCalculation.TEDResult;
 import org.apache.commons.io.FilenameUtils;
 
 import javax.swing.*;

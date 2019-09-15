@@ -36,7 +36,7 @@ public class LuceneIndexWriter {
      * opens Lucene index in FileSystem. also defines IndexWriter (how lucene parses data)
      * @return
      */
-    private boolean openIndex() {
+    private void openIndex() {
         try {
             Directory dir = FSDirectory.open(indexDirectory.toPath());
             Analyzer analyzer = new CaseInsensitiveKeywordAnalyzer();
@@ -44,11 +44,9 @@ public class LuceneIndexWriter {
             //Always overwrite the directory
             iwc.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
             indexWriter = new IndexWriter(dir, iwc);
-            return true;
         } catch (Exception e) {
             System.err.println("Error opening the index. " + e.getMessage());
         }
-        return false;
     }
 
     /**

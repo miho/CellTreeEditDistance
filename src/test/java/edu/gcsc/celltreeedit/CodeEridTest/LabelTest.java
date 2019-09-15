@@ -79,7 +79,6 @@ public class LabelTest {
         TestNode testRoot = createTreeAndSWCFile(1L, 15, new double[]{1.329d, -2.7812d, 0.43d, 3.76d});
         File savedFile = new File(BaseDirectory.baseDirectory.getPath() + "/WorkingDir/programaticSWCFile.swc");
         for (int i = 1; i < 23; i++) {
-            System.out.println("labelId: " + i);
             FileInputStream f = new FileInputStream(savedFile);
             TreeCreator t = new TreeCreator(f);
             Node<NodeData> root = t.createTree(i);
@@ -88,7 +87,6 @@ public class LabelTest {
 
         testRoot = createTreeAndSWCFile(3001L, 15, new double[]{1d, 1d, 1d, 1d});
         for (int i = 1; i < 23; i++) {
-            System.out.println("labelId: " + i);
             FileInputStream f = new FileInputStream(savedFile);
             TreeCreator t = new TreeCreator(f);
             Node<NodeData> root = t.createTree(i);
@@ -97,7 +95,14 @@ public class LabelTest {
 
         testRoot = createTreeAndSWCFile(73L, 15, new double[]{-2.43d, -8.92893d, 29.3344d, 28d});
         for (int i = 1; i < 23; i++) {
-            System.out.println("labelId: " + i);
+            FileInputStream f = new FileInputStream(savedFile);
+            TreeCreator t = new TreeCreator(f);
+            Node<NodeData> root = t.createTree(i);
+            checkLabelProgramatically(testRoot, root, i);
+        }
+
+        testRoot = createTreeAndSWCFile(54L, 15, new double[]{0.0000001, 0.0000001, 0.0000001, 0.0000001});
+        for (int i = 1; i < 23; i++) {
             FileInputStream f = new FileInputStream(savedFile);
             TreeCreator t = new TreeCreator(f);
             Node<NodeData> root = t.createTree(i);
@@ -126,13 +131,13 @@ public class LabelTest {
                 testLabel = calculateLengthOfSegment() * testNode.getNoOfDecendents();
                 break;
             case 6:
-                testLabel = calculateLengthOfSegment() * testNode.getNoOfIncludedSegments() / this.lengthOfT;
+                testLabel = (this.lengthOfT == 0d) ? 0d : calculateLengthOfSegment() * testNode.getNoOfIncludedSegments() / this.lengthOfT;
                 break;
             case 7:
-                testLabel = calculateLengthOfSegment() * testNode.getNoOfAncestors() / this.lengthOfT;
+                testLabel = (this.lengthOfT == 0d) ? 0d : calculateLengthOfSegment() * testNode.getNoOfAncestors() / this.lengthOfT;
                 break;
             case 8:
-                testLabel = calculateLengthOfSegment() * testNode.getNoOfDecendents() / this.lengthOfT;
+                testLabel = (this.lengthOfT == 0d) ? 0d : calculateLengthOfSegment() * testNode.getNoOfDecendents() / this.lengthOfT;
                 break;
             case 9:
                 testLabel = calculateVolumeOfSegment() * testNode.getNoOfIncludedSegments();
@@ -144,13 +149,13 @@ public class LabelTest {
                 testLabel = calculateVolumeOfSegment() * testNode.getNoOfDecendents();
                 break;
             case 12:
-                testLabel = calculateVolumeOfSegment() * testNode.getNoOfIncludedSegments() / this.volumeOfT;
+                testLabel = (this.volumeOfT == 0d) ? 0d : calculateVolumeOfSegment() * testNode.getNoOfIncludedSegments() / this.volumeOfT;
                 break;
             case 13:
-                testLabel = calculateVolumeOfSegment() * testNode.getNoOfAncestors() / this.volumeOfT;
+                testLabel = (this.volumeOfT == 0d) ? 0d : calculateVolumeOfSegment() * testNode.getNoOfAncestors() / this.volumeOfT;
                 break;
             case 14:
-                testLabel = calculateVolumeOfSegment() * testNode.getNoOfDecendents() / this.volumeOfT;
+                testLabel = (this.volumeOfT == 0d) ? 0d : calculateVolumeOfSegment() * testNode.getNoOfDecendents() / this.volumeOfT;
                 break;
             case 15:
                 testLabel = calculateSurfaceOfSegment() * testNode.getNoOfIncludedSegments();
@@ -162,16 +167,16 @@ public class LabelTest {
                 testLabel = calculateSurfaceOfSegment() * testNode.getNoOfDecendents();
                 break;
             case 18:
-                testLabel = calculateSurfaceOfSegment() * testNode.getNoOfIncludedSegments() / this.surfaceOfT;
+                testLabel = (this.surfaceOfT == 0d) ? 0d : calculateSurfaceOfSegment() * testNode.getNoOfIncludedSegments() / this.surfaceOfT;
                 break;
             case 19:
-                testLabel = calculateSurfaceOfSegment() * testNode.getNoOfAncestors() / this.surfaceOfT;
+                testLabel = (this.surfaceOfT == 0d) ? 0d : calculateSurfaceOfSegment() * testNode.getNoOfAncestors() / this.surfaceOfT;
                 break;
             case 20:
-                testLabel = calculateSurfaceOfSegment() * testNode.getNoOfDecendents() / this.surfaceOfT;
+                testLabel = (this.surfaceOfT == 0d) ? 0d : calculateSurfaceOfSegment() * testNode.getNoOfDecendents() / this.surfaceOfT;
                 break;
             case 21:
-                testLabel = calculateVolumeOfSegment() * testNode.getNoOfIncludedSegments() / this.surfaceOfT;
+                testLabel = (this.surfaceOfT == 0d) ? 0d : calculateVolumeOfSegment() * testNode.getNoOfIncludedSegments() / this.surfaceOfT;
                 break;
             case 22:
                 if (testNode.getChildren().size() == 0) {

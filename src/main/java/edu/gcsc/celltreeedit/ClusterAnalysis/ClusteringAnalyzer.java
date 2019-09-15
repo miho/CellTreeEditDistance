@@ -4,7 +4,7 @@ import com.apporiented.algorithm.clustering.Cluster;
 import edu.gcsc.celltreeedit.Clustering.Clustering;
 import edu.gcsc.celltreeedit.NeuronMetadata.NeuronMetadataR;
 import edu.gcsc.celltreeedit.NeuronMetadata.UniqueMetadataContainer;
-import edu.gcsc.celltreeedit.TEDResult;
+import edu.gcsc.celltreeedit.TEDCalculation.TEDResult;
 import javafx.util.Pair;
 
 import javax.swing.*;
