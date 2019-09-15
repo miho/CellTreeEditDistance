@@ -44,7 +44,6 @@ public class TEDTest {
     @Test
     public void checkTEDTreeEmpty() throws IOException {
         for (int i = 1; i < 23; i++) {
-            System.out.println("Label: " + i);
             FileInputStream f1 = new FileInputStream(new File(BaseDirectory.baseDirectory.getPath() + "/Test/TEDTest01.CNG.swc"));
             TreeCreator t1 = new TreeCreator(f1);
             Node<NodeData> root1 = t1.createTree(i);
@@ -90,43 +89,31 @@ public class TEDTest {
         float result = apted.computeEditDistance(rootDefault, rootLeafRenamed);
         float testResult = (float)(Math.abs(label2 - label1));
         assertEquals(testResult, result, deltaBySize(testResult, 1e-6f));
-        System.out.println("correctResult: " + testResult);
-        System.out.println("actuallResult: " + result);
 
         apted = new APTED<>(new TreeCostModel());
         result = apted.computeEditDistance(rootDefault, rootLeafMissing);
         testResult = (float)(label1);
         assertEquals(testResult, result, deltaBySize(testResult, 1e-6f));
-        System.out.println("correctResult: " + testResult);
-        System.out.println("actuallResult: " + result);
 
         apted = new APTED<>(new TreeCostModel());
         result = apted.computeEditDistance(rootDefault, rootLeafInserted);
         testResult = (float)(label1);
         assertEquals(testResult, result, deltaBySize(testResult, 1e-6f));
-        System.out.println("correctResult: " + testResult);
-        System.out.println("actuallResult: " + result);
 
         apted = new APTED<>(new TreeCostModel());
         result = apted.computeEditDistance(rootDefault, rootInnerRenamed);
         testResult = (float)(Math.abs(label2 - label1));
         assertEquals(testResult, result, deltaBySize(testResult, 1e-6f));
-        System.out.println("correctResult: " + testResult);
-        System.out.println("actuallResult: " + result);
 
         apted = new APTED<>(new TreeCostModel());
         result = apted.computeEditDistance(rootDefault, rootInnerMissing);
         testResult = (float)(label1);
         assertEquals(testResult, result, deltaBySize(testResult, 1e-6f));
-        System.out.println("correctResult: " + testResult);
-        System.out.println("actuallResult: " + result);
 
         apted = new APTED<>(new TreeCostModel());
         result = apted.computeEditDistance(rootDefault, rootInnerInserted);
         testResult = (float)(label1);
         assertEquals(testResult, result, deltaBySize(testResult, 1e-6f));
-        System.out.println("correctResult: " + testResult);
-        System.out.println("actuallResult: " + result);
     }
 
     private Node<NodeData> createTree(double label1, double label2, int option) {
@@ -234,8 +221,6 @@ public class TEDTest {
         return root;
     }
 
-
-    // --------------------------------------- NOT COMPLETELY IMPLEMENTED ----------------------------------------------
     @Test
     public void checkTEDSameTrees1lengthChanged() throws IOException {
 
@@ -267,12 +252,12 @@ public class TEDTest {
         double[] node5New = new double[]{-4.2, -2.0, -1.4};
         double[] node7 = new double[]{-2.8, -2.9, 1.0};
         double[] node8 = new double[]{-10.2, 4.0, 3.0};
-        double[] v5Old = MathArrays.ebeSubtract(node5Old, node4);
-        double[] v5New = MathArrays.ebeSubtract(node5New, node4);
-        double[] v7 = MathArrays.ebeSubtract(node7, node4);
-        double[] v8 = MathArrays.ebeSubtract(node8, node4);
-        double oldAngleOfSegment = (Math.cos(MathArrays.cosAngle(v5Old, v7)) + Math.cos(MathArrays.cosAngle(v5Old, v8)) + Math.cos(MathArrays.cosAngle(v7, v8))) / 3;
-        double newAngleOfSegment = (Math.cos(MathArrays.cosAngle(v5New, v7)) + Math.cos(MathArrays.cosAngle(v5New, v8)) + Math.cos(MathArrays.cosAngle(v7, v8))) / 3;
+        double[] v5Old = MathArrays.ebeSubtract(node4, node5Old);
+        double[] v5New = MathArrays.ebeSubtract(node4, node5New);
+        double[] v7 = MathArrays.ebeSubtract(node4, node7);
+        double[] v8 = MathArrays.ebeSubtract(node4, node8);
+        double oldAngleOfSegment = (Math.acos(MathArrays.cosAngle(v5Old, v7)) + Math.acos(MathArrays.cosAngle(v5Old, v8)) + Math.acos(MathArrays.cosAngle(v7, v8))) / 3;
+        double newAngleOfSegment = (Math.acos(MathArrays.cosAngle(v5New, v7)) + Math.acos(MathArrays.cosAngle(v5New, v8)) + Math.acos(MathArrays.cosAngle(v7, v8))) / 3;
         double diffAngleOfSegment = Math.abs(newAngleOfSegment - oldAngleOfSegment);
 
         float result;
@@ -327,11 +312,7 @@ public class TEDTest {
                     break;
             }
             float testTEDFloat = (float) testTED;
-            System.out.println(i);
-            System.out.println("correctValue: " + testTED);
-            System.out.println("actualValue: " + result);
-            System.out.println("delta: " + deltaBySize(testTEDFloat, 1e-4f));
-            assertEquals(testTEDFloat, result, deltaBySize(testTEDFloat, 1e-4f));
+            assertEquals(testTEDFloat, result, deltaBySize(testTEDFloat, 1e-5f));
         }
     }
 
