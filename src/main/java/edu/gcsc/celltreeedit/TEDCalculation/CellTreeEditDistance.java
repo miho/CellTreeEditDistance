@@ -31,7 +31,9 @@ public class CellTreeEditDistance implements java.io.Serializable{
         return new TEDResult(results, fileNames);
     }
 
-
+    public TEDResult compareFilesForCluster(File[] rowFiles, File[] colFiles, int labelId) {
+        return null;
+    }
 
     private void compareFiles(@ParamInfo(name="Label", style="load-folder-dialog")int choice) {
 
@@ -41,28 +43,30 @@ public class CellTreeEditDistance implements java.io.Serializable{
         int size = files.length;
         // results is global variable
         results = new double[size][size];
-        // resultsFinale is a local reference to global variable results
+        // resultsFinal is a local reference to global variable results. it will always reference the original one no matter what happens
         final double[][] resultsFinal = results;
 
-        List<Node<NodeData>> nodeData = Collections.synchronizedList(new ArrayList<>(size));
+        // creating trees is also multithreaded. therefore nodeList must be synchronized. (really necessary? nodeList is initialized with null and every thread only writes to one specific entry)
+        List<Node<NodeData>> nodeList = Collections.synchronizedList(new ArrayList<>(size));
         for(int i = 0; i < size;i++) {
-            nodeData.add(null);
+            nodeList.add(null);
         }
 
         try {
 
             System.out.println("> Reading files");
 
+            // create Threadpool for reading files. newWorkStealingPool takes as much CPU, RAM as it can
             ExecutorService filePool = Executors.newWorkStealingPool();
 
-
+            // fill nodeList with nodes (trees created with label)
             for (int i = 0; i < size; i++) {
-                // compare each two files
 
+                // make sure finalI never changes
                 final int finalI = i;
 
                 filePool.execute(() -> {
-                    Node<NodeData> t1 = nodeData.get(finalI);
+                    Node<NodeData> t1 = nodeList.get(finalI);
 
                     if (t1 == null) {
                         TreeCreator one = null;
@@ -72,29 +76,35 @@ public class CellTreeEditDistance implements java.io.Serializable{
                             e.printStackTrace();
                         }
                         t1 = one.createTree(choice);
-                        nodeData.set(finalI, t1);
+                        nodeList.set(finalI, t1);
                     }
                 });
             }
-
+            // prevent further adding of tasks to threadpool
             filePool.shutdown();
 
+            // wait until reading is finished (all threads in threadpool are completed)
             while(!filePool.awaitTermination(10L, TimeUnit.SECONDS)) {
                 System.out.println("Still waiting for file readers: " + new Date());
             }
+            final long runtimeInNanos = System.nanoTime() - start;
+            runtimeInS = TimeUnit.NANOSECONDS.toSeconds(runtimeInNanos);
+            System.out.println("Runtime reading files in seconds: " + runtimeInS);
 
+            // instantiate new threadpool for calculation
             ExecutorService pool = Executors.newWorkStealingPool();
 
             System.out.println("> Calculation started");
+
+            // compare each two files
             for (int i = 0; i < size - 1; i++) {
                 for (int j = i + 1; j < size; j++) {
-                    // compare each two files
 
                     // Initialise APTED.
                     APTED<TreeCostModel, NodeData> apted = new APTED<>(new TreeCostModel());
 
                     // Execute APTED.
-                    Runnable myTask = new MyTask(i, j, resultsFinal, apted, nodeData);
+                    Runnable myTask = new MyTask(i, j, resultsFinal, apted, nodeList);
                     pool.execute(myTask);
                 }
             }
@@ -111,31 +121,31 @@ public class CellTreeEditDistance implements java.io.Serializable{
 
         final long runtimeInNanos = System.nanoTime() - start;
         runtimeInS = TimeUnit.NANOSECONDS.toSeconds(runtimeInNanos);
-        System.out.println("Runtime in seconds: " + runtimeInS);
+        System.out.println("Runtime overall calculation in seconds: " + runtimeInS);
     }
 
     static class MyTask implements Runnable {
 
-        private final List<Node<NodeData>> nodeData;
+        private final List<Node<NodeData>> nodeList;
         private int i;
         private int j;
         private double[][] results;
         private APTED apted;
 
-        MyTask(int i, int j, double[][] results, APTED apted, List<Node<NodeData>> nodeData) {
+        MyTask(int i, int j, double[][] results, APTED apted, List<Node<NodeData>> nodeList) {
             this.i = i;
             this.j = j;
             this.results = results;
             this.apted = apted;
-            this.nodeData = nodeData;
+            this.nodeList = nodeList;
         }
 
         @Override
         public void run() {
 
-            float result = apted.computeEditDistance(nodeData.get(i), nodeData.get(j));
+            float result = apted.computeEditDistance(nodeList.get(i), nodeList.get(j));
 
-            //
+            // java arrays are threadsafe if indexes written to are different which is the case here
             results[i][j] = result;
 //            results[j][i] = result;
         }
