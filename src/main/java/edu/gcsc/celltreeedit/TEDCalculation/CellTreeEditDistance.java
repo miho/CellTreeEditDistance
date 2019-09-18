@@ -31,13 +31,17 @@ public class CellTreeEditDistance implements java.io.Serializable{
         return new TEDResult(results, fileNames);
     }
 
+
+
     private void compareFiles(@ParamInfo(name="Label", style="load-folder-dialog")int choice) {
 
         long runtimeInS;
         final long start = System.nanoTime();
 
         int size = files.length;
+        // results is global variable
         results = new double[size][size];
+        // resultsFinale is a local reference to global variable results
         final double[][] resultsFinal = results;
 
         List<Node<NodeData>> nodeData = Collections.synchronizedList(new ArrayList<>(size));
@@ -131,7 +135,7 @@ public class CellTreeEditDistance implements java.io.Serializable{
 
             float result = apted.computeEditDistance(nodeData.get(i), nodeData.get(j));
 
-            // TODO sync
+            //
             results[i][j] = result;
 //            results[j][i] = result;
         }

@@ -17,6 +17,9 @@ public final class AppProperties {
     // Default-Values, might get replaced by CommandLineArguments
     int calcType;
     int label = 18;
+    int quantityPerCall;
+    int rows;
+    int iteration;
     File baseDirectory = new File("");
     File metadataDirectory = new File("");
     File swcFileDirectory = new File("");
@@ -35,6 +38,12 @@ public final class AppProperties {
     public int getLabel() {
         return label;
     }
+
+    public int getQuantityPerCall() { return quantityPerCall; }
+
+    public int getRows() { return rows; }
+
+    public int getIteration() { return iteration; }
 
     public File getBaseDirectory() {
         return baseDirectory;

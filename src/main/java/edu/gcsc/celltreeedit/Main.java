@@ -48,33 +48,33 @@ public class Main {
      * Make sure structure of BaseDirectory is correct.
      * Structure of BaseDirectory:
      * ProgramData
-     *      /Data
-     *          /Metadata
-     *          /SWCFiles
-     *      /Output
-     *      /Test
-     *          /TestClustering
-     *          /TestSWCFiles
-     *          /TestWorkingDir
-     *      /WorkingDir
-     *      /someSWCFileForTEDCalculation.json
-     *
+     * /Data
+     * /Metadata
+     * /SWCFiles
+     * /Output
+     * /Test
+     * /TestClustering
+     * /TestSWCFiles
+     * /TestWorkingDir
+     * /WorkingDir
+     * /someSWCFileForTEDCalculation.json
+     * <p>
      * case=0: preprocess SWC-Directory.
-     *          BaseDirectory must be given.
+     * BaseDirectory must be given.
      * case=1: query Metadata with Lucene and create .json file.
-     *          BaseDirectory must be given. json-filename optional.
+     * BaseDirectory must be given. json-filename optional.
      * case=2: choose some files from filedialog, which should be used for TED-calculation. creates .json file.
-     *          destinationDirectory must be given. json-filename optional. CURRENTLY NOT SUPPORTED!
+     * destinationDirectory must be given. json-filename optional. CURRENTLY NOT SUPPORTED!
      * case=3: query Metadata by unique metadata. UniqueMetadata must be adjusted inside of the program in main-function. create .json file.
-     *          BaseDirectory must be given. json-filename optional.
+     * BaseDirectory must be given. json-filename optional.
      * case=4: calculate TED-matrix.
-     *          directory to json-file must be given. matrix-name optional. json-file must be located directly inside /ProgramData
+     * directory to json-file must be given. matrix-name optional. json-file must be located directly inside /ProgramData
      * case=5: calculate TED-matrix and create dendrogram.
-     *          directory to json-file must be given. matrix-name optional. json-file must be located directly inside /ProgramData
+     * directory to json-file must be given. matrix-name optional. json-file must be located directly inside /ProgramData
      * case=6: calculate Dendrograms for TED-matrices which have already been calculated.
-     *          BaseDirectory must be given.
+     * BaseDirectory must be given.
      * case=7: analyze clusterings of TED-matrices. shows relative partitioning errors of the result.
-     *          BaseDirectory must be given.
+     * BaseDirectory must be given.
      * case=8: do whatever is defined in the function-body. used for development
      *
      * @param args
@@ -82,7 +82,6 @@ public class Main {
      * @throws ParseException
      */
     public static void main(String[] args) throws IOException, ParseException {
-
 
 
         CommandLineParsing.parseArguments(args);
@@ -124,6 +123,12 @@ public class Main {
             case 11:
                 copySWCFilesOfJsonFilesToOutput();
                 break;
+            case 12:
+                calculateTEDMatrixOnCluster();
+                break;
+            case 13:
+                calculateRowsAndIterationsForTEDMatrixOnCluster();
+                break;
             default:
                 System.out.println("calcType not valid");
                 break;
@@ -132,6 +137,7 @@ public class Main {
 
     /**
      * Starts preprocessing of SWCDirectory
+     *
      * @throws IOException if no json-files containing neuronMetadata are found
      */
     private static void preprocessSWCDirectory() throws IOException {
@@ -147,6 +153,7 @@ public class Main {
 
     /**
      * Starts CLI for querying SWC-Files using Lucene
+     *
      * @throws IOException if no json-files containing neuronMetadata are found
      */
     private static void queryLucene() throws IOException {
@@ -293,6 +300,7 @@ public class Main {
     /**
      * Analyzes Clusterings of multiple matrices and displays the results.
      * TODO: Test and improve
+     *
      * @throws IOException
      */
     private static void analyzeClusteringOfTEDMatrices() throws IOException {
@@ -359,4 +367,98 @@ public class Main {
         }
     }
 
+    public static void calculateTEDMatrixOnCluster() throws IOException {
+        System.out.println("> Starting calculation of TEDMatrix on Cluster");
+
+        for (int iteration = 1; iteration <= 2; iteration++) {
+            File[] files = JsonUtils.parseJsonToFiles(appProperties.getFileInput());
+            int filesLength = files.length;
+            int noOfRows = appProperties.getRows();
+//            int iteration = appProperties.getIteration();
+
+            // logic for creating rowFiles
+            // row using matrix index
+            int row = (iteration - 1) * noOfRows;
+            int maxRow = row + (noOfRows - 1);
+            // overflow == 0 is fine if overflow > 0 end of matrix reached
+            int rowOverflow = maxRow + 1 - filesLength;
+            File[] rowFiles;
+            if (rowOverflow > 0) {
+                rowFiles = new File[noOfRows - rowOverflow];
+                noOfRows -= rowOverflow;
+                maxRow -= rowOverflow;
+            } else {
+                rowFiles = new File[noOfRows];
+            }
+            for (int i = 0; i < noOfRows; i++) {
+                rowFiles[i] = files[row + i];
+            }
+
+            // logic for creating colFiles
+            // col using matrix index
+            int col = row + 1;
+            int noOfCols = calculateNumberOfCols(filesLength, noOfRows, maxRow);
+            // overflow == 0 is fine if overflow > 0 end of matrix reached
+            int colOverflow = col + noOfCols - filesLength;
+            File[] colFiles = new File[noOfCols];
+            for (int i = 0; i < noOfCols; i++) {
+                if (col + i > filesLength - 1) {
+                    // write files from first columns into array
+                    colFiles[i] = files[col + i - filesLength];
+                } else {
+                    colFiles[i] = files[col + i];
+                }
+            }
+
+            System.out.println("blabla");
+
+        }
+
+        // calculateTED for two arrays
+        CellTreeEditDistance cellTreeEditDistance = new CellTreeEditDistance();
+
+        // write result from little matrix into big matrix depending on row, col and colOverflow
+
+
+
+    }
+
+    public static void calculateRowsAndIterationsForTEDMatrixOnCluster() throws IOException {
+        System.out.println("> Starting calculation of Quantity of Calls for TEDMatrix on Cluster");
+        int filesLength = JsonUtils.parseJsonToFiles(appProperties.getFileInput()).length;
+        int noOfRows = calculateNumberOfRowsPerCall(filesLength, appProperties.getQuantityPerCall());
+        int noOfIterations = calculateNumberOfIterations(filesLength, noOfRows);
+        System.out.println("Number of iterations needed: " + noOfIterations + ". Iterations start at 1");
+    }
+
+    // number of columns is fix and dependent on filesLength
+    private static Integer calculateNumberOfRowsPerCall(Integer filesLength, Integer quantityPerCall) {
+        if (filesLength % 2 == 0) {
+            // even
+            return Math.round((float) quantityPerCall / (float) ((filesLength) / 2));
+        } else {
+            //odd
+            return Math.round((float) quantityPerCall / (float) ((filesLength - 1) / 2));
+        }
+    }
+
+    // how many calls are necessary to go through whole matrix when noOfRows are used per call
+    private static Integer calculateNumberOfIterations(Integer filesLength, Integer noOfRows) {
+        return (filesLength % noOfRows == 0) ? filesLength / noOfRows : filesLength / noOfRows + 1;
+    }
+
+    private static Integer calculateNumberOfCols(Integer filesLength, Integer noOfRows, Integer maxRow) {
+        if (filesLength % 2 == 0) {
+            // even
+            // maxRow is matrix index
+            if (maxRow >= filesLength / 2) {
+                return filesLength / 2 + noOfRows - 2;
+            } else {
+                return filesLength / 2 + noOfRows - 1;
+            }
+        } else {
+            // odd
+            return (filesLength - 1) / 2 + noOfRows - 1;
+        }
+    }
 }

@@ -48,6 +48,15 @@ public class CommandLineParsing {
             if (hasOption(line, AppParameter.LABEL)) {
                 properties.label = extractInt(line, AppParameter.LABEL);
             }
+            if (hasOption(line, AppParameter.QUANTITY)) {
+                properties.quantityPerCall = extractInt(line, AppParameter.QUANTITY);
+            }
+            if (hasOption(line, AppParameter.ROWS)) {
+                properties.rows = extractInt(line, AppParameter.ROWS);
+            }
+            if (hasOption(line, AppParameter.ITERATION)) {
+                properties.iteration = extractInt(line, AppParameter.ITERATION);
+            }
             if (hasOption(line, AppParameter.RENAME_DENDROGRAM)) {
                 properties.renameDendrogram = true;
             }
@@ -147,6 +156,11 @@ public class CommandLineParsing {
             case 11:
                 if (!hasOption(line, AppParameter.BASE_DIRECTORY)) {
                     throw new ParseException("calc=11: Argument 'base' needed. All others will be ignored.");
+                }
+                break;
+            case 12:
+            case 13:
+                if (!hasOption(line, AppParameter.QUANTITY) || !hasOption(line, AppParameter.FILE_INPUT)) {
                 }
                 break;
             default:
