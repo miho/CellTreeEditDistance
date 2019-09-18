@@ -370,7 +370,7 @@ public class Main {
     public static void calculateTEDMatrixOnCluster() throws IOException {
         System.out.println("> Starting calculation of TEDMatrix on Cluster");
 
-        for (int iteration = 1; iteration <= 3; iteration++) {
+        for (int iteration = 1; iteration <= 2; iteration++) {
             File[] files = JsonUtils.parseJsonToFiles(appProperties.getFileInput());
             int filesLength = files.length;
             int noOfRows = appProperties.getRows();
@@ -416,26 +416,26 @@ public class Main {
             CellTreeEditDistance cellTreeEditDistance = new CellTreeEditDistance();
             double[][] result = cellTreeEditDistance.compareFilesForCluster(subFiles, noOfColsPerRow, appProperties.getLabel());
 
-            // write result from little matrix into big matrix depending on row, col, filesLength
-            double[][] resultToWrite = new double[filesLength][filesLength];
-            // go through result m is row
-            for (int m = 0; m < result.length; m++) {
-                int rowToWrite = row + m;
-                // go through columns of result. first column is empty so skip it
-                for (int n = 1; n < result[0].length; n++) {
-                    // col is already the column of the first comparison
-                    int colToWrite = col + n - 1;
-                    // is colToWrite within matrix boundaries? if not begin at the first column again
-                    if (colToWrite >= filesLength) {
-                        colToWrite -= filesLength;
-                        resultToWrite[colToWrite][rowToWrite] = result[m][n];
-                    } else {
-                        resultToWrite[rowToWrite][colToWrite] = result[m][n];
-                    }
-                }
-            }
-            System.out.println(result.length*result[0].length);
-            Utils.printMatrixToTxt(resultToWrite, Utils.getNeuronnamesForFiles(files), appProperties.getOutputDirectory(), "Matrix_" + iteration);
+            Utils.printClusterMatrixToTxt(result, appProperties.getOutputDirectory(), "Clustermatrix_" + iteration);
+//            // write result from little matrix into big matrix depending on row, col, filesLength
+//            double[][] resultToWrite = new double[filesLength][filesLength];
+//            // go through result m is row
+//            for (int m = 0; m < result.length; m++) {
+//                int rowToWrite = row + m;
+//                // go through columns of result. first column is empty so skip it
+//                for (int n = 1; n < result[0].length; n++) {
+//                    // col is already the column of the first comparison
+//                    int colToWrite = col + n - 1;
+//                    // is colToWrite within matrix boundaries? if not begin at the first column again
+//                    if (colToWrite >= filesLength) {
+//                        colToWrite -= filesLength;
+//                        resultToWrite[colToWrite][rowToWrite] = result[m][n];
+//                    } else {
+//                        resultToWrite[rowToWrite][colToWrite] = result[m][n];
+//                    }
+//                }
+//            }
+//            Utils.printMatrixToTxt(resultToWrite, Utils.getNeuronnamesForFiles(files), appProperties.getOutputDirectory(), "Matrix_" + iteration);
         }
     }
 

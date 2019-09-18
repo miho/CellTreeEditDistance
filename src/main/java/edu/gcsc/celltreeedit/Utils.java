@@ -90,6 +90,32 @@ public class Utils {
         return file;
     }
 
+    public static File printClusterMatrixToTxt(double[][] results, File outputDirectory, String matrixName) {
+        matrixName = (matrixName.isEmpty()) ? "Matrix" : FilenameUtils.removeExtension(matrixName);
+        int noOfRows = results.length;
+        int noOfCols = results[0].length;
+        File file = incrementFileNameIfNecessary(outputDirectory, matrixName + ".txt");
+        try {
+            FileWriter export = new FileWriter(file.getPath());
+            BufferedWriter br = new BufferedWriter(export);
+
+            for (int i = 0; i < noOfRows; i++) {
+                for (int j = 1; j < noOfCols; j++) {
+                    if (j < noOfCols - 1)
+                        br.write(results[i][j] + ";");
+                    else
+                        br.write(results[i][j] + "");
+                }
+                br.newLine();
+            }
+            br.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println("Matrix saved to: " + file.getPath());
+        return file;
+    }
+
 
     public static List<TEDResult> readMatricesFromTxt() throws IOException {
         // choose distancematrix files
