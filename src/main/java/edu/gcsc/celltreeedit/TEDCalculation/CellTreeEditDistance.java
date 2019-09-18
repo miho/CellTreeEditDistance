@@ -35,7 +35,7 @@ public class CellTreeEditDistance implements java.io.Serializable{
         return null;
     }
 
-    private void compareFiles(@ParamInfo(name="Label", style="load-folder-dialog")int choice) {
+    private void compareFiles(@ParamInfo(name="Label", style="load-folder-dialog")int labelId) {
 
         long runtimeInS;
         final long start = System.nanoTime();
@@ -53,40 +53,8 @@ public class CellTreeEditDistance implements java.io.Serializable{
         }
 
         try {
-
-            System.out.println("> Reading files");
-
-            // create Threadpool for reading files. newWorkStealingPool takes as much CPU, RAM as it can
-            ExecutorService filePool = Executors.newWorkStealingPool();
-
-            // fill nodeList with nodes (trees created with label)
-            for (int i = 0; i < size; i++) {
-
-                // make sure finalI never changes
-                final int finalI = i;
-
-                filePool.execute(() -> {
-                    Node<NodeData> t1 = nodeList.get(finalI);
-
-                    if (t1 == null) {
-                        TreeCreator one = null;
-                        try {
-                            one = new TreeCreator(new FileInputStream(files[finalI]));
-                        } catch (FileNotFoundException e) {
-                            e.printStackTrace();
-                        }
-                        t1 = one.createTree(choice);
-                        nodeList.set(finalI, t1);
-                    }
-                });
-            }
-            // prevent further adding of tasks to threadpool
-            filePool.shutdown();
-
-            // wait until reading is finished (all threads in threadpool are completed)
-            while(!filePool.awaitTermination(10L, TimeUnit.SECONDS)) {
-                System.out.println("Still waiting for file readers: " + new Date());
-            }
+            // read files and create trees with label
+            readFiles(nodeList, size, labelId);
             final long runtimeInNanos = System.nanoTime() - start;
             runtimeInS = TimeUnit.NANOSECONDS.toSeconds(runtimeInNanos);
             System.out.println("Runtime reading files in seconds: " + runtimeInS);
@@ -122,6 +90,42 @@ public class CellTreeEditDistance implements java.io.Serializable{
         final long runtimeInNanos = System.nanoTime() - start;
         runtimeInS = TimeUnit.NANOSECONDS.toSeconds(runtimeInNanos);
         System.out.println("Runtime overall calculation in seconds: " + runtimeInS);
+    }
+
+    private void readFiles(List<Node<NodeData>> nodeList, int size, int labelId) throws InterruptedException {
+        System.out.println("> Reading files");
+
+        // create Threadpool for reading files. newWorkStealingPool takes as much CPU, RAM as it can
+        ExecutorService filePool = Executors.newWorkStealingPool();
+
+        // fill nodeList with nodes (trees created with label)
+        for (int i = 0; i < size; i++) {
+
+            // make sure finalI never changes
+            final int finalI = i;
+
+            filePool.execute(() -> {
+                Node<NodeData> t1 = nodeList.get(finalI);
+
+                if (t1 == null) {
+                    TreeCreator one = null;
+                    try {
+                        one = new TreeCreator(new FileInputStream(files[finalI]));
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                    t1 = one.createTree(labelId);
+                    nodeList.set(finalI, t1);
+                }
+            });
+        }
+        // prevent further adding of tasks to threadpool
+        filePool.shutdown();
+
+        // wait until reading is finished (all threads in threadpool are completed)
+        while(!filePool.awaitTermination(10L, TimeUnit.SECONDS)) {
+            System.out.println("Still waiting for file readers: " + new Date());
+        }
     }
 
     static class MyTask implements Runnable {
