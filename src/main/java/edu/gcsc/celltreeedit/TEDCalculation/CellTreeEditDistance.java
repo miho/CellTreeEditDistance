@@ -5,6 +5,7 @@ import eu.mihosoft.ext.apted.distance.APTED;
 import eu.mihosoft.ext.apted.node.Node;
 import eu.mihosoft.vrl.annotation.ComponentInfo;
 import eu.mihosoft.vrl.annotation.ParamInfo;
+import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.*;
 import java.util.*;
@@ -31,8 +32,64 @@ public class CellTreeEditDistance implements java.io.Serializable{
         return new TEDResult(results, fileNames);
     }
 
-    public TEDResult compareFilesForCluster(File[] rowFiles, File[] colFiles, int labelId) {
-        return null;
+    public double[][] compareFilesForCluster(File[] files, Integer[] noOfColsPerRow, int labelId) {
+        int noOfRows = noOfColsPerRow.length;
+        this.files = files;
+
+        long runtimeInS;
+        final long start = System.nanoTime();
+
+        int size = files.length;
+        // results is global variable
+        results = new double[noOfRows][size];
+        // resultsFinal is a local reference to global variable results. it will always reference the original one no matter what happens
+        final double[][] resultsFinal = results;
+
+        // creating trees is also multithreaded. therefore nodeList must be synchronized. (really necessary? nodeList is initialized with null and every thread only writes to one specific entry)
+        List<Node<NodeData>> nodeList = Collections.synchronizedList(new ArrayList<>(size));
+        for(int i = 0; i < size;i++) {
+            nodeList.add(null);
+        }
+
+        try {
+            // read files and create trees with label
+            readFiles(nodeList, size, labelId);
+            final long runtimeInNanos = System.nanoTime() - start;
+            runtimeInS = TimeUnit.NANOSECONDS.toSeconds(runtimeInNanos);
+            System.out.println("Runtime reading files in seconds: " + runtimeInS);
+
+            // instantiate new threadpool for calculation
+            ExecutorService pool = Executors.newWorkStealingPool();
+
+            System.out.println("> Calculation started");
+
+            // compare each row file with fitting colFile
+            for (int i = 0; i < noOfRows; i++) {
+                for (int j = i + 1; j < noOfColsPerRow[i] + i + 1; j++) {
+
+                    // Initialise APTED.
+                    APTED<TreeCostModel, NodeData> apted = new APTED<>(new TreeCostModel());
+
+                    // Execute APTED.
+                    Runnable myTask = new MyTask(i, j, resultsFinal, apted, nodeList);
+                    pool.execute(myTask);
+                }
+            }
+
+            pool.shutdown();
+
+            while(!pool.awaitTermination(10L,TimeUnit.SECONDS)) {
+                System.out.println("Still waiting for results: " + new Date());
+            }
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        final long runtimeInNanos = System.nanoTime() - start;
+        runtimeInS = TimeUnit.NANOSECONDS.toSeconds(runtimeInNanos);
+        System.out.println("Runtime overall calculation in seconds: " + runtimeInS);
+        return resultsFinal;
     }
 
     private void compareFiles(@ParamInfo(name="Label", style="load-folder-dialog")int labelId) {
