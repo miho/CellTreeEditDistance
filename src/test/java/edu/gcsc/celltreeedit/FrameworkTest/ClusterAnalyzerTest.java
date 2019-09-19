@@ -1,16 +1,4 @@
-package edu.gcsc.celltreeedit.CodeEridTest;
-
-import edu.gcsc.celltreeedit.ClusterAnalysis.ClusteringAnalyzer;
-import edu.gcsc.celltreeedit.NeuronMetadata.NeuronMetadataMapper;
-import edu.gcsc.celltreeedit.NeuronMetadata.NeuronMetadataR;
-import edu.gcsc.celltreeedit.NeuronMetadata.UniqueMetadataContainer;
-import javafx.util.Pair;
-import org.junit.Test;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
+package edu.gcsc.celltreeedit.FrameworkTest;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

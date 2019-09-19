@@ -1,4 +1,4 @@
-package edu.gcsc.celltreeedit.CodeEridTest;
+package edu.gcsc.celltreeedit.FrameworkTest;
 
 import edu.gcsc.celltreeedit.TEDCalculation.NodeData;
 import edu.gcsc.celltreeedit.TEDCalculation.TreeCreator;
@@ -14,6 +14,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class LabelTest {
+
+    private static File labelTestDirectory = new File(BaseDirectory.getBaseDirectory().getPath() + "/LabelTest");
 
     // each row represents the labels of a node
     private Double[][] correctLabels = new Double[][]{
@@ -43,30 +45,27 @@ public class LabelTest {
 
     @Test
     public void checkLabels() throws IOException {
+//        for (int i = 1; i < 23; i++) {
+//            maxUlpsCheckLabels[i-1] = new MaxUlps();
+//        }
         for (int i = 1; i < 23; i++) {
-            maxUlpsCheckLabels[i-1] = new MaxUlps();
-        }
-        for (int i = 1; i < 23; i++) {
-            FileInputStream f = new FileInputStream(new File(BaseDirectory.baseDirectory.getPath() + "/Test/labelTest01.swc"));
+            FileInputStream f = new FileInputStream(new File(labelTestDirectory.getPath() + "/labelTest01.swc"));
             TreeCreator t = new TreeCreator(f);
             Node<NodeData> root = t.createTree(i);
             checkLabel(root, i, 0);
         }
-        System.out.println("checkLabels");
-        System.out.println("Label;noOfUlps;correctValue;wrongValue");
-        for (int i = 1; i < 23; i++) {
-            MaxUlps maxUlps = maxUlpsCheckLabels[i-1];
-            System.out.println(i + ";" + maxUlps.noOfUlps + ";" + maxUlps.correctValue + ";" + maxUlps.wrongValue);
-        }
+//        System.out.println("checkLabels");
+//        System.out.println("Label;noOfUlps;correctValue;wrongValue");
+//        for (int i = 1; i < 23; i++) {
+//            MaxUlps maxUlps = maxUlpsCheckLabels[i-1];
+//            System.out.println(i + ";" + maxUlps.noOfUlps + ";" + maxUlps.correctValue + ";" + maxUlps.wrongValue);
+//        }
     }
 
     // currentNode and index in preorder
     private int checkLabel(Node<NodeData> currentNode, int labelId, int nodeIndex) {
         assertTrue(Utils.doublesAlmostEqual(this.correctLabels[nodeIndex][labelId - 1], currentNode.getNodeData().getLabel(), 0d, 33));
-        maxUlpsCheckLabels[labelId - 1].updateMaxUlps(this.correctLabels[nodeIndex][labelId - 1], currentNode.getNodeData().getLabel());
-        if (labelId == 10) {
-            System.out.println(this.correctLabels[nodeIndex][labelId - 1] + " ||| " + currentNode.getNodeData().getLabel());
-        }
+//        maxUlpsCheckLabels[labelId - 1].updateMaxUlps(this.correctLabels[nodeIndex][labelId - 1], currentNode.getNodeData().getLabel());
 
         // if currentNode has no children return own index
         if (currentNode.getChildren() == null) {
@@ -84,12 +83,12 @@ public class LabelTest {
     @Test
     public void checkLabelsProgramatically() throws IOException {
 
-        for (int i = 1; i < 23; i++) {
-            maxUlpsCheckLabelsProgramatically[i-1] = new MaxUlps();
-        }
+//        for (int i = 1; i < 23; i++) {
+//            maxUlpsCheckLabelsProgramatically[i-1] = new MaxUlps();
+//        }
 
         TestNode testRoot = createTreeAndSWCFile(1L, 15, new double[]{1.329d, -2.7812d, 0.43d, 3.76d});
-        File savedFile = new File(BaseDirectory.baseDirectory.getPath() + "/WorkingDir/programaticSWCFile.swc");
+        File savedFile = new File(BaseDirectory.getWorkingDirectory().getPath() + "/programaticSWCFile.swc");
         for (int i = 1; i < 23; i++) {
             FileInputStream f = new FileInputStream(savedFile);
             TreeCreator t = new TreeCreator(f);
@@ -120,12 +119,12 @@ public class LabelTest {
             Node<NodeData> root = t.createTree(i);
             checkLabelProgramatically(testRoot, root, i);
         }
-        System.out.println("checkLabels");
-        System.out.println("Label;noOfUlps;correctValue;wrongValue");
-        for (int i = 1; i < 23; i++) {
-            MaxUlps maxUlps = maxUlpsCheckLabelsProgramatically[i-1];
-            System.out.println(i + ";" + maxUlps.noOfUlps + ";" + maxUlps.correctValue + ";" + maxUlps.wrongValue);
-        }
+//        System.out.println("checkLabels");
+//        System.out.println("Label;noOfUlps;correctValue;wrongValue");
+//        for (int i = 1; i < 23; i++) {
+//            MaxUlps maxUlps = maxUlpsCheckLabelsProgramatically[i-1];
+//            System.out.println(i + ";" + maxUlps.noOfUlps + ";" + maxUlps.correctValue + ";" + maxUlps.wrongValue);
+//        }
         savedFile.delete();
     }
 
@@ -222,7 +221,7 @@ public class LabelTest {
         } else {
             assertTrue(Utils.doublesAlmostEqual(testLabel, node.getNodeData().getLabel(), 0d, 37));
         }
-        maxUlpsCheckLabelsProgramatically[labelId - 1].updateMaxUlps(testLabel, node.getNodeData().getLabel());
+//        maxUlpsCheckLabelsProgramatically[labelId - 1].updateMaxUlps(testLabel, node.getNodeData().getLabel());
 
         // nunber of Children must be the same, prevent topology is false
         assertEquals(testNode.getChildren().size(), node.getChildren().size());
@@ -281,7 +280,7 @@ public class LabelTest {
         // create random Object with seed
         // randomly create number of children
 
-        File file = new File(BaseDirectory.baseDirectory.getPath() + "/WorkingDir/programaticSWCFile.swc");
+        File file = new File(BaseDirectory.getWorkingDirectory().getPath() + "/programaticSWCFile.swc");
 
         // stuff for writing to swc-File
         FileWriter export = new FileWriter(file.getPath());
@@ -336,7 +335,7 @@ public class LabelTest {
         this.br.newLine();
     }
 
-    private void createTreeRec(TestNode parentNode, int depth, double x, double y, double z, double r, int parentNodeNumber, boolean issecondChild) throws IOException {
+    private void createTreeRec(TestNode parentNode, int depth, double x, double y, double z, double r, int parentNodeNumber, boolean isSecondChild) throws IOException {
         depth += 1;
         if (depth > this.maxDepth) {
             return;
@@ -345,7 +344,7 @@ public class LabelTest {
         int noOfSingleNodes = getRandomNumberOfSingleNodes();
         for (int i = 0; i < noOfSingleNodes; i++) {
             this.nodeNumber += 1;
-            if (issecondChild) {
+            if (isSecondChild) {
                 x += this.nodeOffsets[2];
                 y += this.nodeOffsets[0];
                 z += this.nodeOffsets[1];
@@ -359,7 +358,7 @@ public class LabelTest {
         }
 
         this.nodeNumber += 1;
-        if (issecondChild) {
+        if (isSecondChild) {
             x += this.nodeOffsets[2];
             y += this.nodeOffsets[0];
             z += this.nodeOffsets[1];

@@ -1,4 +1,4 @@
-package edu.gcsc.celltreeedit.CodeEridTest;
+package edu.gcsc.celltreeedit.FrameworkTest;
 
 import edu.gcsc.celltreeedit.ClusterAnalysis.HungarianAlgorithm;
 import org.junit.Test;

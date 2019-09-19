@@ -1,4 +1,4 @@
-package edu.gcsc.celltreeedit.CodeEridTest;
+package edu.gcsc.celltreeedit.FrameworkTest;
 
 import edu.gcsc.celltreeedit.NeuronMetadata.NeuronMetadataMapper;
 import edu.gcsc.celltreeedit.NeuronMetadata.NeuronMetadataR;
@@ -14,9 +14,12 @@ import static org.junit.Assert.assertEquals;
 
 public class MetadataTest {
 
+    private static File metadataDirectory = new File(BaseDirectory.getBaseDirectory() + "/MetadataTest");
+    private static File swcFileDirectory = new File(metadataDirectory.getPath() + "/TestSWCFiles");
+
+
     @Test
     public void allMetadataTest() throws IOException {
-        File metadataDirectory = new File(BaseDirectory.baseDirectory.getPath() + "/Test");
         NeuronMetadataMapper neuronMetadataMapper = new NeuronMetadataMapper();
         Map<String, NeuronMetadataR> neuronMetadata = neuronMetadataMapper.mapAllFromMetadataDirectory(metadataDirectory);
 
@@ -62,8 +65,6 @@ public class MetadataTest {
 
     @Test
     public void existingMetadataTest() throws IOException {
-        File metadataDirectory = new File(BaseDirectory.baseDirectory.getPath() + "/Test");
-        File swcFileDirectory = new File(BaseDirectory.baseDirectory.getPath() + "/Test/TestSWCFiles");
         NeuronMetadataMapper neuronMetadataMapper = new NeuronMetadataMapper();
         Map<String, NeuronMetadataR> neuronMetadata = neuronMetadataMapper.mapExistingFromMetadataDirectory(metadataDirectory, swcFileDirectory);
 
@@ -108,7 +109,6 @@ public class MetadataTest {
 
     @Test
     public void uniqueMetadataTest() throws IOException {
-        File metadataDirectory = new File(BaseDirectory.baseDirectory.getPath() + "/Test");
         NeuronMetadataMapper neuronMetadataMapper = new NeuronMetadataMapper();
         Map<String, NeuronMetadataR> neuronMetadata = neuronMetadataMapper.mapAllFromMetadataDirectory(metadataDirectory);
 

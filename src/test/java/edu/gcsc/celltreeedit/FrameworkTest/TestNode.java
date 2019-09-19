@@ -1,4 +1,4 @@
-package edu.gcsc.celltreeedit.CodeEridTest;
+package edu.gcsc.celltreeedit.FrameworkTest;
 
 import java.util.ArrayList;
 import java.util.List;
