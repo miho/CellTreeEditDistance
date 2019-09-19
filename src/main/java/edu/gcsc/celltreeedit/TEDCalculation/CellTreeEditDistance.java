@@ -32,7 +32,80 @@ public class CellTreeEditDistance implements java.io.Serializable{
         return new TEDResult(results, fileNames);
     }
 
-    public double[][] compareFilesForCluster(File[] files, Integer[] noOfColsPerRow, int labelId) {
+    public TEDClusterResult compareFilesForCluster(File[] files, int noOfRows, int iteration, int labelId, File swcFileDirectory) {
+        int filesLength = files.length;
+        // logic to get noOfRows and noOfColsPerRow-Array
+        // row using matrix index
+        int row = (iteration - 1) * noOfRows;
+        int maxRow = row + (noOfRows - 1);
+        // overflow == 0 is fine if overflow > 0 end of matrix reached
+        int rowOverflow = maxRow + 1 - filesLength;
+        File firstRowFile = files[row];
+        Integer[] noOfColsPerRow;
+        if (rowOverflow > 0) {
+            noOfColsPerRow = new Integer[noOfRows - rowOverflow];
+            noOfRows -= rowOverflow;
+            maxRow -= rowOverflow;
+        } else {
+            noOfColsPerRow = new Integer[noOfRows];
+        }
+        for (int i = 0; i < noOfRows; i++) {
+            noOfColsPerRow[i] = calculateNumberOfColsForRow(filesLength, row + i);
+        }
+
+        // logic for creating subFiles
+        // col using matrix index
+        int col = row + 1;
+        int noOfCols = calculateNumberOfCols(filesLength, noOfRows, maxRow);
+        File[] subFiles = new File[noOfCols + 1];
+        subFiles[0] = firstRowFile;
+        for (int i = 0; i < noOfCols; i++) {
+            if (col + i > filesLength - 1) {
+                // write files from first columns into array
+                subFiles[i + 1] = files[col + i - filesLength];
+            } else {
+                subFiles[i + 1] = files[col + i];
+            }
+        }
+        for (int i = 0; i < subFiles.length; i++) {
+            subFiles[i] = new File(swcFileDirectory + "/" + subFiles[i].getPath());
+        }
+
+        compareFilesForCluster(subFiles, noOfColsPerRow, labelId);
+        return new TEDClusterResult(iteration, row, col, results);
+    }
+
+    private static Integer calculateNumberOfCols(Integer filesLength, Integer noOfRows, Integer maxRow) {
+        if (filesLength % 2 == 0) {
+            // even
+            // maxRow is matrix index
+            if (maxRow >= filesLength / 2) {
+                return filesLength / 2 + noOfRows - 2;
+            } else {
+                return filesLength / 2 + noOfRows - 1;
+            }
+        } else {
+            // odd
+            return (filesLength - 1) / 2 + noOfRows - 1;
+        }
+    }
+
+    private static Integer calculateNumberOfColsForRow(Integer filesLength, Integer row) {
+        if (filesLength % 2 == 0) {
+            // even
+            // row is matrix index
+            if (row >= filesLength / 2) {
+                return filesLength / 2 - 1;
+            } else {
+                return filesLength / 2;
+            }
+        } else {
+            // odd
+            return (filesLength - 1) / 2;
+        }
+    }
+
+    private double[][] compareFilesForCluster(File[] files, Integer[] noOfColsPerRow, int labelId) {
         int noOfRows = noOfColsPerRow.length;
         this.files = files;
 

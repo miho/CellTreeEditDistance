@@ -108,6 +108,6 @@ public class Tables extends JPanel implements Serializable{
     }
 
     public void printTable(File outputDirectory, String filename) {
-        Utils.printTableToTXT(this.table, outputDirectory, filename);
+        Utils.printTableToTxt(this.table, outputDirectory, filename);
     }
 }

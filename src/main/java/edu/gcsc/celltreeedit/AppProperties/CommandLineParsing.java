@@ -164,12 +164,17 @@ public class CommandLineParsing {
                 }
                 break;
             case 13:
-                if (!hasOption(line, AppParameter.BASE_DIRECTORY) || !hasOption(line, AppParameter.FILE_INPUT) || !hasOption(line, AppParameter.QUANTITY)) {
-                    throw new ParseException("calc=13: Argument 'base', 'fileInput' and 'quantity' needed. All others will be ignored.");
+                if (!hasOption(line, AppParameter.BASE_DIRECTORY) || !hasOption(line, AppParameter.FILE_INPUT) || !hasOption(line, AppParameter.ROWS) || !hasOption(line, AppParameter.ITERATION)) {
+                    throw new ParseException("calc=13: Argument 'base', 'fileInput', 'rows' and 'iteration' needed. All others will be ignored.");
+                }
+                break;
+            case 14:
+                if (!hasOption(line, AppParameter.BASE_DIRECTORY) || !hasOption(line, AppParameter.FILE_INPUT)) {
+                    throw new ParseException("calc=14: Argument 'base', 'fileInput' and 'quantity' needed. All others will be ignored.");
                 }
                 break;
             default:
-                throw new ParseException("'calc' can only have value between 0 and 13");
+                throw new ParseException("'calc' can only have value between 0 and 14");
         }
     }
 }

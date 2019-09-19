@@ -12,7 +12,9 @@ import edu.gcsc.celltreeedit.NeuronMetadata.NeuronMetadataMapper;
 import edu.gcsc.celltreeedit.NeuronMetadata.NeuronMetadataR;
 import edu.gcsc.celltreeedit.NeuronMetadata.UniqueMetadataContainer;
 import edu.gcsc.celltreeedit.TEDCalculation.CellTreeEditDistance;
+import edu.gcsc.celltreeedit.TEDCalculation.TEDClusterResult;
 import edu.gcsc.celltreeedit.TEDCalculation.TEDResult;
+import javafx.scene.control.Cell;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FilenameUtils;
 
@@ -127,6 +129,9 @@ public class Main {
                 calculateTEDMatrixOnCluster();
                 break;
             case 13:
+                reassembleClusterMatricesToTxt();
+                break;
+            case 14:
                 calculateRowsAndIterationsForTEDMatrixOnCluster();
                 break;
             default:
@@ -370,73 +375,17 @@ public class Main {
     public static void calculateTEDMatrixOnCluster() throws IOException {
         System.out.println("> Starting calculation of TEDMatrix on Cluster");
 
-        for (int iteration = 1; iteration <= 2; iteration++) {
-            File[] files = JsonUtils.parseJsonToFiles(appProperties.getFileInput());
-            int filesLength = files.length;
-            int noOfRows = appProperties.getRows();
-//            int iteration = appProperties.getIteration();
+        File[] files = JsonUtils.parseJsonToFiles(appProperties.getFileInput());
+        CellTreeEditDistance cellTreeEditDistance = new CellTreeEditDistance();
+        TEDClusterResult tedClusterResult = cellTreeEditDistance.compareFilesForCluster(files, appProperties.getRows(), appProperties.getIteration(), appProperties.getLabel(), appProperties.getSwcFileDirectory());
 
-            // logic to get noOfRows and noOfColsPerRow-Array
-            // row using matrix index
-            int row = (iteration - 1) * noOfRows;
-            int maxRow = row + (noOfRows - 1);
-            // overflow == 0 is fine if overflow > 0 end of matrix reached
-            int rowOverflow = maxRow + 1 - filesLength;
-            File firstRowFile = files[row];
-            Integer[] noOfColsPerRow;
-            if (rowOverflow > 0) {
-                noOfColsPerRow = new Integer[noOfRows - rowOverflow];
-                noOfRows -= rowOverflow;
-                maxRow -= rowOverflow;
-            } else {
-                noOfColsPerRow = new Integer[noOfRows];
-            }
-            for (int i = 0; i < noOfRows; i++) {
-                noOfColsPerRow[i] = calculateNumberOfColsForRow(filesLength, row + i);
-            }
+        Utils.printClusterMatrixToTxt(tedClusterResult, appProperties.getFileInput(), appProperties.getOutputDirectory(), "Clustermatrix_" + appProperties.getIteration());
+    }
 
-            // logic for creating subFiles
-            // col using matrix index
-            int col = row + 1;
-            int noOfCols = calculateNumberOfCols(filesLength, noOfRows, maxRow);
-            File[] subFiles = new File[noOfCols + 1];
-            subFiles[0] = firstRowFile;
-            for (int i = 0; i < noOfCols; i++) {
-                if (col + i > filesLength - 1) {
-                    // write files from first columns into array
-                    subFiles[i + 1] = files[col + i - filesLength];
-                } else {
-                    subFiles[i + 1] = files[col + i];
-                }
-            }
-            for (int i = 0; i < subFiles.length; i++) {
-                subFiles[i] = new File(appProperties.getSwcFileDirectory() + "/" + subFiles[i].getPath());
-            }
-            // calculateTED for two arrays
-            CellTreeEditDistance cellTreeEditDistance = new CellTreeEditDistance();
-            double[][] result = cellTreeEditDistance.compareFilesForCluster(subFiles, noOfColsPerRow, appProperties.getLabel());
-
-            Utils.printClusterMatrixToTxt(result, appProperties.getOutputDirectory(), "Clustermatrix_" + iteration);
-//            // write result from little matrix into big matrix depending on row, col, filesLength
-//            double[][] resultToWrite = new double[filesLength][filesLength];
-//            // go through result m is row
-//            for (int m = 0; m < result.length; m++) {
-//                int rowToWrite = row + m;
-//                // go through columns of result. first column is empty so skip it
-//                for (int n = 1; n < result[0].length; n++) {
-//                    // col is already the column of the first comparison
-//                    int colToWrite = col + n - 1;
-//                    // is colToWrite within matrix boundaries? if not begin at the first column again
-//                    if (colToWrite >= filesLength) {
-//                        colToWrite -= filesLength;
-//                        resultToWrite[colToWrite][rowToWrite] = result[m][n];
-//                    } else {
-//                        resultToWrite[rowToWrite][colToWrite] = result[m][n];
-//                    }
-//                }
-//            }
-//            Utils.printMatrixToTxt(resultToWrite, Utils.getNeuronnamesForFiles(files), appProperties.getOutputDirectory(), "Matrix_" + iteration);
-        }
+    public static void reassembleClusterMatricesToTxt() throws IOException {
+        File[] files = JsonUtils.parseJsonToFiles(appProperties.getFileInput());
+        File[] matrixFiles = Utils.chooseTxtFiles();
+        Utils.reassembleClusterMatrixToTxt(matrixFiles, files, appProperties.getOutputDirectory(), "ReassembledMatrix");
     }
 
     public static void calculateRowsAndIterationsForTEDMatrixOnCluster() throws IOException {
@@ -462,35 +411,5 @@ public class Main {
     // how many calls are necessary to go through whole matrix when noOfRows are used per call
     private static Integer calculateNumberOfIterations(Integer filesLength, Integer noOfRows) {
         return (filesLength % noOfRows == 0) ? filesLength / noOfRows : filesLength / noOfRows + 1;
-    }
-
-    private static Integer calculateNumberOfCols(Integer filesLength, Integer noOfRows, Integer maxRow) {
-        if (filesLength % 2 == 0) {
-            // even
-            // maxRow is matrix index
-            if (maxRow >= filesLength / 2) {
-                return filesLength / 2 + noOfRows - 2;
-            } else {
-                return filesLength / 2 + noOfRows - 1;
-            }
-        } else {
-            // odd
-            return (filesLength - 1) / 2 + noOfRows - 1;
-        }
-    }
-
-    private static Integer calculateNumberOfColsForRow(Integer filesLength, Integer row) {
-        if (filesLength % 2 == 0) {
-            // even
-            // row is matrix index
-            if (row >= filesLength / 2) {
-                return filesLength / 2 - 1;
-            } else {
-                return filesLength / 2;
-            }
-        } else {
-            // odd
-            return (filesLength - 1) / 2;
-        }
     }
 }

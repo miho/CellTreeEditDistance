@@ -2,6 +2,7 @@ package edu.gcsc.celltreeedit;
 
 import edu.gcsc.celltreeedit.NeuronMetadata.NeuronMetadataR;
 import edu.gcsc.celltreeedit.NeuronMetadata.UniqueMetadataContainer;
+import edu.gcsc.celltreeedit.TEDCalculation.TEDClusterResult;
 import edu.gcsc.celltreeedit.TEDCalculation.TEDResult;
 import org.apache.commons.io.FilenameUtils;
 
@@ -43,7 +44,7 @@ public class Utils {
     /**
      * @return an array of txt-files from filedialog
      */
-    private static File[] chooseTxtFiles() {
+    public static File[] chooseTxtFiles() {
         return chooseFiles("txt");
     }
 
@@ -90,21 +91,29 @@ public class Utils {
         return file;
     }
 
-    public static File printClusterMatrixToTxt(double[][] results, File outputDirectory, String matrixName) {
+    public static File printClusterMatrixToTxt(TEDClusterResult tedClusterResult, File fileInput, File outputDirectory, String matrixName) {
         matrixName = (matrixName.isEmpty()) ? "Matrix" : FilenameUtils.removeExtension(matrixName);
-        int noOfRows = results.length;
-        int noOfCols = results[0].length;
+        double[][] result = tedClusterResult.getMatrix();
+        int noOfRows = result.length;
+        int noOfCols = result[0].length;
         File file = incrementFileNameIfNecessary(outputDirectory, matrixName + ".txt");
         try {
             FileWriter export = new FileWriter(file.getPath());
             BufferedWriter br = new BufferedWriter(export);
-
+            br.write("# " + fileInput.getName());
+            br.newLine();
+            br.write("iteration=" + tedClusterResult.getIteration());
+            br.newLine();
+            br.write("row=" + tedClusterResult.getRow());
+            br.newLine();
+            br.write("col=" + tedClusterResult.getCol());
+            br.newLine();
             for (int i = 0; i < noOfRows; i++) {
-                for (int j = 1; j < noOfCols; j++) {
+                for (int j = 0; j < noOfCols; j++) {
                     if (j < noOfCols - 1)
-                        br.write(results[i][j] + ";");
+                        br.write(result[i][j] + ";");
                     else
-                        br.write(results[i][j] + "");
+                        br.write(result[i][j] + "");
                 }
                 br.newLine();
             }
@@ -114,6 +123,78 @@ public class Utils {
         }
         System.out.println("Matrix saved to: " + file.getPath());
         return file;
+    }
+
+    public static void reassembleClusterMatrixToTxt(File[] matrixFiles, File[] files, File outputDirectory, String matrixname) throws IOException {
+
+        int filesLength = files.length;
+        String[] filenames = Utils.getNeuronnamesForFiles(files);
+
+        // write result from little matrix into big matrix depending on row, col, filesLength
+        double[][] reassembledMatrix = new double[filesLength][filesLength];
+
+        for (File matrixFile : matrixFiles) {
+            TEDClusterResult tedClusterResult = readClusterMatrixFromTxt(matrixFile);
+            double[][] result = tedClusterResult.getMatrix();
+            int row = tedClusterResult.getRow();
+            int col = tedClusterResult.getCol();
+            // go through result m is row
+            for (int m = 0; m < result.length; m++) {
+                int rowToWrite = row + m;
+                // go through columns of result. first column is empty so skip it
+                for (int n = 1; n < result[0].length; n++) {
+                    if (result[m][n] == 0d) {
+                        continue;
+                    }
+                    // col is already the column of the first comparison
+                    int colToWrite = col + n - 1;
+                    // is colToWrite within matrix boundaries? if not begin at the first column again
+                    if (colToWrite >= filesLength) {
+                        colToWrite -= filesLength;
+                        reassembledMatrix[colToWrite][rowToWrite] = result[m][n];
+                    } else {
+                        reassembledMatrix[rowToWrite][colToWrite] = result[m][n];
+                    }
+                }
+            }
+        }
+        printMatrixToTxt(reassembledMatrix, filenames, outputDirectory, matrixname);
+    }
+
+    public static TEDClusterResult readClusterMatrixFromTxt(File matrixFile) throws IOException {
+
+        Scanner scanner = new Scanner(matrixFile);
+        String line = scanner.nextLine();
+        while (line.startsWith("#")) {
+            line = scanner.nextLine();
+        }
+        int iteration = Integer.parseInt(line.replace("iteration=", ""));
+        line = scanner.nextLine();
+        int row = Integer.parseInt(line.replace("row=", ""));
+        line = scanner.nextLine();
+        int col = Integer.parseInt(line.replace("col=", ""));
+        line = scanner.nextLine();
+        String[] splittedline = line.split(";");
+        int size = splittedline.length;
+        double[][] matrix = new double[size][size];
+        for (int i = 0; i < size; i++) {
+            matrix[0][i] = Double.parseDouble(splittedline[i]);
+        }
+        int i = 1;
+        while (scanner.hasNextLine()) {
+            line = scanner.nextLine();
+            splittedline = line.split(";");
+            for (int j = 0; j < splittedline.length; j++) {
+                matrix[i][j] = Double.parseDouble(splittedline[j]);
+            }
+            i++;
+        }
+        scanner.close();
+        double[][] newmatrix = new double[i][size];
+        for (int k = 0; k < newmatrix.length; k++) {
+            newmatrix[k] = matrix[k];
+        }
+        return new TEDClusterResult(iteration, row, col, newmatrix);
     }
 
 
@@ -184,7 +265,7 @@ public class Utils {
         return new ArrayList<>(clusterMap.values());
     }
 
-    public static void printTableToTXT(JTable table, File outputDirectory, String filename) {
+    public static void printTableToTxt(JTable table, File outputDirectory, String filename) {
         int rowSize = table.getRowCount();
         int colSize = table.getColumnCount();
 
