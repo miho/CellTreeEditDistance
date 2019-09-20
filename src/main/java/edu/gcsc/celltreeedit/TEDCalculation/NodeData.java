@@ -105,4 +105,13 @@ public class NodeData implements Serializable{
         this.posZ = posZ;
         this.radius = radius;
     }
+
+    public void clearLabelCalculationProperties() {
+        this.index = null;
+        this.parent = null;
+        this.posX = null;
+        this.posY = null;
+        this.posZ = null;
+        this.radius = null;
+    }
 }

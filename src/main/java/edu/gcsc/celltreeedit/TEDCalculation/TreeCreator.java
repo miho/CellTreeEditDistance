@@ -237,6 +237,10 @@ public class TreeCreator implements InputParser <NodeData> , Serializable {
         if (label > 24) {
             throw new RuntimeException("Label is not valid");
         }
+
+        for (Node<NodeData> node : nodeList) {
+            node.getNodeData().clearLabelCalculationProperties();
+        }
     }
 
     private double calculateLengthAtIndex(Node<NodeData> currentNode, int j) {

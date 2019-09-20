@@ -11,7 +11,6 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Created by Erid on 16.02.2018.
@@ -137,10 +136,8 @@ public class CellTreeEditDistance implements java.io.Serializable{
             System.out.println("> Calculation started");
 
             // compare each row file with fitting colFile
-            long noOfCalculations = 0L;
             for (int i = 0; i < noOfRows; i++) {
                 for (int j = i + 1; j < noOfColsPerRow[i] + i + 1; j++) {
-                    noOfCalculations +=1;
 
                     // Initialise APTED.
                     APTED<TreeCostModel, NodeData> apted = new APTED<>(new TreeCostModel());
@@ -154,7 +151,7 @@ public class CellTreeEditDistance implements java.io.Serializable{
             pool.shutdown();
 
             while(!pool.awaitTermination(300L,TimeUnit.SECONDS)) {
-                System.out.println("Still waiting for results: " + new Date() + " | Progress: " + MyTask.completedCalculations + " / " + noOfCalculations);
+                System.out.println("Still waiting for results: " + new Date());
             }
 
         } catch (InterruptedException e) {
@@ -262,8 +259,6 @@ public class CellTreeEditDistance implements java.io.Serializable{
 
     static class MyTask implements Runnable {
 
-        private static AtomicLong completedCalculations = new AtomicLong(0);
-
         private final List<Node<NodeData>> nodeList;
         private int i;
         private int j;
@@ -286,7 +281,6 @@ public class CellTreeEditDistance implements java.io.Serializable{
             // java arrays are threadsafe if indexes written to are different which is the case here
             results[i][j] = result;
 //            results[j][i] = result;
-            completedCalculations.getAndIncrement();
         }
     }
 }
