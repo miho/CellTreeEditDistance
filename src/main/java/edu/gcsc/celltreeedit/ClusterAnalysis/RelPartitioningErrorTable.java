@@ -18,7 +18,7 @@ public class RelPartitioningErrorTable extends JPanel implements Serializable {
 
     JTable table;
 
-    public RelPartitioningErrorTable(double[][] relPartitioningErrors, List<UniqueMetadataContainer.UniqueMetadata> uniqueMetadata) {
+    public RelPartitioningErrorTable(float[][] relPartitioningErrors, List<UniqueMetadataContainer.UniqueMetadata> uniqueMetadata) {
 
         // decimal format and rounding
         DecimalFormat df = new DecimalFormat("#.##");

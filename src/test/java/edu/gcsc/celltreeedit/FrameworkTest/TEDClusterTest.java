@@ -164,8 +164,8 @@ public class TEDClusterTest {
     }
 
     private void checkResultEquality(TEDResult tedResult1, TEDResult tedResult2) {
-        double[][] matrix1 = tedResult1.getDistanceMatrix();
-        double[][] matrix2 = tedResult2.getDistanceMatrix();
+        float[][] matrix1 = tedResult1.getDistanceMatrix();
+        float[][] matrix2 = tedResult2.getDistanceMatrix();
         String[] filenames1 = tedResult1.getFileNames();
         String[] filenames2 = tedResult2.getFileNames();
         assertEquals(matrix1.length, matrix2.length);

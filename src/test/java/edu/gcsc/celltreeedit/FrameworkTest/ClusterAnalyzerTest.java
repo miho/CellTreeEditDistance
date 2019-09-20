@@ -80,16 +80,16 @@ public class ClusterAnalyzerTest {
 //        // check entries relating to uniqueMetadata1
 //    }
 
-    private double[][] distanceMatrix = new double[][]{
-            {0d, 1d, 9d, 9d, 1d, 9d, 9d, 9d, 1d},
-            {1d, 0d, 9d, 9d, 1d, 9d, 9d, 9d, 1d},
-            {9d, 9d, 0d, 1d, 9d, 1d, 9d, 9d, 9d},
-            {9d, 9d, 1d, 0d, 9d, 1d, 9d, 9d, 9d},
-            {1d, 1d, 9d, 9d, 0d, 9d, 9d, 9d, 1d},
-            {9d, 9d, 1d, 1d, 9d, 0d, 9d, 9d, 9d},
-            {9d, 9d, 9d, 9d, 9d, 9d, 0d, 1d, 9d},
-            {9d, 9d, 9d, 9d, 9d, 9d, 1d, 0d, 9d},
-            {1d, 1d, 9d, 9d, 1d, 9d, 9d, 9d, 0d}
+    private float[][] distanceMatrix = new float[][]{
+            {0f, 1f, 9f, 9f, 1f, 9f, 9f, 9f, 1f},
+            {1f, 0f, 9f, 9f, 1f, 9f, 9f, 9f, 1f},
+            {9f, 9f, 0f, 1f, 9f, 1f, 9f, 9f, 9f},
+            {9f, 9f, 1f, 0f, 9f, 1f, 9f, 9f, 9f},
+            {1f, 1f, 9f, 9f, 0f, 9f, 9f, 9f, 1f},
+            {9f, 9f, 1f, 1f, 9f, 0f, 9f, 9f, 9f},
+            {9f, 9f, 9f, 9f, 9f, 9f, 0f, 1f, 9f},
+            {9f, 9f, 9f, 9f, 9f, 9f, 1f, 0f, 9f},
+            {1f, 1f, 9f, 9f, 1f, 9f, 9f, 9f, 0f}
     };
 
     private String[] fileNames = new String[]{

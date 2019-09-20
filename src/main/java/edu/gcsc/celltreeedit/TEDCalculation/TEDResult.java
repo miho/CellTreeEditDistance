@@ -2,27 +2,27 @@ package edu.gcsc.celltreeedit.TEDCalculation;
 
 public class TEDResult {
 
-    private double[][] distanceMatrix;
+    private float[][] distanceMatrix;
     private String[] fileNames;
     private String name;
 
-    public TEDResult(double[][] distanceMatrix, String[] fileNames, String name) {
+    public TEDResult(float[][] distanceMatrix, String[] fileNames, String name) {
         this.distanceMatrix = distanceMatrix;
         this.fileNames = fileNames;
         this.name = name;
     }
 
-    public TEDResult(double[][] distanceMatrix, String[] fileNames) {
+    public TEDResult(float[][] distanceMatrix, String[] fileNames) {
         this.distanceMatrix = distanceMatrix;
         this.fileNames = fileNames;
         this.name = "";
     }
 
-    public double[][] getDistanceMatrix() {
+    public float[][] getDistanceMatrix() {
         return distanceMatrix;
     }
 
-    public void setDistanceMatrix(double[][] distanceMatrix) {
+    public void setDistanceMatrix(float[][] distanceMatrix) {
         this.distanceMatrix = distanceMatrix;
     }
 

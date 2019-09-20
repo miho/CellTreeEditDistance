@@ -10,7 +10,7 @@ import java.io.Serializable;
 public class Tables extends JPanel implements Serializable{
 
     JTable table;
-    public Tables(String[] names, double[][] result){
+    public Tables(String[] names, float[][] result){
 
         table =new JTable(names.length+1,names.length+1);
         for(int i=0; i<names.length;i++){

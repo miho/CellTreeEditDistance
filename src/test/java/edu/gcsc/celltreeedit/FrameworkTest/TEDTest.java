@@ -60,7 +60,6 @@ public class TEDTest {
             float expectedResultFloat = (float) expectedResult;
             assertEquals(expectedResultFloat, result, deltaBySize(expectedResultFloat, 1e-6f));
 
-
             // change order of trees
             apted = new APTED<>(new TreeCostModel());
             result = apted.computeEditDistance(root2, root1);
@@ -68,7 +67,7 @@ public class TEDTest {
             for (Node<NodeData> node: t1.getNodeList()) {
                 expectedResult += node.getNodeData().getLabel();
             }
-            expectedResultFloat = (float) expectedResult;
+            expectedResultFloat = (float)expectedResult;
             assertEquals(expectedResultFloat, result, deltaBySize(expectedResultFloat, 1e-6f));
         }
     }
@@ -226,8 +225,6 @@ public class TEDTest {
     @Test
     public void checkTEDSameTrees1lengthChanged() throws IOException {
 
-        int noOfNodes = 7;
-
         double[] v1 = new double[]{-2.1, -1, 0.1};
         double r1 = 1.6;
 
@@ -263,7 +260,7 @@ public class TEDTest {
         double diffAngleOfSegment = Math.abs(newAngleOfSegment - oldAngleOfSegment);
 
         float result;
-        double testTED;
+        float testTED;
 
         List<Integer> implementedLabelsTest = new ArrayList<>(Arrays.asList(1, 2, 3, 4, 5, 9, 10, 15, 16, 22));
         for (int i : implementedLabelsTest) {
@@ -283,37 +280,37 @@ public class TEDTest {
                 case 1:
                 case 2:
                     // must be 0 because same topology
-                    testTED = 0d;
+                    testTED = 0f;
                     break;
                 case 3:
                     // must be diffLengthOfSegment because only label of this node has to be renamed by the difference
-                    testTED = diffLengthOfSegment;
+                    testTED = (float)diffLengthOfSegment;
                     break;
                 case 4:
                     // must be diffLengthOfSegment because only this length to soma has changed
-                    testTED = diffLengthOfSegment;
+                    testTED = (float)diffLengthOfSegment;
                     break;
                 case 5:
                     // must be number of nodes (including node itself) that are ancestors of node with changed length * diffLengthOfSegment. because ancestor labels changed as well
-                    testTED = 3 * diffLengthOfSegment;
+                    testTED = 3 * (float)diffLengthOfSegment;
                     break;
                 case 9:
                     // must be diffVolumeOfSegment because only this volume to soma has changed
-                    testTED = diffVolumeOfSegment;
+                    testTED = (float)diffVolumeOfSegment;
                     break;
                     // case 10 would not work because difference is to small and would be lost because of floatingpoint precision
                 case 15:
                     // must be diffSurfaceOfSegment because only this surface to soma has changed
-                    testTED = diffSurfaceOfSegment;
+                    testTED = (float)diffSurfaceOfSegment;
                     break;
                 case 22:
                     // must be diffAngleOfSegment because only angle of node 4 has changed
-                    testTED = diffAngleOfSegment;
+                    testTED = (float)diffAngleOfSegment;
                     break;
                 default:
                     break;
             }
-            float testTEDFloat = (float) testTED;
+            float testTEDFloat = testTED;
             assertEquals(testTEDFloat, result, deltaBySize(testTEDFloat, 1e-5f));
         }
     }
@@ -326,7 +323,7 @@ public class TEDTest {
         double surfaceOfSegment = 2 * Math.PI * 1 * lengthOfSegment;
 
         float result;
-        double testTED;
+        float testTED;
 
         for (int i = 1; i < 23; i++) {
             FileInputStream f1 = new FileInputStream(new File(tedTestDirectory.getPath() + "/TEDTest01_superSimpleTree.swc"));
@@ -343,29 +340,29 @@ public class TEDTest {
             testTED = 0;
             switch (i) {
                 case 1:
-                    testTED = 1d;
+                    testTED = 1f;
                     break;
                 case 2:
                     // all nodes have to be renamed and one node with label 1/4 has to be inserted
-                    testTED = 1d/4 + 3* (1d/3 - 1d/4);
+                    testTED = 1f/4 + 3* (1f/3 - 1f/4);
                     break;
                 case 3:
                 case 4:
                     // cost for node insert
-                    testTED = lengthOfSegment;
+                    testTED = (float)lengthOfSegment;
                     break;
                 case 9:
                 case 10:
                     // cost for node insert
-                    testTED = volumeOfSegment;
+                    testTED = (float)volumeOfSegment;
                     break;
                 case 15:
                 case 16:
                     // cost for node insert
-                    testTED = surfaceOfSegment;
+                    testTED = (float)surfaceOfSegment;
                     break;
                 case 22:
-                    testTED = 0d;
+                    testTED = 0f;
                     break;
             }
             if (i == 1 || i == 2 || i == 3 || i == 4 || i == 9 || i == 10 || i == 15 || i == 16 || i == 22) {

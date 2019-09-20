@@ -4,10 +4,10 @@ public class TEDClusterResult {
     int iteration;
     int row;
     int col;
-    double[][] matrix;
+    float[][] matrix;
 
 
-    public TEDClusterResult(int iteration, int row, int col, double[][] matrix) {
+    public TEDClusterResult(int iteration, int row, int col, float[][] matrix) {
         this.iteration = iteration;
         this.row = row;
         this.col = col;
@@ -26,7 +26,7 @@ public class TEDClusterResult {
         return col;
     }
 
-    public double[][] getMatrix() {
+    public float[][] getMatrix() {
         return matrix;
     }
 }

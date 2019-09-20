@@ -25,7 +25,7 @@ public class Clustering {
 
     private Cluster rootCluster;
 
-    public void createCluster(double[][] distanceMatrix, String[] filenames) {
+    public void createCluster(float[][] distanceMatrix, String[] filenames) {
         ClusteringAlgorithm alg = new DefaultClusteringAlgorithm();
         this.rootCluster = alg.performClustering(distanceMatrix, filenames,
                 new WardLinkageStrategy());

@@ -22,7 +22,7 @@ import java.util.concurrent.atomic.AtomicLong;
 public class CellTreeEditDistance implements java.io.Serializable{
     private static final long serialVersionUID = 1L;
 
-    private double[][] results;
+    private float[][] results;
     private File[] files;
 
     public TEDResult compareFilesFromFiles(File[] files, int labelId) {
@@ -105,7 +105,7 @@ public class CellTreeEditDistance implements java.io.Serializable{
         }
     }
 
-    private double[][] compareFilesForCluster(File[] files, Integer[] noOfColsPerRow, int labelId) {
+    private float[][] compareFilesForCluster(File[] files, Integer[] noOfColsPerRow, int labelId) {
         int noOfRows = noOfColsPerRow.length;
         this.files = files;
 
@@ -114,9 +114,9 @@ public class CellTreeEditDistance implements java.io.Serializable{
 
         int size = files.length;
         // results is global variable
-        results = new double[noOfRows][size];
+        results = new float[noOfRows][size];
         // resultsFinal is a local reference to global variable results. it will always reference the original one no matter what happens
-        final double[][] resultsFinal = results;
+        final float[][] resultsFinal = results;
 
         // creating trees is also multithreaded. therefore nodeList must be synchronized. (really necessary? nodeList is initialized with null and every thread only writes to one specific entry)
         List<Node<NodeData>> nodeList = Collections.synchronizedList(new ArrayList<>(size));
@@ -174,9 +174,9 @@ public class CellTreeEditDistance implements java.io.Serializable{
 
         int size = files.length;
         // results is global variable
-        results = new double[size][size];
+        results = new float[size][size];
         // resultsFinal is a local reference to global variable results. it will always reference the original one no matter what happens
-        final double[][] resultsFinal = results;
+        final float[][] resultsFinal = results;
 
         // creating trees is also multithreaded. therefore nodeList must be synchronized. (really necessary? nodeList is initialized with null and every thread only writes to one specific entry)
         List<Node<NodeData>> nodeList = Collections.synchronizedList(new ArrayList<>(size));
@@ -267,10 +267,10 @@ public class CellTreeEditDistance implements java.io.Serializable{
         private final List<Node<NodeData>> nodeList;
         private int i;
         private int j;
-        private double[][] results;
+        private float[][] results;
         private APTED apted;
 
-        MyTask(int i, int j, double[][] results, APTED apted, List<Node<NodeData>> nodeList) {
+        MyTask(int i, int j, float[][] results, APTED apted, List<Node<NodeData>> nodeList) {
             this.i = i;
             this.j = j;
             this.results = results;

@@ -66,7 +66,7 @@ public class Utils {
     //##################################################################################################################
     // IO-Functions for reading or writing files
 
-    public static File printMatrixToTxt(double[][] results, String[] filenames, File outputDirectory, String matrixName) {
+    public static File printMatrixToTxt(float[][] results, String[] filenames, File outputDirectory, String matrixName) {
         matrixName = (matrixName.isEmpty()) ? "Matrix" : FilenameUtils.removeExtension(matrixName);
         File file = incrementFileNameIfNecessary(outputDirectory, matrixName + ".txt");
         try {
@@ -93,7 +93,7 @@ public class Utils {
 
     public static File printClusterMatrixToTxt(TEDClusterResult tedClusterResult, File fileInput, File outputDirectory, String matrixName) {
         matrixName = (matrixName.isEmpty()) ? "Matrix" : FilenameUtils.removeExtension(matrixName);
-        double[][] result = tedClusterResult.getMatrix();
+        float[][] result = tedClusterResult.getMatrix();
         int noOfRows = result.length;
         int noOfCols = result[0].length;
         File file = incrementFileNameIfNecessary(outputDirectory, matrixName + ".txt");
@@ -131,11 +131,11 @@ public class Utils {
         String[] filenames = Utils.getNeuronnamesForFiles(files);
 
         // write result from little matrix into big matrix depending on row, col, filesLength
-        double[][] reassembledMatrix = new double[filesLength][filesLength];
+        float[][] reassembledMatrix = new float[filesLength][filesLength];
 
         for (File matrixFile : matrixFiles) {
             TEDClusterResult tedClusterResult = readClusterMatrixFromTxt(matrixFile);
-            double[][] result = tedClusterResult.getMatrix();
+            float[][] result = tedClusterResult.getMatrix();
             int row = tedClusterResult.getRow();
             int col = tedClusterResult.getCol();
             // go through result m is row
@@ -176,21 +176,21 @@ public class Utils {
         line = scanner.nextLine();
         String[] splittedline = line.split(";");
         int size = splittedline.length;
-        double[][] matrix = new double[size][size];
+        float[][] matrix = new float[size][size];
         for (int i = 0; i < size; i++) {
-            matrix[0][i] = Double.parseDouble(splittedline[i]);
+            matrix[0][i] = Float.parseFloat(splittedline[i]);
         }
         int i = 1;
         while (scanner.hasNextLine()) {
             line = scanner.nextLine();
             splittedline = line.split(";");
             for (int j = 0; j < splittedline.length; j++) {
-                matrix[i][j] = Double.parseDouble(splittedline[j]);
+                matrix[i][j] = Float.parseFloat(splittedline[j]);
             }
             i++;
         }
         scanner.close();
-        double[][] newmatrix = new double[i][size];
+        float[][] newmatrix = new float[i][size];
         for (int k = 0; k < newmatrix.length; k++) {
             newmatrix[k] = matrix[k];
         }
@@ -215,11 +215,11 @@ public class Utils {
         String line = scanner.nextLine();
         String[] splittedline = line.split(";");
         int size = splittedline.length - 1;
-        double[][] matrix = new double[size][size];
+        float[][] matrix = new float[size][size];
         String[] filenames = new String[size];
         filenames[0] = splittedline[0];
         for (int i = 1; i < splittedline.length; i++) {
-            matrix[0][i - 1] = Double.parseDouble(splittedline[i]);
+            matrix[0][i - 1] = Float.parseFloat(splittedline[i]);
         }
 
         // read cell by cell to build matrix and filenames-array
@@ -229,7 +229,7 @@ public class Utils {
             splittedline = line.split(";");
             filenames[i] = splittedline[0];
             for (int j = 1; j < splittedline.length; j++) {
-                matrix[i][j - 1] = Double.parseDouble(splittedline[j]);
+                matrix[i][j - 1] = Float.parseFloat(splittedline[j]);
             }
             i++;
         }

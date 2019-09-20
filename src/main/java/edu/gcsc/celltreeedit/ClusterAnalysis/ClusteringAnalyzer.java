@@ -17,8 +17,8 @@ import java.util.stream.Collectors;
 public class ClusteringAnalyzer {
 
     // TODO: improve class for testing issues. return value of function only needed for testing purposes
-    public static Pair<double[][], List<UniqueMetadataContainer.UniqueMetadata>> analyzeClusteringOfTEDResult(TEDResult result, Map<String, NeuronMetadataR> neuronMetadata) {
-        double[][] matrix = result.getDistanceMatrix();
+    public static Pair<float[][], List<UniqueMetadataContainer.UniqueMetadata>> analyzeClusteringOfTEDResult(TEDResult result, Map<String, NeuronMetadataR> neuronMetadata) {
+        float[][] matrix = result.getDistanceMatrix();
         String[] fileNames = result.getFileNames();
 
         // Create uniqueMetadataContainer and add neuronMetadata for filenames to know original clusters of filenames and their number
@@ -63,7 +63,7 @@ public class ClusteringAnalyzer {
 
         // TODO: get number of Neurons with uniqueMetadata A and number of Neurons with uniqueMetadata B
         // calculate relative partitioning errors and save in lower left matrix
-        double[][] relPartitioningErrors = calculateRelPartitioningErrors(assignment, uniqueMetadataObjects, limitedClusters, uniqueMetadataContainer.getFileNameToUniqueMetadataMap());
+        float[][] relPartitioningErrors = calculateRelPartitioningErrors(assignment, uniqueMetadataObjects, limitedClusters, uniqueMetadataContainer.getFileNameToUniqueMetadataMap());
 
         // display lower left matrix with javax Swing colorcoded as in heumann, wittum paper
 
@@ -71,7 +71,7 @@ public class ClusteringAnalyzer {
         return new Pair<>(relPartitioningErrors, uniqueMetadataObjects);
     }
 
-    private static void showRelPartitioningErrors(double[][] relPartitioningErrors, List<UniqueMetadataContainer.UniqueMetadata> uniqueMetadataObjects) {
+    private static void showRelPartitioningErrors(float[][] relPartitioningErrors, List<UniqueMetadataContainer.UniqueMetadata> uniqueMetadataObjects) {
         JFrame frame = new JFrame();
         RelPartitioningErrorTable relPartitioningErrorTable = new RelPartitioningErrorTable(relPartitioningErrors, uniqueMetadataObjects);
         frame.add(relPartitioningErrorTable);
@@ -135,10 +135,10 @@ public class ClusteringAnalyzer {
         return absPartitioningError;
     }
 
-    private static double[][] calculateRelPartitioningErrors(Map<Integer, Integer> assignment, List<UniqueMetadataContainer.UniqueMetadata> uniqueMetadataObjects, List<Cluster> clusters, Map<String, UniqueMetadataContainer.UniqueMetadata> fileNamesUniqueMetadataMap) {
+    private static float[][] calculateRelPartitioningErrors(Map<Integer, Integer> assignment, List<UniqueMetadataContainer.UniqueMetadata> uniqueMetadataObjects, List<Cluster> clusters, Map<String, UniqueMetadataContainer.UniqueMetadata> fileNamesUniqueMetadataMap) {
         // size is 1 row and 1 column smaller because only lower left matrix is relevant. An entry sums up would be symmetric and main diagonal entries would be 0
         int size = assignment.size() - 1;
-        double[][] relPartitioningErrors = new double[size][size];
+        float[][] relPartitioningErrors = new float[size][size];
         // index of row of new matrix
         for (int i = 0; i < size; i++) {
             // index of col. only go from 0 to i --> lower left matrix
@@ -146,7 +146,7 @@ public class ClusteringAnalyzer {
                 // number of neurons from uniqueMetadataObject A that have been put in B + number of neurons of B put in A
                 int deltaAbs = (calculateWronglyClusteredNeurons(uniqueMetadataObjects.get(j), clusters.get(assignment.get(i+1)), fileNamesUniqueMetadataMap) + calculateWronglyClusteredNeurons(uniqueMetadataObjects.get(i+1), clusters.get(assignment.get(j)), fileNamesUniqueMetadataMap));
                 // CAN BECOME MORE THAN 1. if clustering is very bad number of wrongly clustered neurons can become as high as sum of neurons of class
-                relPartitioningErrors[i][j] = 2* (double) deltaAbs / ((double) uniqueMetadataObjects.get(i+1).getNoOfNeurons() + (double) uniqueMetadataObjects.get(j).getNoOfNeurons());
+                relPartitioningErrors[i][j] = 2* (float) deltaAbs / ((float) uniqueMetadataObjects.get(i+1).getNoOfNeurons() + (float) uniqueMetadataObjects.get(j).getNoOfNeurons());
             }
         }
         return relPartitioningErrors;
