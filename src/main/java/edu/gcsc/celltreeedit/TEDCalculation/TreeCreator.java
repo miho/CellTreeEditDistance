@@ -36,6 +36,9 @@ public class TreeCreator implements InputParser <NodeData> , Serializable {
 
             for (int i = 1; i < size; i++) { // fill the two helparrays with structure information
                 int parentOfCurrentSWCSegment = swcSegments.get(i).getParent();
+                if (parentOfCurrentSWCSegment == -1) {
+                    parentOfCurrentSWCSegment = 1;
+                }
                 if (firstChild[parentOfCurrentSWCSegment] == -1)
                     firstChild[parentOfCurrentSWCSegment] = swcSegments.get(i).getIndex();
                 else {
