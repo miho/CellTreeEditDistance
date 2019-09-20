@@ -15,7 +15,7 @@ import static org.junit.Assert.assertTrue;
 
 public class LabelTest {
 
-    private static File labelTestDirectory = new File(BaseDirectory.getBaseDirectory().getPath() + "/LabelTest");
+    private static File labelTestDirectory = new File(BaseDirectory.getTestDirectory().getPath() + "/LabelTest");
 
     // each row represents the labels of a node
     private Double[][] correctLabels = new Double[][]{

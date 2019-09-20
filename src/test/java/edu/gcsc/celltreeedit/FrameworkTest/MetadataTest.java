@@ -14,7 +14,7 @@ import static org.junit.Assert.assertEquals;
 
 public class MetadataTest {
 
-    private static File metadataDirectory = new File(BaseDirectory.getBaseDirectory() + "/MetadataTest");
+    private static File metadataDirectory = new File(BaseDirectory.getTestDirectory() + "/MetadataTest");
     private static File swcFileDirectory = new File(metadataDirectory.getPath() + "/TestSWCFiles");
 
 

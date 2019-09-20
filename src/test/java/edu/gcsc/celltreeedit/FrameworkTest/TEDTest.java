@@ -19,7 +19,7 @@ import static org.junit.Assert.assertEquals;
 
 public class TEDTest {
 
-    private static File tedTestDirectory = new File(BaseDirectory.getBaseDirectory().getPath() + "/TEDTest");
+    private static File tedTestDirectory = new File(BaseDirectory.getTestDirectory().getPath() + "/TEDTest");
 
     private float deltaBySize(float value, float epsilon) {
         String scientificNotation = String.format("%1.1e", value);

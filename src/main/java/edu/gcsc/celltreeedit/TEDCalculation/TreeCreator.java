@@ -14,7 +14,6 @@ import eu.mihosoft.ext.apted.parser.InputParser;
 import eu.mihosoft.vswcreader.SWCSegment;
 import org.apache.commons.math3.util.MathArrays;
 
-import javax.rmi.CORBA.Util;
 
 /**
  * Created by Erid on 12.04.2018.
@@ -36,10 +35,11 @@ public class TreeCreator implements InputParser <NodeData> , Serializable {
             Arrays.fill(nextSibling, -1);
 
             for (int i = 1; i < size; i++) { // fill the two helparrays with structure information
-                if (firstChild[swcSegments.get(i).getParent()] == -1)
-                    firstChild[swcSegments.get(i).getParent()] = swcSegments.get(i).getIndex();
+                int parentOfCurrentSWCSegment = swcSegments.get(i).getParent();
+                if (firstChild[parentOfCurrentSWCSegment] == -1)
+                    firstChild[parentOfCurrentSWCSegment] = swcSegments.get(i).getIndex();
                 else {
-                    int next = firstChild[swcSegments.get(i).getParent()];
+                    int next = firstChild[parentOfCurrentSWCSegment];
                     while (nextSibling[next] != -1) {
                         next = nextSibling[next];
                     }

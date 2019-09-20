@@ -14,7 +14,7 @@ import static org.junit.Assert.assertEquals;
 
 public class TEDClusterTest {
 
-    private static File tedClusterTestDirectory = new File(BaseDirectory.getBaseDirectory().getPath() + "/TEDClusterTest");
+    private static File tedClusterTestDirectory = new File(BaseDirectory.getTestDirectory().getPath() + "/TEDClusterTest");
     private static File workingDirectory = BaseDirectory.getWorkingDirectory();
 
     @Test

@@ -74,14 +74,14 @@ public class FileIOTest {
     @Test
     public void jsonIOTest() throws IOException  {
         List<File> fileDirectoriesToWrite = new ArrayList<>(Arrays.asList(
-                new File(BaseDirectory.getBaseDirectory().getPath() + "/TestDirectory/kisvarday/CNG version/oi33lpy1-1.CNG.swc"),
-                new File(BaseDirectory.getBaseDirectory().getPath() + "/TestDirectory/markram/CNG version/C050800E2.CNG.swc"),
-                new File(BaseDirectory.getBaseDirectory().getPath() + "/TestDirectory/yuste/CNG version/JM090103-10-1.CNG.swc"),
-                new File(BaseDirectory.getBaseDirectory().getPath() + "/TestDirectory/yuste/CNG version/JM090103-10-2.CNG.swc"),
-                new File(BaseDirectory.getBaseDirectory().getPath() + "/TestDirectory/yuste/CNG version/JM072303.CNG.swc"),
-                new File(BaseDirectory.getBaseDirectory().getPath() + "/TestDirectory/yuste/CNG version/JM092903-20-1.CNG.swc")
+                new File(BaseDirectory.getTestDirectory().getPath() + "/TestDirectory/kisvarday/CNG version/oi33lpy1-1.CNG.swc"),
+                new File(BaseDirectory.getTestDirectory().getPath() + "/TestDirectory/markram/CNG version/C050800E2.CNG.swc"),
+                new File(BaseDirectory.getTestDirectory().getPath() + "/TestDirectory/yuste/CNG version/JM090103-10-1.CNG.swc"),
+                new File(BaseDirectory.getTestDirectory().getPath() + "/TestDirectory/yuste/CNG version/JM090103-10-2.CNG.swc"),
+                new File(BaseDirectory.getTestDirectory().getPath() + "/TestDirectory/yuste/CNG version/JM072303.CNG.swc"),
+                new File(BaseDirectory.getTestDirectory().getPath() + "/TestDirectory/yuste/CNG version/JM092903-20-1.CNG.swc")
         ));
-        File swcFileDirectory = new File(BaseDirectory.getBaseDirectory().getPath() + "/TestDirectory/");
+        File swcFileDirectory = new File(BaseDirectory.getTestDirectory().getPath() + "/TestDirectory/");
         File workingDirectory = BaseDirectory.getWorkingDirectory();
         String jsonName = "jsonTest";
         JsonUtils.writeToJSON(fileDirectoriesToWrite, "", swcFileDirectory, workingDirectory, jsonName);
@@ -90,7 +90,7 @@ public class FileIOTest {
 
         assertEquals(fileDirectoriesToWrite.size(), fileDirectoriesRead.length);
         for (int i = 0; i < fileDirectoriesRead.length; i++) {
-            assertEquals(fileDirectoriesToWrite.get(i).getPath(), BaseDirectory.getBaseDirectory().getPath() + "/TestDirectory/" + fileDirectoriesRead[i].getPath());
+            assertEquals(fileDirectoriesToWrite.get(i).getPath(), BaseDirectory.getTestDirectory().getPath() + "/TestDirectory/" + fileDirectoriesRead[i].getPath());
         }
         savedFile.delete();
     }
