@@ -5,7 +5,6 @@ import eu.mihosoft.ext.apted.distance.APTED;
 import eu.mihosoft.ext.apted.node.Node;
 import eu.mihosoft.vrl.annotation.ComponentInfo;
 import eu.mihosoft.vrl.annotation.ParamInfo;
-import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.*;
 import java.util.*;
