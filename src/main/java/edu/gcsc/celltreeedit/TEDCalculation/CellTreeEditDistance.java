@@ -74,7 +74,7 @@ public class CellTreeEditDistance implements java.io.Serializable{
         return new TEDClusterResult(iteration, row, col, results);
     }
 
-    private static Integer calculateNumberOfCols(Integer filesLength, Integer noOfRows, Integer maxRow) {
+    private Integer calculateNumberOfCols(Integer filesLength, Integer noOfRows, Integer maxRow) {
         if (filesLength % 2 == 0) {
             // even
             // maxRow is matrix index
@@ -89,7 +89,7 @@ public class CellTreeEditDistance implements java.io.Serializable{
         }
     }
 
-    private static Integer calculateNumberOfColsForRow(Integer filesLength, Integer row) {
+    private Integer calculateNumberOfColsForRow(Integer filesLength, Integer row) {
         if (filesLength % 2 == 0) {
             // even
             // row is matrix index

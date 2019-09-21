@@ -131,9 +131,6 @@ public class Main {
             case 13:
                 reassembleClusterMatricesToTxt();
                 break;
-            case 14:
-                calculateRowsAndIterationsForTEDMatrixOnCluster();
-                break;
             default:
                 System.out.println("calcType not valid");
                 break;
@@ -386,30 +383,5 @@ public class Main {
         File[] files = JsonUtils.parseJsonToFiles(appProperties.getFileInput());
         File[] matrixFiles = Utils.chooseTxtFiles();
         Utils.reassembleClusterMatrixToTxt(matrixFiles, files, appProperties.getOutputDirectory(), "ReassembledMatrix");
-    }
-
-    public static void calculateRowsAndIterationsForTEDMatrixOnCluster() throws IOException {
-        System.out.println("> Starting calculation of Quantity of Calls for TEDMatrix on Cluster");
-        int filesLength = JsonUtils.parseJsonToFiles(appProperties.getFileInput()).length;
-        int noOfRows = calculateNumberOfRowsPerCall(filesLength, appProperties.getQuantityPerCall());
-        int noOfIterations = calculateNumberOfIterations(filesLength, noOfRows);
-        System.out.println("Number of rows per call: " + noOfRows);
-        System.out.println("Number of iterations needed: " + noOfIterations + ". Iterations start at 1");
-    }
-
-    // number of columns is fix and dependent on filesLength
-    private static Integer calculateNumberOfRowsPerCall(Integer filesLength, Integer quantityPerCall) {
-        if (filesLength % 2 == 0) {
-            // even
-            return Math.round((float) quantityPerCall / (float) ((filesLength) / 2));
-        } else {
-            //odd
-            return Math.round((float) quantityPerCall / (float) ((filesLength - 1) / 2));
-        }
-    }
-
-    // how many calls are necessary to go through whole matrix when noOfRows are used per call
-    private static Integer calculateNumberOfIterations(Integer filesLength, Integer noOfRows) {
-        return (filesLength % noOfRows == 0) ? filesLength / noOfRows : filesLength / noOfRows + 1;
     }
 }
