@@ -29,13 +29,13 @@ public class TEDClusterTest {
         CellTreeEditDistance cellTreeEditDistance = new CellTreeEditDistance();
         File[] files14 = JsonUtils.parseJsonToFiles(new File(tedClusterTestDirectory + "/swcFiles_14.json"));
         for (int i = 0; i < files14.length; i++) {
-            files14[i] = new File(tedClusterTestDirectory + files14[i].getPath());
+            files14[i] = new File(tedClusterTestDirectory + "/" + files14[i].getPath());
         }
         TEDResult result14 = cellTreeEditDistance.compareFilesFromFiles(files14, 18);
         cellTreeEditDistance = new CellTreeEditDistance();
         File[] files15 = JsonUtils.parseJsonToFiles(new File(tedClusterTestDirectory + "/swcFiles_15.json"));
         for (int i = 0; i < files15.length; i++) {
-            files15[i] = new File(tedClusterTestDirectory + files15[i].getPath());
+            files15[i] = new File(tedClusterTestDirectory + "/" + files15[i].getPath());
         }
         TEDResult result15 = cellTreeEditDistance.compareFilesFromFiles(files15, 18);
 

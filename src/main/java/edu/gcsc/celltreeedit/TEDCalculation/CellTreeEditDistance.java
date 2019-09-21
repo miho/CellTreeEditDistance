@@ -139,11 +139,8 @@ public class CellTreeEditDistance implements java.io.Serializable{
             for (int i = 0; i < noOfRows; i++) {
                 for (int j = i + 1; j < noOfColsPerRow[i] + i + 1; j++) {
 
-                    // Initialise APTED.
-                    APTED<TreeCostModel, NodeData> apted = new APTED<>(new TreeCostModel());
-
                     // Execute APTED.
-                    Runnable myTask = new MyTask(i, j, resultsFinal, apted, nodeList);
+                    Runnable myTask = new MyTask(i, j, resultsFinal, nodeList);
                     pool.execute(myTask);
                 }
             }
@@ -197,11 +194,8 @@ public class CellTreeEditDistance implements java.io.Serializable{
             for (int i = 0; i < size - 1; i++) {
                 for (int j = i + 1; j < size; j++) {
 
-                    // Initialise APTED.
-                    APTED<TreeCostModel, NodeData> apted = new APTED<>(new TreeCostModel());
-
                     // Execute APTED.
-                    Runnable myTask = new MyTask(i, j, resultsFinal, apted, nodeList);
+                    Runnable myTask = new MyTask(i, j, resultsFinal, nodeList);
                     pool.execute(myTask);
                 }
             }
@@ -263,24 +257,22 @@ public class CellTreeEditDistance implements java.io.Serializable{
         private int i;
         private int j;
         private float[][] results;
-        private APTED apted;
 
-        MyTask(int i, int j, float[][] results, APTED apted, List<Node<NodeData>> nodeList) {
+        MyTask(int i, int j, float[][] results, List<Node<NodeData>> nodeList) {
             this.i = i;
             this.j = j;
             this.results = results;
-            this.apted = apted;
             this.nodeList = nodeList;
         }
 
         @Override
         public void run() {
-
+            // Initialise APTED.
+            APTED<TreeCostModel, NodeData> apted = new APTED<>(new TreeCostModel());
             float result = apted.computeEditDistance(nodeList.get(i), nodeList.get(j));
 
             // java arrays are threadsafe if indexes written to are different which is the case here
             results[i][j] = result;
-//            results[j][i] = result;
         }
     }
 }
