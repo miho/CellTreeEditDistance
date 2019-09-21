@@ -11,6 +11,7 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Created by Erid on 16.02.2018.
@@ -21,6 +22,7 @@ import java.util.concurrent.TimeUnit;
 public class CellTreeEditDistance implements java.io.Serializable{
     private static final long serialVersionUID = 1L;
 
+    private static AtomicLong noOfFinishedTasks = new AtomicLong(0);
     private float[][] results;
     private File[] files;
 
@@ -104,7 +106,7 @@ public class CellTreeEditDistance implements java.io.Serializable{
         }
     }
 
-    private float[][] compareFilesForCluster(File[] files, Integer[] noOfColsPerRow, int labelId) {
+    private void compareFilesForCluster(File[] files, Integer[] noOfColsPerRow, int labelId) {
         int noOfRows = noOfColsPerRow.length;
         this.files = files;
 
@@ -134,10 +136,11 @@ public class CellTreeEditDistance implements java.io.Serializable{
             ExecutorService pool = Executors.newWorkStealingPool();
 
             System.out.println("> Calculation started");
-
+            long noOfCalculations = 0L;
             // compare each row file with fitting colFile
             for (int i = 0; i < noOfRows; i++) {
                 for (int j = i + 1; j < noOfColsPerRow[i] + i + 1; j++) {
+                    noOfCalculations++;
 
                     // Execute APTED.
                     Runnable myTask = new MyTask(i, j, resultsFinal, nodeList);
@@ -148,7 +151,7 @@ public class CellTreeEditDistance implements java.io.Serializable{
             pool.shutdown();
 
             while(!pool.awaitTermination(300L,TimeUnit.SECONDS)) {
-                System.out.println("Still waiting for results: " + new Date());
+                System.out.println("Still waiting for results: " + new Date() + " | Finished: " + noOfFinishedTasks + " / " + noOfCalculations);
             }
 
         } catch (InterruptedException e) {
@@ -158,7 +161,6 @@ public class CellTreeEditDistance implements java.io.Serializable{
         final long runtimeInNanos = System.nanoTime() - start;
         runtimeInS = TimeUnit.NANOSECONDS.toSeconds(runtimeInNanos);
         System.out.println("Runtime overall calculation in seconds: " + runtimeInS);
-        return resultsFinal;
     }
 
     private void compareFiles(@ParamInfo(name="Label", style="load-folder-dialog")int labelId) {
@@ -273,6 +275,7 @@ public class CellTreeEditDistance implements java.io.Serializable{
 
             // java arrays are threadsafe if indexes written to are different which is the case here
             results[i][j] = result;
+            noOfFinishedTasks.getAndIncrement();
         }
     }
 }
