@@ -8,9 +8,7 @@ import eu.mihosoft.vrl.annotation.ParamInfo;
 
 import java.io.*;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -23,6 +21,7 @@ public class CellTreeEditDistance implements java.io.Serializable{
     private static final long serialVersionUID = 1L;
 
     private static AtomicLong noOfFinishedTasks = new AtomicLong(0);
+    private static Semaphore semaphore = new Semaphore(5000);
     private float[][] results;
     private File[] files;
 
@@ -133,25 +132,29 @@ public class CellTreeEditDistance implements java.io.Serializable{
             System.out.println("Runtime reading files in seconds: " + runtimeInS);
 
             // instantiate new threadpool for calculation
-            ExecutorService pool = Executors.newWorkStealingPool();
+            ExecutorService pool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
             System.out.println("> Calculation started");
-            long noOfCalculations = 0L;
+            long currentNoOfFinishedTasks = 0L;
             // compare each row file with fitting colFile
             for (int i = 0; i < noOfRows; i++) {
                 for (int j = i + 1; j < noOfColsPerRow[i] + i + 1; j++) {
-                    noOfCalculations++;
+                    semaphore.acquire();
 
                     // Execute APTED.
                     Runnable myTask = new MyTask(i, j, resultsFinal, nodeList);
                     pool.execute(myTask);
+                    currentNoOfFinishedTasks = noOfFinishedTasks.get();
+                    if (currentNoOfFinishedTasks !=0 && currentNoOfFinishedTasks % 500000 == 0) {
+                        System.out.println("Still waiting for results: " + new Date() + " | Number of finished Tasks: " + currentNoOfFinishedTasks );
+                    }
                 }
             }
 
             pool.shutdown();
 
             while(!pool.awaitTermination(300L,TimeUnit.SECONDS)) {
-                System.out.println("Still waiting for results: " + new Date() + " | Finished: " + noOfFinishedTasks + " / " + noOfCalculations);
+                System.out.println("Still waiting for results: " + new Date());
             }
 
         } catch (InterruptedException e) {
@@ -191,14 +194,19 @@ public class CellTreeEditDistance implements java.io.Serializable{
             ExecutorService pool = Executors.newWorkStealingPool();
 
             System.out.println("> Calculation started");
-
+            long currentNoOfFinishedTasks = 0L;
             // compare each two files
             for (int i = 0; i < size - 1; i++) {
                 for (int j = i + 1; j < size; j++) {
+                    semaphore.acquire();
 
                     // Execute APTED.
                     Runnable myTask = new MyTask(i, j, resultsFinal, nodeList);
                     pool.execute(myTask);
+                    currentNoOfFinishedTasks = noOfFinishedTasks.get();
+                    if (currentNoOfFinishedTasks !=0 && currentNoOfFinishedTasks % 50000 == 0) {
+                        System.out.println("Still waiting for results: " + new Date() + " | Number of finished Tasks: " + currentNoOfFinishedTasks );
+                    }
                 }
             }
 
@@ -276,6 +284,7 @@ public class CellTreeEditDistance implements java.io.Serializable{
             // java arrays are threadsafe if indexes written to are different which is the case here
             results[i][j] = result;
             noOfFinishedTasks.getAndIncrement();
+            semaphore.release();
         }
     }
 }

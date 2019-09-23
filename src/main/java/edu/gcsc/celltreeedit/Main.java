@@ -37,11 +37,11 @@ public class Main {
     private static AppProperties appProperties = AppProperties.getInstance();
 
     private static final List<ClusterColorRegex> clusterColorRegexes = Arrays.asList(
-            new ClusterColorRegex(Pattern.compile("^[x],.*"), Color.BLACK),
-            new ClusterColorRegex(Pattern.compile("^[1239],.*"), new Color(35, 106, 185)),
-            new ClusterColorRegex(Pattern.compile("^[45678],.*"), new Color(186, 26, 70)),
-            new ClusterColorRegex(Pattern.compile("^1,.*"), new Color(68, 141, 118)),
-            new ClusterColorRegex(Pattern.compile("^5,.*"), new Color(118, 60, 118)),
+            new ClusterColorRegex(Pattern.compile("^[123456],.*"), Color.BLACK),
+            new ClusterColorRegex(Pattern.compile("^.*"), new Color(35, 106, 185)),
+            new ClusterColorRegex(Pattern.compile("^(11|12|13|14|15|16),.*"), new Color(186, 26, 70)),
+            new ClusterColorRegex(Pattern.compile("^[x],.*"), new Color(68, 141, 118)),
+            new ClusterColorRegex(Pattern.compile("^([789]|10),.*"), new Color(118, 60, 118)),
             new ClusterColorRegex(Pattern.compile("^6,.*"), Color.GRAY),
             new ClusterColorRegex(Pattern.compile("^7,.*"), new Color(160, 100, 0))
     );
