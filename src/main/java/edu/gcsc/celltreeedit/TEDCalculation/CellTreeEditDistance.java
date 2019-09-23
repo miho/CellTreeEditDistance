@@ -132,7 +132,7 @@ public class CellTreeEditDistance implements java.io.Serializable{
             System.out.println("Runtime reading files in seconds: " + runtimeInS);
 
             // instantiate new threadpool for calculation
-            ExecutorService pool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+            ExecutorService pool = Executors.newWorkStealingPool();
 
             System.out.println("> Calculation started");
             long currentNoOfFinishedTasks = 0L;
