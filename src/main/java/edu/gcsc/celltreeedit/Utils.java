@@ -143,7 +143,7 @@ public class Utils {
                 int rowToWrite = row + m;
                 // go through columns of result. first column is empty so skip it
                 for (int n = 1; n < result[0].length; n++) {
-                    if (result[m][n] == 0d) {
+                    if (result[m][n] == 0f) {
                         continue;
                     }
                     // col is already the column of the first comparison
