@@ -4,6 +4,7 @@ import edu.gcsc.celltreeedit.JsonIO.JsonUtils;
 import edu.gcsc.celltreeedit.TEDCalculation.CellTreeEditDistance;
 import edu.gcsc.celltreeedit.TEDCalculation.TEDClusterResult;
 import edu.gcsc.celltreeedit.TEDCalculation.TEDResult;
+import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 
 import java.io.File;
@@ -18,10 +19,14 @@ public class TEDClusterTest {
 
     @Test
     public void checkReassembledMatrix() throws IOException {
-        File[] workingFiles = BaseDirectory.getWorkingDirectory().listFiles();
-        if(workingFiles!=null) { //some JVMs return null for empty dirs
-            for(File f: workingFiles) {
-                f.delete();
+        File[] workingFiles = workingDirectory.listFiles();
+        if (workingFiles != null) { //some JVMs return null for empty dirs
+            for (File f : workingFiles) {
+                if (f.isFile()) {
+                    f.delete();
+                } else {
+                    FileUtils.deleteDirectory(f);
+                }
             }
         }
 
@@ -127,7 +132,11 @@ public class TEDClusterTest {
         workingFiles = workingDirectory.listFiles();
         if (workingFiles != null) { //some JVMs return null for empty dirs
             for (File f : workingFiles) {
-                f.delete();
+                if (f.isFile()) {
+                    f.delete();
+                } else {
+                    FileUtils.deleteDirectory(f);
+                }
             }
         }
     }
