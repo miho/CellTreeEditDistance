@@ -381,7 +381,6 @@ public class Main {
 
     public static void reassembleClusterMatricesToTxt() throws IOException {
         File[] files = JsonUtils.parseJsonToFiles(appProperties.getFileInput());
-        File[] matrixFiles = Utils.chooseTxtFiles();
-        Utils.reassembleClusterMatrixToTxt(matrixFiles, files, appProperties.getOutputDirectory(), "ReassembledMatrix");
+        Utils.reassembleClusterMatrixToTxt(appProperties.getDirectoryInput(), files, appProperties.getOutputDirectory(), "ReassembledMatrix");
     }
 }

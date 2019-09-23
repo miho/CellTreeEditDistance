@@ -125,14 +125,17 @@ public class Utils {
         return file;
     }
 
-    public static void reassembleClusterMatrixToTxt(File[] matrixFiles, File[] files, File outputDirectory, String matrixname) throws IOException {
-
+    public static void reassembleClusterMatrixToTxt(File matrixDirectory, File[] files, File outputDirectory, String matrixname) throws IOException {
+        final FileFilter fileFilter = (final File file) -> file.getName().toLowerCase().endsWith(".txt");
         int filesLength = files.length;
-        String[] filenames = Utils.getNeuronnamesForFiles(files);
 
         // write result from little matrix into big matrix depending on row, col, filesLength
         float[][] reassembledMatrix = new float[filesLength][filesLength];
 
+        File[] matrixFiles = matrixDirectory.listFiles(fileFilter);
+        if (matrixFiles == null) {
+            return;
+        }
         for (File matrixFile : matrixFiles) {
             TEDClusterResult tedClusterResult = readClusterMatrixFromTxt(matrixFile);
             float[][] result = tedClusterResult.getMatrix();
@@ -158,6 +161,7 @@ public class Utils {
                 }
             }
         }
+        String[] filenames = Utils.getNeuronnamesForFiles(files);
         printMatrixToTxt(reassembledMatrix, filenames, outputDirectory, matrixname);
     }
 

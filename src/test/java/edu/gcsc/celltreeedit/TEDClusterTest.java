@@ -48,115 +48,85 @@ public class TEDClusterTest {
 
         // ------------------------------------------------------
         // calculate DistanceMatrices with Cluster calculation
+        File matrixFiles14_01Directory = new File(workingDirectory.getPath() + "/Matrix14_01");
+        matrixFiles14_01Directory.mkdir();
         for (int iteration = 1; iteration <= 5; iteration++) {
             cellTreeEditDistance = new CellTreeEditDistance();
             TEDClusterResult tedClusterResult = cellTreeEditDistance.compareFilesForCluster(files14, 3, iteration, 18, tedClusterTestDirectory);
-            Utils.printClusterMatrixToTxt(tedClusterResult, new File("swcFiles_14.json"), workingDirectory, "Matrix14_01_" + iteration);
+            Utils.printClusterMatrixToTxt(tedClusterResult, new File("swcFiles_14.json"), matrixFiles14_01Directory, "Matrix14_01_" + iteration);
         }
-        File[] matrixFiles14_01 = workingDirectory.listFiles((dir, name) -> {
-            if (name.startsWith("Matrix14_01_")) {
-                return true;
-            } else {
-                return false;
-            }
-        });
-        Utils.reassembleClusterMatrixToTxt(matrixFiles14_01, files14, workingDirectory, "ReassembledMatrix14_01");
+        Utils.reassembleClusterMatrixToTxt(matrixFiles14_01Directory, files14, workingDirectory, "ReassembledMatrix14_01");
         TEDResult reassembledResult14_01 = Utils.readMatrixFromTxt(new File(workingDirectory + "/ReassembledMatrix14_01.txt"));
         checkResultEquality(result14, reassembledResult14_01);
 
         // ------------------------------------------------------
         // calculate DistanceMatrices with Cluster calculation
+        File matrixFiles14_02Directory = new File(workingDirectory.getPath() + "/Matrix14_02");
+        matrixFiles14_02Directory.mkdir();
         for (int iteration = 1; iteration <= 14; iteration++) {
             cellTreeEditDistance = new CellTreeEditDistance();
             TEDClusterResult tedClusterResult = cellTreeEditDistance.compareFilesForCluster(files14, 1, iteration, 18, tedClusterTestDirectory);
-            Utils.printClusterMatrixToTxt(tedClusterResult, new File("swcFiles_14.json"), workingDirectory, "Matrix14_02_" + iteration);
+            Utils.printClusterMatrixToTxt(tedClusterResult, new File("swcFiles_14.json"), matrixFiles14_02Directory, "Matrix14_02_" + iteration);
         }
-        File[] matrixFiles14_02 = workingDirectory.listFiles((dir, name) -> {
-            if (name.startsWith("Matrix14_02_")) {
-                return true;
-            } else {
-                return false;
-            }
-        });
-        Utils.reassembleClusterMatrixToTxt(matrixFiles14_02, files14, workingDirectory, "ReassembledMatrix14_02");
+        Utils.reassembleClusterMatrixToTxt(matrixFiles14_02Directory, files14, workingDirectory, "ReassembledMatrix14_02");
         TEDResult reassembledResult14_02 = Utils.readMatrixFromTxt(new File(workingDirectory + "/ReassembledMatrix14_02.txt"));
         checkResultEquality(result14, reassembledResult14_02);
 
         // ------------------------------------------------------
         // calculate DistanceMatrices with Cluster calculation
+        File matrixFiles14_03Directory = new File(workingDirectory.getPath() + "/Matrix14_03");
+        matrixFiles14_03Directory.mkdir();
         for (int iteration = 1; iteration <= 1; iteration++) {
             cellTreeEditDistance = new CellTreeEditDistance();
             TEDClusterResult tedClusterResult = cellTreeEditDistance.compareFilesForCluster(files14, 14, iteration, 18, tedClusterTestDirectory);
-            Utils.printClusterMatrixToTxt(tedClusterResult, new File("swcFiles_14.json"), workingDirectory, "Matrix14_03_" + iteration);
+            Utils.printClusterMatrixToTxt(tedClusterResult, new File("swcFiles_14.json"), matrixFiles14_03Directory, "Matrix14_03_" + iteration);
         }
-        File[] matrixFiles14_03 = workingDirectory.listFiles((dir, name) -> {
-            if (name.startsWith("Matrix14_03_")) {
-                return true;
-            } else {
-                return false;
-            }
-        });
-        Utils.reassembleClusterMatrixToTxt(matrixFiles14_03, files14, workingDirectory, "ReassembledMatrix14_03");
+        Utils.reassembleClusterMatrixToTxt(matrixFiles14_03Directory, files14, workingDirectory, "ReassembledMatrix14_03");
         TEDResult reassembledResult14_03 = Utils.readMatrixFromTxt(new File(workingDirectory + "/ReassembledMatrix14_03.txt"));
         checkResultEquality(result14, reassembledResult14_03);
 
         // ------------------------------------------------------
         // calculate DistanceMatrices with Cluster calculation
+        File matrixFiles14_04Directory = new File(workingDirectory.getPath() + "/Matrix14_04");
+        matrixFiles14_04Directory.mkdir();
         for (int iteration = 1; iteration <= 7; iteration++) {
             cellTreeEditDistance = new CellTreeEditDistance();
             TEDClusterResult tedClusterResult = cellTreeEditDistance.compareFilesForCluster(files14, 2, iteration, 18, tedClusterTestDirectory);
-            Utils.printClusterMatrixToTxt(tedClusterResult, new File("swcFiles_14.json"), workingDirectory, "Matrix14_04_" + iteration);
+            Utils.printClusterMatrixToTxt(tedClusterResult, new File("swcFiles_14.json"), matrixFiles14_04Directory, "Matrix14_04_" + iteration);
         }
-        File[] matrixFiles14_04 = workingDirectory.listFiles((dir, name) -> {
-            if (name.startsWith("Matrix14_04_")) {
-                return true;
-            } else {
-                return false;
-            }
-        });
-        Utils.reassembleClusterMatrixToTxt(matrixFiles14_04, files14, workingDirectory, "ReassembledMatrix14_04");
+        Utils.reassembleClusterMatrixToTxt(matrixFiles14_04Directory, files14, workingDirectory, "ReassembledMatrix14_04");
         TEDResult reassembledResult14_04 = Utils.readMatrixFromTxt(new File(workingDirectory + "/ReassembledMatrix14_04.txt"));
         checkResultEquality(result14, reassembledResult14_04);
 
         // ------------------------------------------------------
         // calculate DistanceMatrices with Cluster calculation
+        File matrixFiles15_01Directory = new File(workingDirectory.getPath() + "/Matrix15_01");
+        matrixFiles15_01Directory.mkdir();
         for (int iteration = 1; iteration <= 5; iteration++) {
             cellTreeEditDistance = new CellTreeEditDistance();
             TEDClusterResult tedClusterResult = cellTreeEditDistance.compareFilesForCluster(files15, 3, iteration, 18, tedClusterTestDirectory);
-            Utils.printClusterMatrixToTxt(tedClusterResult, new File("swcFiles_15.json"), workingDirectory, "Matrix15_01_" + iteration);
+            Utils.printClusterMatrixToTxt(tedClusterResult, new File("swcFiles_15.json"), matrixFiles15_01Directory, "Matrix15_01_" + iteration);
         }
-        File[] matrixFiles15_01 = workingDirectory.listFiles((dir, name) -> {
-            if (name.startsWith("Matrix15_01_")) {
-                return true;
-            } else {
-                return false;
-            }
-        });
-        Utils.reassembleClusterMatrixToTxt(matrixFiles15_01, files15, workingDirectory, "ReassembledMatrix15_01");
+        Utils.reassembleClusterMatrixToTxt(matrixFiles15_01Directory, files15, workingDirectory, "ReassembledMatrix15_01");
         TEDResult reassembledResult15_01 = Utils.readMatrixFromTxt(new File(workingDirectory + "/ReassembledMatrix15_01.txt"));
         checkResultEquality(result15, reassembledResult15_01);
 
         // ------------------------------------------------------
         // calculate DistanceMatrices with Cluster calculation
+        File matrixFiles15_02Directory = new File(workingDirectory.getPath() + "/Matrix15_02");
+        matrixFiles15_02Directory.mkdir();
         for (int iteration = 1; iteration <= 2; iteration++) {
             cellTreeEditDistance = new CellTreeEditDistance();
             TEDClusterResult tedClusterResult = cellTreeEditDistance.compareFilesForCluster(files15, 11, iteration, 18, tedClusterTestDirectory);
-            Utils.printClusterMatrixToTxt(tedClusterResult, new File("swcFiles_15.json"), workingDirectory, "Matrix15_02_" + iteration);
+            Utils.printClusterMatrixToTxt(tedClusterResult, new File("swcFiles_15.json"), matrixFiles15_02Directory, "Matrix15_02_" + iteration);
         }
-        File[] matrixFiles15_02 = workingDirectory.listFiles((dir, name) -> {
-            if (name.startsWith("Matrix15_02_")) {
-                return true;
-            } else {
-                return false;
-            }
-        });
-        Utils.reassembleClusterMatrixToTxt(matrixFiles15_02, files15, workingDirectory, "ReassembledMatrix15_02");
+        Utils.reassembleClusterMatrixToTxt(matrixFiles15_02Directory, files15, workingDirectory, "ReassembledMatrix15_02");
         TEDResult reassembledResult15_02 = Utils.readMatrixFromTxt(new File(workingDirectory + "/ReassembledMatrix15_02.txt"));
         checkResultEquality(result15, reassembledResult15_02);
 
         workingFiles = workingDirectory.listFiles();
-        if(workingFiles!=null) { //some JVMs return null for empty dirs
-            for(File f: workingFiles) {
+        if (workingFiles != null) { //some JVMs return null for empty dirs
+            for (File f : workingFiles) {
                 f.delete();
             }
         }

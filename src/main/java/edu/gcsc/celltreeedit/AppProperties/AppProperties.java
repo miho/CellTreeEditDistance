@@ -25,6 +25,7 @@ public final class AppProperties {
     File workingDirectory = new File("");
     File outputDirectory = new File("");
     File fileInput = new File("");
+    File directoryInput = new File("");
     String nameOutput = "";
     boolean renameDendrogram = false;
     boolean saveOutput = false;
@@ -65,6 +66,8 @@ public final class AppProperties {
     public File getFileInput() {
         return fileInput;
     }
+
+    public File getDirectoryInput() { return directoryInput; }
 
     public String getNameOutput() {
         return nameOutput;

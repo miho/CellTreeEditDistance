@@ -13,7 +13,8 @@ enum AppParameter {
     RENAME_DENDROGRAM("e", "rEnameDendrogram", false, "if used, filenames in dendrogram are replaced by a combination of neuronMetadata."),
     SAVE_OUTPUT("s", "saveOutput", false, "if used, results are saved to output-directory (might include distance-matrix, dendrogram, filemapping)."),
     ROWS("r", "rowsPerCall", true, "used for TED-Calculation on a Cluster. Defines the number of matrix-rows for which TED is calculated per call. To guarantee division in same problem sizes only about half of the columns are calculated."),
-    ITERATION("i", "iteration", true, "used for TED-Calculation on a Cluster. Defines the actual iteration of a TED-Calculation divided for multiple cluster-nodes.");
+    ITERATION("i", "iteration", true, "used for TED-Calculation on a Cluster. Defines the actual iteration of a TED-Calculation divided for multiple cluster-nodes."),
+    DIRECTORY_INPUT("d", "directoryInput", true, "defines the directory used for reassembling Clustermatrices.");
 
     final String shortname;
     final String name;
