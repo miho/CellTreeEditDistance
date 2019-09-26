@@ -64,7 +64,7 @@ public class Clustering {
 //        }
 
         if (saveOutput) {
-            contentPane.setSize(1000, 800);
+            contentPane.setSize(500, 800);
             contentPane.doLayout();
             BufferedImage img = new BufferedImage(contentPane.getWidth(), contentPane.getHeight(), BufferedImage.TYPE_INT_RGB);
 
