@@ -146,7 +146,7 @@ public class ClusteringAnalyzer {
                 // number of neurons from uniqueMetadataObject A that have been put in B + number of neurons of B put in A
                 int deltaAbs = (calculateWronglyClusteredNeurons(uniqueMetadataObjects.get(j), clusters.get(assignment.get(i+1)), fileNamesUniqueMetadataMap) + calculateWronglyClusteredNeurons(uniqueMetadataObjects.get(i+1), clusters.get(assignment.get(j)), fileNamesUniqueMetadataMap));
                 // CAN BECOME MORE THAN 1. if clustering is very bad number of wrongly clustered neurons can become as high as sum of neurons of class
-                relPartitioningErrors[i][j] = 2* (float) deltaAbs / ((float) uniqueMetadataObjects.get(i+1).getNoOfNeurons() + (float) uniqueMetadataObjects.get(j).getNoOfNeurons());
+                relPartitioningErrors[i][j] = (float) deltaAbs / ((float) uniqueMetadataObjects.get(i+1).getNoOfNeurons() + (float) uniqueMetadataObjects.get(j).getNoOfNeurons());
             }
         }
         return relPartitioningErrors;

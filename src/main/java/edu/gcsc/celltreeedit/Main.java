@@ -14,7 +14,6 @@ import edu.gcsc.celltreeedit.NeuronMetadata.UniqueMetadataContainer;
 import edu.gcsc.celltreeedit.TEDCalculation.CellTreeEditDistance;
 import edu.gcsc.celltreeedit.TEDCalculation.TEDClusterResult;
 import edu.gcsc.celltreeedit.TEDCalculation.TEDResult;
-import javafx.scene.control.Cell;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FilenameUtils;
 
@@ -37,13 +36,13 @@ public class Main {
     private static AppProperties appProperties = AppProperties.getInstance();
 
     private static final List<ClusterColorRegex> clusterColorRegexes = Arrays.asList(
-            new ClusterColorRegex(Pattern.compile("^[1],.*"), Color.BLACK),
-            new ClusterColorRegex(Pattern.compile("^[2],.*"), new Color(35, 106, 185)),
-            new ClusterColorRegex(Pattern.compile("^.*"), new Color(186, 26, 70)),
-            new ClusterColorRegex(Pattern.compile("^[x],.*"), new Color(68, 141, 118)),
-            new ClusterColorRegex(Pattern.compile("^([789]|10|11),.*"), new Color(118, 60, 118)),
-            new ClusterColorRegex(Pattern.compile("^6,.*"), Color.GRAY),
-            new ClusterColorRegex(Pattern.compile("^7,.*"), new Color(160, 100, 0))
+            new ClusterColorRegex(Pattern.compile("^.*"), Color.BLACK),
+            new ClusterColorRegex(Pattern.compile("^XXX$"), new Color(35, 106, 185)),
+            new ClusterColorRegex(Pattern.compile("^XXX$"), new Color(186, 26, 70)),
+            new ClusterColorRegex(Pattern.compile("^XXX$"), new Color(68, 141, 118)),
+            new ClusterColorRegex(Pattern.compile("^XXX$"), new Color(118, 60, 118)),
+            new ClusterColorRegex(Pattern.compile("^XXX$"), Color.GRAY),
+            new ClusterColorRegex(Pattern.compile("^XXX$"), new Color(160, 100, 0))
     );
 
     /**
