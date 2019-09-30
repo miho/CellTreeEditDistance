@@ -3,7 +3,7 @@ import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-/** TODO: deal with licence
+/**
  * Solves the assingment problem. It consists of finding, in a weighted bipartite graph, a matching in which the sum of weights of the edges is as low as possible.
  *
  * An implemetation of the Kuhn–Munkres assignment algorithm of the year 1957.

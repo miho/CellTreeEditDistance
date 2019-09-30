@@ -1,6 +1,5 @@
 package edu.gcsc.celltreeedit.AppProperties;
 
-
 /**
  * enum that defines commandline options
  */

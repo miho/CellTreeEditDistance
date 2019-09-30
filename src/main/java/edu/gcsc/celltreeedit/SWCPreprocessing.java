@@ -17,7 +17,6 @@ import java.util.Set;
 
 /**
  * SWC Preprocessing. This class provides methods to preprocess a SWC-Directory. It moves NonCNGDirectories, Duplicates, NonMetadataFiles and ErrorFiles.
- *
  */
 public class SWCPreprocessing {
 

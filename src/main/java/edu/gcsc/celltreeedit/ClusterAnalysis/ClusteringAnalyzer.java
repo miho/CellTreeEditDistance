@@ -61,7 +61,6 @@ public class ClusteringAnalyzer {
         // calculate overall absolute partitioning error
         int overallAbsPartitioningError = calculateAbsPartitioningError(partitioningErrorMatrix, assignment);
 
-        // TODO: get number of Neurons with uniqueMetadata A and number of Neurons with uniqueMetadata B
         // calculate relative partitioning errors and save in lower left matrix
         float[][] relPartitioningErrors = calculateRelPartitioningErrors(assignment, uniqueMetadataObjects, limitedClusters, uniqueMetadataContainer.getFileNameToUniqueMetadataMap());
 

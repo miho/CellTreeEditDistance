@@ -342,7 +342,6 @@ public class Utils {
     //##################################################################################################################
     // Functions for changing Filenames to Neuronnames or otherwise
 
-    // TODO: TESTEN
     public static List<File> getFilesForNeuronnames(List<String> selectedNeuronNames, File swcFileDirectory) {
         swcFiles = new ArrayList<>();
         Set<String> neuronNamesToFind = new HashSet<>(selectedNeuronNames);

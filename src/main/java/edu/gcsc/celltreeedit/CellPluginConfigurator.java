@@ -35,7 +35,6 @@ import eu.mihosoft.vrl.system.VPluginAPI;
 import eu.mihosoft.vrl.system.VPluginConfigurator;
 
 
-
 /**
  *
  * @author Michael Hoffer <info@michaelhoffer.de>

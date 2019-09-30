@@ -3,7 +3,7 @@ package edu.gcsc.celltreeedit.NeuronMetadata;
 import java.util.*;
 
 
-/** TODO: maybe rename class?
+/**
  * Outer class provides logic for adding UniqueMetadata and makes them accessible
  */
 public class UniqueMetadataContainer {

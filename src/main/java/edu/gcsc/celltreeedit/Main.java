@@ -29,12 +29,13 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 /**
- * Created by Erid on 12.02.2018.
+ * Created by Erid on 12.02.2018. Extended by Lukas Maurer
  */
 public class Main {
 
     private static AppProperties appProperties = AppProperties.getInstance();
 
+    // Regex to control coloring in Dendrograms
     private static final List<ClusterColorRegex> clusterColorRegexes = Arrays.asList(
             new ClusterColorRegex(Pattern.compile("^.*"), Color.BLACK),
             new ClusterColorRegex(Pattern.compile("^XXX$"), new Color(35, 106, 185)),
@@ -46,44 +47,13 @@ public class Main {
     );
 
     /**
-     * Make sure structure of BaseDirectory is correct.
-     * Structure of BaseDirectory:
-     * ProgramData
-     * /Data
-     * /Metadata
-     * /SWCFiles
-     * /Output
-     * /Test
-     * /TestClustering
-     * /TestSWCFiles
-     * /TestWorkingDir
-     * /WorkingDir
-     * /someSWCFileForTEDCalculation.json
-     * <p>
-     * case=0: preprocess SWC-Directory.
-     * BaseDirectory must be given.
-     * case=1: query Metadata with Lucene and create .json file.
-     * BaseDirectory must be given. json-filename optional.
-     * case=2: choose some files from filedialog, which should be used for TED-calculation. creates .json file.
-     * destinationDirectory must be given. json-filename optional. CURRENTLY NOT SUPPORTED!
-     * case=3: query Metadata by unique metadata. UniqueMetadata must be adjusted inside of the program in main-function. create .json file.
-     * BaseDirectory must be given. json-filename optional.
-     * case=4: calculate TED-matrix.
-     * directory to json-file must be given. matrix-name optional. json-file must be located directly inside /ProgramData
-     * case=5: calculate TED-matrix and create dendrogram.
-     * directory to json-file must be given. matrix-name optional. json-file must be located directly inside /ProgramData
-     * case=6: calculate Dendrograms for TED-matrices which have already been calculated.
-     * BaseDirectory must be given.
-     * case=7: analyze clusterings of TED-matrices. shows relative partitioning errors of the result.
-     * BaseDirectory must be given.
-     * case=8: do whatever is defined in the function-body. used for development
+     * Main-method starts the commandline parsing and calls a function according to case
      *
      * @param args
      * @throws IOException
      * @throws ParseException
      */
     public static void main(String[] args) throws IOException, ParseException {
-
 
         CommandLineParsing.parseArguments(args);
 
@@ -136,6 +106,7 @@ public class Main {
         }
     }
 
+
     /**
      * Starts preprocessing of SWCDirectory
      *
@@ -151,6 +122,7 @@ public class Main {
         SWCPreprocessing swcPreprocessing = new SWCPreprocessing();
         swcPreprocessing.preprocessSWCDirectory(neuronMetadata, appProperties.getSwcFileDirectory());
     }
+
 
     /**
      * Starts CLI for querying SWC-Files using Lucene
@@ -170,7 +142,11 @@ public class Main {
     }
 
 
-    // for querying a predefined combination
+    /**
+     * For querying SWC-Files using a predefined combination of UniqueMetadata
+     *
+     * @throws IOException if no json-files containing neuronMetadata are found
+     */
     private static void queryByUniqueMetadata() throws IOException {
         System.out.println("> Starting query by predefined UniqueMetadata\n");
         int noOfNeuronsPerType = 143;
@@ -209,6 +185,11 @@ public class Main {
         return n > copy.size() ? copy.subList(0, copy.size()) : copy.subList(0, n);
     }
 
+    /**
+     * Calculates TEDMatrix for neurons defined in a json-file
+     *
+     * @throws IOException
+     */
     private static void calculateTEDMatrix() throws IOException {
         System.out.println("> Starting TED calculation\n");
         TEDResult result = calculateTEDMatrixForJson();
@@ -225,6 +206,11 @@ public class Main {
         return cellTreeEditDistance.compareFilesFromFiles(files, appProperties.getLabel());
     }
 
+    /**
+     * Calculates TEDMatrix for neurons defined in a json-file and creates a Dendrogram for it
+     *
+     * @throws IOException
+     */
     private static void calculateTEDMatrixAndDendrogram() throws IOException {
         System.out.println("> Starting TED calculation and Dendrogram calculation\n");
         TEDResult result = calculateTEDMatrixForJson();
@@ -235,7 +221,11 @@ public class Main {
         DendrogramCreator.createDendrogram(result, appProperties.getMetadataDirectory(), appProperties.getOutputDirectory(), nameOutput, appProperties.isRenameDendrogram(), appProperties.isSaveOutput(), clusterColorRegexes);
     }
 
-
+    /**
+     * Calculates dendrogram for a given distance-matrix
+     *
+     * @throws IOException
+     */
     private static void calculateDendrogram() throws IOException {
         System.out.println("> Starting Dendrogram calculation\n");
         TEDResult result = Utils.readMatrixFromTxt(appProperties.getFileInput());
@@ -243,7 +233,11 @@ public class Main {
         DendrogramCreator.createDendrogram(result, appProperties.getMetadataDirectory(), appProperties.getOutputDirectory(), nameOutput, appProperties.isRenameDendrogram(), appProperties.isSaveOutput(), clusterColorRegexes);
     }
 
-    // method to do some custom things which program should not be able to do in the end
+    /**
+     * Calculates TEDMatrices for several json-files and all implemented labels
+     *
+     * @throws IOException
+     */
     private static void calculateTEDMatricesForJsonFilesWithAllLabels() throws IOException {
         System.out.println("> Starting TED calculation for Json-Files with all labels");
 
@@ -274,6 +268,12 @@ public class Main {
         }
     }
 
+
+    /**
+     * Calculates dendrograms for several distance-matrices
+     *
+     * @throws IOException
+     */
     private static void calculateDendrogramsForTEDMatrices() throws IOException {
         System.out.println("> Starting Dendrogram calculation for TEDMatrices");
 
@@ -283,6 +283,10 @@ public class Main {
         }
     }
 
+    /**
+     * Calculates TEDMatrix and a dendrogram. SWC-Files are given by filedialog
+     *
+     */
     private static void calculateTEDMatrixAndDendrogramByFileDialog() {
         System.out.println("> Starting TED calculation and Dendrogram calculation by file-dialog");
         // Files in File[] speichern
@@ -298,9 +302,9 @@ public class Main {
         DendrogramCreator.createDendrogram(result, outputDirectory, nameOutput, appProperties.isSaveOutput(), clusterColorRegexes);
     }
 
-    /**
+    /** TODO: Test and improve
      * Analyzes Clusterings of multiple matrices and displays the results.
-     * TODO: Test and improve
+     *
      *
      * @throws IOException
      */
@@ -318,7 +322,11 @@ public class Main {
         }
     }
 
-
+    /**
+     * Prints Metadata of a json-file to a csv-file
+     *
+     * @throws IOException
+     */
     public static void printMetadataOfJsonFiles() throws IOException {
         System.out.println("> Starting print Metadata for Json-files");
         // input: jsonFiles
@@ -340,6 +348,11 @@ public class Main {
         }
     }
 
+    /**
+     * Copies SWCFiles from the swcFileDirectory to the Outputdirectory. Multiple Jsonfiles are possible
+     *
+     * @throws IOException
+     */
     public static void copySWCFilesOfJsonFilesToOutput() throws IOException {
         System.out.println("> Starting copy of SWC-Files from Json to Output-directory");
         File[] jsonFiles = Utils.chooseJSONFiles();
@@ -368,6 +381,11 @@ public class Main {
         }
     }
 
+    /**
+     * Calculates part of a TEDMatrix. can be used for calculation on a cluster
+     *
+     * @throws IOException
+     */
     public static void calculateTEDMatrixOnCluster() throws IOException {
         System.out.println("> Starting calculation of TEDMatrix on Cluster");
 
@@ -378,6 +396,11 @@ public class Main {
         Utils.printClusterMatrixToTxt(tedClusterResult, appProperties.getFileInput(), appProperties.getOutputDirectory(), "Clustermatrix_" + appProperties.getIteration());
     }
 
+    /**
+     * Reassembles partially calculated TEDMatrices to one big Matrix
+     *
+     * @throws IOException
+     */
     public static void reassembleClusterMatricesToTxt() throws IOException {
         File[] files = JsonUtils.parseJsonToFiles(appProperties.getFileInput());
         Utils.reassembleClusterMatrixToTxt(appProperties.getDirectoryInput(), files, appProperties.getOutputDirectory(), "ReassembledMatrix");

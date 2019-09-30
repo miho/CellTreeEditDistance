@@ -13,7 +13,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * TODO: make methods static
  * Used to create NeuronMetadata from given Json-Files
  */
 public class NeuronMetadataMapper {
@@ -23,7 +22,6 @@ public class NeuronMetadataMapper {
 
     private final FileFilter fileFilter = (final File file) -> file.getName().toLowerCase().endsWith(".json");
 
-    // TODO: TESTEN
     public Map<String, NeuronMetadataR> mapAllFromMetadataDirectory(File metadataDirectory) throws IOException {
         File[] files = metadataDirectory.listFiles(fileFilter);
         if (files == null) {
@@ -33,7 +31,6 @@ public class NeuronMetadataMapper {
         return neuronMetadataAll;
     }
 
-    // TODO: TESTEN
     public Map<String, NeuronMetadataR> mapExistingFromMetadataDirectory(File metadataDirectory, File swcFileDirectory) throws IOException {
         File[] files = metadataDirectory.listFiles(fileFilter);
         if (files == null) {
