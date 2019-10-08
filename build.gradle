@@ -1,5 +1,3 @@
-apply plugin: 'java'
-
 buildscript {
 
     repositories {
@@ -10,6 +8,11 @@ buildscript {
     dependencies {
         classpath (group: 'eu.mihosoft.vrl', name: 'vrl', version: '0.4.4+')
     }
+}
+
+plugins {
+    id 'java'
+    id 'com.github.hierynomus.license' version '0.14.0'
 }
 
 sourceCompatibility = '1.8'
@@ -54,7 +57,6 @@ dependencies {
 
     implementation files('libs/hierarchical-clustering-1.2.1-SNAPSHOT.jar')
 }
-
 
 
 def loadProperties(String sourceFileName) {
@@ -124,4 +126,24 @@ task installVRLPlugin(dependsOn: [clean,jar]) {
             rename (rootProject.name + ".vrlplugin", rootProject.name + ".jar")
         }
     }
+}
+
+license {
+    header = rootProject.file('config/HEADER')
+    strictCheck = true
+    ignoreFailures = true
+    mapping {
+        java   = 'SLASHSTAR_STYLE'
+        groovy = 'SLASHSTAR_STYLE'
+        fxml   = 'XML_STYLE'
+    }
+
+    ext.yearCurrent  = new java.text.SimpleDateFormat("yyyy").format(new Date())
+    ext.author1 = 'Michael Hoffer <info@michaelhoffer.de>'
+    ext.author2 = 'Goethe Center for Scientific Computing, University Frankfurt'
+    ext.author3 = 'Erid Guga'
+    ext.author4 = 'Lukas Maurer'
+
+
+    exclude '**/*.svg'
 }
