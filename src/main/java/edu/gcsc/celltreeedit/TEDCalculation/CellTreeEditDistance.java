@@ -63,6 +63,7 @@ public class CellTreeEditDistance implements java.io.Serializable{
     }
 
     public TEDClusterResult compareFilesForCluster(File[] files, int noOfRows, int iteration, int labelId, File swcFileDirectory) {
+        System.out.println("maxMemory: " + (Runtime.getRuntime().maxMemory()/(1024.0*1024.0*1024.0)) + " freeMemory: " + (Runtime.getRuntime().freeMemory()/(1024*1024*1024)) + " usedMemory: " + (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())/(1024.0*1024.0*1024.0));
         int filesLength = files.length;
         // logic to get noOfRows and noOfColsPerRow-Array
         // row using matrix index
@@ -177,6 +178,7 @@ public class CellTreeEditDistance implements java.io.Serializable{
                     currentNoOfFinishedTasks = noOfFinishedTasks.get();
                     if (currentNoOfFinishedTasks !=0 && currentNoOfFinishedTasks % 500000 == 0) {
                         System.out.println("Still waiting for results: " + new Date() + " | Number of finished Tasks: " + currentNoOfFinishedTasks );
+                        System.out.println("maxMemory: " + (Runtime.getRuntime().maxMemory()/(1024.0*1024.0*1024.0)) + " freeMemory: " + (Runtime.getRuntime().freeMemory()/(1024*1024*1024)) + " usedMemory: " + (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())/(1024.0*1024.0*1024.0));
                     }
                 }
             }
