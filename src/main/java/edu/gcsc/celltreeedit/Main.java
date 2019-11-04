@@ -423,7 +423,7 @@ public class Main {
         CellTreeEditDistance cellTreeEditDistance = new CellTreeEditDistance();
         TEDClusterResult tedClusterResult = cellTreeEditDistance.compareFilesForCluster(files, appProperties.getRows(), appProperties.getIteration(), appProperties.getLabel(), appProperties.getSwcFileDirectory());
 
-        Utils.printClusterMatrixToTxt(tedClusterResult, appProperties.getFileInput(), appProperties.getOutputDirectory(), "Clustermatrix_" + appProperties.getIteration());
+        Utils.printClusterMatrixToTxt(tedClusterResult, appProperties.getFileInput(), appProperties.getOutputDirectory(), "Clustermatrix_" + appProperties.getLabel() + "_" + appProperties.getIteration());
     }
 
     /**

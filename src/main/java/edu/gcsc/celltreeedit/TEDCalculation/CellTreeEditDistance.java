@@ -176,7 +176,7 @@ public class CellTreeEditDistance implements java.io.Serializable{
                     Runnable myTask = new MyTask(i, j, resultsFinal, nodeList);
                     pool.execute(myTask);
                     currentNoOfFinishedTasks = noOfFinishedTasks.get();
-                    if (currentNoOfFinishedTasks !=0 && currentNoOfFinishedTasks % 500000 == 0) {
+                    if (currentNoOfFinishedTasks !=0 && currentNoOfFinishedTasks % 1000000 == 0) {
                         System.out.println("Still waiting for results: " + new Date() + " | Number of finished Tasks: " + currentNoOfFinishedTasks );
                         System.out.println("maxMemory: " + (Runtime.getRuntime().maxMemory()/(1024.0*1024.0*1024.0)) + " freeMemory: " + (Runtime.getRuntime().freeMemory()/(1024*1024*1024)) + " usedMemory: " + (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())/(1024.0*1024.0*1024.0));
                     }
