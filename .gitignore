@@ -1,13 +1,4 @@
-# Created by .ignore support plugin (hsz.mobi)
-
-/build
-CellTreeEditDistance.iml
-/.idea
-/.gradle
-/out
-/.vscode
-/bin/
-/.settings
-/.project
-/.classpath
-/Output/*
+.gradle/
+.idea/
+build/
+out/
