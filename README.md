@@ -36,7 +36,7 @@ ProgramData
 The Framework has 13 functionalities which are controlled by the parameter 'case'. It is the most important parameter. Without this parameter nothing will work. The framework will tell you if parameters needed for the case are missing. It will not complain if too many arguments are passed, they will be ignored. A list of the parameters is given in 'commandline parameters'.  
 For instance this could be a simple command to run a TED-calculation from the commandline:  
 ```
-java -jar CellTreeEditDistance.jar -c=3 -b=~/ProgramData -f=~/swcFiles.json
+java -jar foo/CellTreeEditDistance.jar -c=3 -b=foo/ProgramData -f=foo/swcFiles.json
 ```
 
 #### --case=0
@@ -70,7 +70,7 @@ predefinedUniqueMetadata.add(predefinedUniqueMetadataContainer.createUniqueMetad
 #### --case=3
 This case starts a TED-calculation for a given json file and exports the resulting matrix to the Outputdirectory. This is an example call from the commandline:  
 ```
-java -jar CellTreeEditDistance.jar -c=3 -b=~/ProgramData -f=~/swcFiles.json -n=newName -l=12
+java -jar foo/CellTreeEditDistance.jar -c=3 -b=foo/ProgramData -f=foo/swcFiles.json -n=newName -l=12
 ```
 It means the TED-calculation will be executed with the swc-files specified in 'swcfiles.json', which are stored in '~/ProgramData/Data/SWCfiles/'. The outputmatrix will be renamed to 'newName_Matrix' and Label 12 will be used for the calculation.
 
@@ -113,19 +113,19 @@ This case copies swc-files from the SWCFiles directory to the output directory. 
 This case is used to calculate the TED on a Clustercomputer. It basically just calculates parts of the distance matrix. These clustermatrices must be assembled with case 13 afterwards.   
 Here is an example: A json-file with 1000 neurons is given. The Clustercomputer has 13 nodes so the calculation should be separated in 13 subproblems. Therefore the following commandline calls are necessary:
 ```
-java -jar CellTreeEditDistance.jar -c=12 -b=~/ProgramData -f=~/swcFiles.json -l=12 -r=77 -i=1
-java -jar CellTreeEditDistance.jar -c=12 -b=~/ProgramData -f=~/swcFiles.json -l=12 -r=77 -i=2
-java -jar CellTreeEditDistance.jar -c=12 -b=~/ProgramData -f=~/swcFiles.json -l=12 -r=77 -i=3
-java -jar CellTreeEditDistance.jar -c=12 -b=~/ProgramData -f=~/swcFiles.json -l=12 -r=77 -i=4
-java -jar CellTreeEditDistance.jar -c=12 -b=~/ProgramData -f=~/swcFiles.json -l=12 -r=77 -i=5
-java -jar CellTreeEditDistance.jar -c=12 -b=~/ProgramData -f=~/swcFiles.json -l=12 -r=77 -i=6
-java -jar CellTreeEditDistance.jar -c=12 -b=~/ProgramData -f=~/swcFiles.json -l=12 -r=77 -i=7
-java -jar CellTreeEditDistance.jar -c=12 -b=~/ProgramData -f=~/swcFiles.json -l=12 -r=77 -i=8
-java -jar CellTreeEditDistance.jar -c=12 -b=~/ProgramData -f=~/swcFiles.json -l=12 -r=77 -i=9
-java -jar CellTreeEditDistance.jar -c=12 -b=~/ProgramData -f=~/swcFiles.json -l=12 -r=77 -i=10
-java -jar CellTreeEditDistance.jar -c=12 -b=~/ProgramData -f=~/swcFiles.json -l=12 -r=77 -i=11
-java -jar CellTreeEditDistance.jar -c=12 -b=~/ProgramData -f=~/swcFiles.json -l=12 -r=77 -i=12
-java -jar CellTreeEditDistance.jar -c=12 -b=~/ProgramData -f=~/swcFiles.json -l=12 -r=77 -i=13
+java -jar foo/CellTreeEditDistance.jar -c=12 -b=foo/ProgramData -f=foo/swcFiles.json -l=12 -r=77 -i=1
+java -jar foo/CellTreeEditDistance.jar -c=12 -b=foo/ProgramData -f=foo/swcFiles.json -l=12 -r=77 -i=2
+java -jar foo/CellTreeEditDistance.jar -c=12 -b=foo/ProgramData -f=foo/swcFiles.json -l=12 -r=77 -i=3
+java -jar foo/CellTreeEditDistance.jar -c=12 -b=foo/ProgramData -f=foo/swcFiles.json -l=12 -r=77 -i=4
+java -jar foo/CellTreeEditDistance.jar -c=12 -b=foo/ProgramData -f=foo/swcFiles.json -l=12 -r=77 -i=5
+java -jar foo/CellTreeEditDistance.jar -c=12 -b=foo/ProgramData -f=foo/swcFiles.json -l=12 -r=77 -i=6
+java -jar foo/CellTreeEditDistance.jar -c=12 -b=foo/ProgramData -f=foo/swcFiles.json -l=12 -r=77 -i=7
+java -jar foo/CellTreeEditDistance.jar -c=12 -b=foo/ProgramData -f=foo/swcFiles.json -l=12 -r=77 -i=8
+java -jar foo/CellTreeEditDistance.jar -c=12 -b=foo/ProgramData -f=foo/swcFiles.json -l=12 -r=77 -i=9
+java -jar foo/CellTreeEditDistance.jar -c=12 -b=foo/ProgramData -f=foo/swcFiles.json -l=12 -r=77 -i=10
+java -jar foo/CellTreeEditDistance.jar -c=12 -b=foo/ProgramData -f=foo/swcFiles.json -l=12 -r=77 -i=11
+java -jar foo/CellTreeEditDistance.jar -c=12 -b=foo/ProgramData -f=foo/swcFiles.json -l=12 -r=77 -i=12
+java -jar foo/CellTreeEditDistance.jar -c=12 -b=foo/ProgramData -f=foo/swcFiles.json -l=12 -r=77 -i=13
 ```
 The number of iterations must fit to the number of neurons and the row-count. r = RoundUp(1000/13)  
 If you are using slurm on a clustercomputer, there are two shell-scripts which can be used for this (inside 'AdditionalData').
@@ -177,7 +177,7 @@ org.apache.lucene.codecs.idversion.IDVersionPostingsFormat
 To this line:  
 org.apache.lucene.codecs.lucene50.Lucene50PostingsFormat
 
-Afterwards zip the files again and change the file ending to .jar
+Afterwards zip the files again and change the filename to CellTreeEditDistance.jar
 
 ## Content of disk with optional data
 This data is optional and relates to the bachelor thesis 'Clustering von Nervenzellen der NeuroMorpho.Org Datenbank mit Hilfe der Tree-Edit-Distance'.
