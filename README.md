@@ -43,7 +43,7 @@ java -jar CellTreeEditDistance.jar -c=3 -b=~/ProgramData -f=~/swcFiles.json
 This case is used to preprocess the SWCfiles directory within the given base directory. Not all swc-files can be used, some are duplicates. The unwanted files are moved to subdirectory 'ProgramData/Data/SWCFiles/00_Ignore/'. 
 
 #### --case=1
-This case is used to query Lucene for neurons. Json-files containing neuronnames are very important when using the framework. They are used to tell for which neurons a TED-calculation shall be made. With this case it is possible to search the Metadata for neurons with specific properties. Not all Metadata are searchable only the ones that have a related swc file in the SWCfiles directory outside 00_Ignore.
+This case is used to query neurons with Lucene. Json-files containing neuronnames are very important when using the framework. They are used to tell for which neurons a TED-calculation shall be made. With this case it is possible to search the Metadata for neurons with specific properties. Not all Metadata are searchable only the ones that have a related swc file in the SWCfiles directory outside 00_Ignore.
 IMPORTANT: If the json-files from the bachelor-thesis shall be used, the 'ProgramData.zip' has to be used (preprocessing was not reproducible because it was not working alphabetically, but it is now).
 
 Here is an example query:  
@@ -172,7 +172,7 @@ Exception in thread "main" java.lang.IllegalArgumentException: An SPI class of t
 This can be solved. Unzip the jar. Inside the jar this file has to be adjusted:  
 META-INF/services/org.apache.lucene.codecs.PostingsFormat
   
-Change this line:
+Change this line:  
 org.apache.lucene.codecs.idversion.IDVersionPostingsFormat  
 To this line:  
 org.apache.lucene.codecs.lucene50.Lucene50PostingsFormat
