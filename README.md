@@ -10,10 +10,10 @@ Neuronal Morphology'.
 ## Usage of the Framework
 
 ### Preparations
-The CellTreeEditDistance-Framework can be used from commandline by running the jar-file with the needed parameters as described in 'Using the commandline' below (here querying neurons with Lucene is not supported at the moment).
+The CellTreeEditDistance-Framework can be used from commandline by running the jar-file with the needed parameters as described in 'Using the commandline' below.
 If adjustments to the code are needed the project can be downloaded from GitHub and imported with Gradle. As no jar-file is used in this case, the commands described in 'Using the commandline' have to be adjusted.
 
-In both cases the following directory-structure must be created (or unzipped from the optional disk). In GitHub a 'MinimumWorkingExample' is provided.
+In both cases the following directory-structure must be created (or unzipped from the optional disk). In GitHub inside 'AdditionalData' an example is provided. Among other things, it contains the 'ProgramData'-structure (with unpreprocessed SWCFiles, relating metadata) and a json-file for test purposes.
 
 ```
 ProgramData
@@ -33,18 +33,18 @@ ProgramData
 'WorkingDir' is used by some functions of the framework. No files are required to be contained.
 
 ### Using the commandline
-The Framework has 13 functionalities which are controlled by the parameter 'case'. It is the most important parameter. Without this parameter nothing will work. The framework will tell you if parameters needed for the case are missing. It will not complain if too many arguments are passed, they will be ignored. A list of the parameters are given below.
+The Framework has 13 functionalities which are controlled by the parameter 'case'. It is the most important parameter. Without this parameter nothing will work. The framework will tell you if parameters needed for the case are missing. It will not complain if too many arguments are passed, they will be ignored. A list of the parameters is given in 'commandline parameters'.  
 For instance this could be a simple command to run a TED-calculation from the commandline:  
 ```
-java -jar CellTreeEditDistance.jar -c=3 -b=~/ProgramData -f=~/swcfiles.json
+java -jar CellTreeEditDistance.jar -c=3 -b=~/ProgramData -f=~/swcFiles.json
 ```
 
 #### --case=0
-This case is used to preprocess the SWCfiles directory within the given base directory. Not all swc-files can be used, some are duplicates. The unwanted files are moved to subdirectory 'ProgramData/Data/SWCFiles/00_Ignore/'.
+This case is used to preprocess the SWCfiles directory within the given base directory. Not all swc-files can be used, some are duplicates. The unwanted files are moved to subdirectory 'ProgramData/Data/SWCFiles/00_Ignore/'. 
 
 #### --case=1
-Unfortunately this case does not work when executing the jar as there have been problems regarding Lucene when creating the fat-jar.
-This case is used to query Lucene for neurons. Json-files containing neuronnames are very important when using the framework. they are used to tell for which neurons a TED-calculation shall be made. With this case it is possible to search the Metadata for neurons with specific properties. Not all Metadata are searchable only the ones that have a related swc file in the SWCfiles directory outside 00_Ignore.
+This case is used to query Lucene for neurons. Json-files containing neuronnames are very important when using the framework. They are used to tell for which neurons a TED-calculation shall be made. With this case it is possible to search the Metadata for neurons with specific properties. Not all Metadata are searchable only the ones that have a related swc file in the SWCfiles directory outside 00_Ignore.
+IMPORTANT: If the json-files from the bachelor-thesis shall be used, the 'ProgramData.zip' has to be used (preprocessing was not reproducible because it was not working alphabetically, but it is now).
 
 Here is an example query:  
 ```
@@ -70,7 +70,7 @@ predefinedUniqueMetadata.add(predefinedUniqueMetadataContainer.createUniqueMetad
 #### --case=3
 This case starts a TED-calculation for a given json file and exports the resulting matrix to the Outputdirectory. This is an example call from the commandline:  
 ```
-java -jar CellTreeEditDistance.jar -c=3 -b=~/ProgramData -f=~/swcfiles.json -n=newName -l=12
+java -jar CellTreeEditDistance.jar -c=3 -b=~/ProgramData -f=~/swcFiles.json -n=newName -l=12
 ```
 It means the TED-calculation will be executed with the swc-files specified in 'swcfiles.json', which are stored in '~/ProgramData/Data/SWCfiles/'. The outputmatrix will be renamed to 'newName_Matrix' and Label 12 will be used for the calculation.
 
@@ -113,25 +113,38 @@ This case copies swc-files from the SWCFiles directory to the output directory. 
 This case is used to calculate the TED on a Clustercomputer. It basically just calculates parts of the distance matrix. These must be assembled with case 13 afterwards.   
 Here is an example: A json-file with 1000 neurons is given. The Clustercomputer has 13 nodes so the calculation should be separated in 13 subproblems. Therefore the following commandline calls are necessary:
 ```
-java -jar CellTreeEditDistance.jar -c=12 -b=~/ProgramData -f=~/swcfiles.json -l=12 -r=77 -i=1
-java -jar CellTreeEditDistance.jar -c=12 -b=~/ProgramData -f=~/swcfiles.json -l=12 -r=77 -i=2
-java -jar CellTreeEditDistance.jar -c=12 -b=~/ProgramData -f=~/swcfiles.json -l=12 -r=77 -i=3
-java -jar CellTreeEditDistance.jar -c=12 -b=~/ProgramData -f=~/swcfiles.json -l=12 -r=77 -i=4
-java -jar CellTreeEditDistance.jar -c=12 -b=~/ProgramData -f=~/swcfiles.json -l=12 -r=77 -i=5
-java -jar CellTreeEditDistance.jar -c=12 -b=~/ProgramData -f=~/swcfiles.json -l=12 -r=77 -i=6
-java -jar CellTreeEditDistance.jar -c=12 -b=~/ProgramData -f=~/swcfiles.json -l=12 -r=77 -i=7
-java -jar CellTreeEditDistance.jar -c=12 -b=~/ProgramData -f=~/swcfiles.json -l=12 -r=77 -i=8
-java -jar CellTreeEditDistance.jar -c=12 -b=~/ProgramData -f=~/swcfiles.json -l=12 -r=77 -i=9
-java -jar CellTreeEditDistance.jar -c=12 -b=~/ProgramData -f=~/swcfiles.json -l=12 -r=77 -i=10
-java -jar CellTreeEditDistance.jar -c=12 -b=~/ProgramData -f=~/swcfiles.json -l=12 -r=77 -i=11
-java -jar CellTreeEditDistance.jar -c=12 -b=~/ProgramData -f=~/swcfiles.json -l=12 -r=77 -i=12
-java -jar CellTreeEditDistance.jar -c=12 -b=~/ProgramData -f=~/swcfiles.json -l=12 -r=77 -i=13
+java -jar CellTreeEditDistance.jar -c=12 -b=~/ProgramData -f=~/swcFiles.json -l=12 -r=77 -i=1
+java -jar CellTreeEditDistance.jar -c=12 -b=~/ProgramData -f=~/swcFiles.json -l=12 -r=77 -i=2
+java -jar CellTreeEditDistance.jar -c=12 -b=~/ProgramData -f=~/swcFiles.json -l=12 -r=77 -i=3
+java -jar CellTreeEditDistance.jar -c=12 -b=~/ProgramData -f=~/swcFiles.json -l=12 -r=77 -i=4
+java -jar CellTreeEditDistance.jar -c=12 -b=~/ProgramData -f=~/swcFiles.json -l=12 -r=77 -i=5
+java -jar CellTreeEditDistance.jar -c=12 -b=~/ProgramData -f=~/swcFiles.json -l=12 -r=77 -i=6
+java -jar CellTreeEditDistance.jar -c=12 -b=~/ProgramData -f=~/swcFiles.json -l=12 -r=77 -i=7
+java -jar CellTreeEditDistance.jar -c=12 -b=~/ProgramData -f=~/swcFiles.json -l=12 -r=77 -i=8
+java -jar CellTreeEditDistance.jar -c=12 -b=~/ProgramData -f=~/swcFiles.json -l=12 -r=77 -i=9
+java -jar CellTreeEditDistance.jar -c=12 -b=~/ProgramData -f=~/swcFiles.json -l=12 -r=77 -i=10
+java -jar CellTreeEditDistance.jar -c=12 -b=~/ProgramData -f=~/swcFiles.json -l=12 -r=77 -i=11
+java -jar CellTreeEditDistance.jar -c=12 -b=~/ProgramData -f=~/swcFiles.json -l=12 -r=77 -i=12
+java -jar CellTreeEditDistance.jar -c=12 -b=~/ProgramData -f=~/swcFiles.json -l=12 -r=77 -i=13
 ```
 The number of iterations must fit to the number of neurons and the row-count. r = RoundUp(1000/13)  
-If you are using slurm, there are some shell-scripts which can be used for this.  
+If you are using slurm on a clustercomputer, there are two shell-scripts which can be used for this (inside 'AdditionalData').
+
+'submit_CellTED.sh' uses a job-array to divide the calculation into 20 slurmjobs (each using 1 node). This command will start it.
+```
+sbatch submit_CellTED.sh
+```
+
+'submit_AllLabels.sh' is a shell script. It calculates the clustermatrices for labels 1-11. For each label it divides the calculation into 112 subproblems. Important to note: It limits the number of used nodes to 10. This way the clustercomputer can still be used from by other clients.  
+The script must be run in a screen-session. Otherwise it would be stopped when the ssh-session is closed. 
 
 #### --case=13
-This case is used to reassemble a complete distance matrix from the smaller distance matrices created in case 12. Therefore all submatrices must be located in one directory. The directory can be specified with '-d' parameter.
+This case is used to reassemble a complete distance matrix from the smaller distance matrices created in case 12. Therefore all submatrices must be located in one directory. The directory can be specified with '-d' parameter.  
+If you are using slurm on a clustercomputer, there is a shell-script which can be used for this (inside 'AdditionalData').
+'submit_reassembling.sh' reassembles the clustermatrices to one big matrix.
+```
+sbatch submit_reassembling.sh
+```
 
 #### commandline parameters
 One quadrupel describes a commandline parameter. The first entry is the shortcut to use the parameter eg '-c=1'. The second entry is the long version '--case=1'. The third entry defines whether the parameter has arguments. The last entry gives an explanation of the parameter's purpose.
@@ -147,6 +160,24 @@ ROWS("r", "rowsPerCall", true, "used for TED-Calculation on a Cluster. Defines t
 ITERATION("i", "iteration", true, "used for TED-Calculation on a Cluster. Defines the actual iteration of a TED-Calculation divided for multiple cluster-nodes."),
 DIRECTORY_INPUT("d", "directoryInput", true, "defines the directory that contains the clustermatrices to be reassembled to complete distance-matrix.");
 ```
+
+## Creating the FatJar
+This command will create a FatJar 'all-in-one-jar.jar':
+```
+./gradlew customFatJar
+```
+There are some problems with Lucene. It will throw this error:  
+Exception in thread "main" java.lang.IllegalArgumentException: An SPI class of type org.apache.lucene.codecs.PostingsFormat with name 'Lucene50' does not exist. ...
+
+This can be solved. Unzip the jar. Inside the jar this file has to be adjusted:  
+META-INF/services/org.apache.lucene.codecs.PostingsFormat
+  
+Change this line:
+org.apache.lucene.codecs.idversion.IDVersionPostingsFormat  
+To this line:  
+org.apache.lucene.codecs.lucene50.Lucene50PostingsFormat
+
+Afterwards zip the files again and change the file ending to .jar
 
 ## Content of disk with optional data
 This data is optional and relates to the bachelor thesis 'Clustering von Nervenzellen der NeuroMorpho.Org Datenbank mit Hilfe der Tree-Edit-Distance'.
