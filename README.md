@@ -11,7 +11,7 @@ Neuronal Morphology'.
 
 ### Preparations
 The CellTreeEditDistance-Framework can be used from commandline by running the jar-file with the needed parameters as described in 'Using the commandline' below.
-If adjustments to the code are needed the project can be downloaded from GitHub and imported with Gradle. As no jar-file is used in this case, the commands described in 'Using the commandline' have to be adjusted.
+If adjustments to the code are needed the project can be downloaded from GitHub and imported in your development IDE with Gradle. As no jar-file is used in this case, the commands described in 'Using the commandline' have to be adjusted.
 
 In both cases the following directory-structure must be created (or unzipped from the optional disk). In GitHub inside 'AdditionalData' an example is provided. Among other things, it contains the 'ProgramData'-structure (with unpreprocessed SWCFiles, relating metadata) and a json-file for test purposes.
 
