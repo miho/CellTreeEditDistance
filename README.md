@@ -110,7 +110,7 @@ This case is used to search Metadata for neurons that are in a json-file. They a
 This case copies swc-files from the SWCFiles directory to the output directory. The files must be defined in a json-file. Multiple files can be selected at once in a file dialog. The swc-files will be put into subfolders named after their json-file.
 
 #### --case=12
-This case is used to calculate the TED on a Clustercomputer. It basically just calculates parts of the distance matrix. These must be assembled with case 13 afterwards.   
+This case is used to calculate the TED on a Clustercomputer. It basically just calculates parts of the distance matrix. These clustermatrices must be assembled with case 13 afterwards.   
 Here is an example: A json-file with 1000 neurons is given. The Clustercomputer has 13 nodes so the calculation should be separated in 13 subproblems. Therefore the following commandline calls are necessary:
 ```
 java -jar CellTreeEditDistance.jar -c=12 -b=~/ProgramData -f=~/swcFiles.json -l=12 -r=77 -i=1
@@ -139,7 +139,7 @@ sbatch submit_CellTED.sh
 The script must be run in a screen-session. Otherwise it would be stopped when the ssh-session is closed. 
 
 #### --case=13
-This case is used to reassemble a complete distance matrix from the smaller distance matrices created in case 12. Therefore all submatrices must be located in one directory. The directory can be specified with '-d' parameter.  
+This case is used to reassemble clustermatrices created in case 12 to one big matrix. Therefore all clustermatrices must be located in one directory. The directory can be specified with '-d' parameter.  
 If you are using slurm on a clustercomputer, there is a shell-script which can be used for this (inside 'AdditionalData').
 'submit_reassembling.sh' reassembles the clustermatrices to one big matrix.
 ```
