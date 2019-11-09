@@ -309,8 +309,9 @@ public class LabelTest {
         // create random Object with seed
         // randomly create number of children
 
+        File workingDir = new File(BaseDirectory.getWorkingDirectory().getPath());
+        workingDir.mkdirs();
         File file = new File(BaseDirectory.getWorkingDirectory().getPath() + "/programaticSWCFile.swc");
-        file.createNewFile();
 
         // stuff for writing to swc-File
         FileWriter export = new FileWriter(file.getPath());
