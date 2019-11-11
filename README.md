@@ -12,7 +12,7 @@ Neuronal Morphology'.
 
 ### Preparations
 The CellTreeEditDistance-Framework can be used from commandline by running the jar-file with the needed parameters as described in 'Using the commandline' below.
-If adjustments to the code are needed the project can be downloaded from GitHub and imported in your development IDE with Gradle. As no jar-file is used in this case, the commands described in 'Using the commandline' have to be adjusted.
+If adjustments to the code are needed the project can be downloaded from GitHub and imported in your development IDE with Gradle.
 
 In both cases the following directory-structure must be available:
 ```
@@ -39,9 +39,13 @@ The ProgramData-directory can be created in three ways:
 
 ### Using the commandline
 The Framework has 13 functionalities which are controlled by the parameter 'case'. It is the most important parameter. Without this parameter nothing will work. The framework will tell you if parameters needed for the case are missing. It will not complain if too many arguments are passed, they will be ignored. A list of the parameters is given in 'commandline parameters'.  
-For instance this could be a simple command to run a TED-calculation from the commandline:  
+For instance this could be a simple command to run a TED-calculation from the commandline when using the FatJar:  
 ```
 java -jar foo/CellTreeEditDistance.jar -c=3 -b=foo/ProgramData -f=foo/swcFiles.json
+```
+This would be the same command when using the gradle-wrapper.:
+```
+foo/gradlew run --args='-c=3 -b=foo/ProgramData -f=foo/swcFiles.json'
 ```
 
 #### --case=0
@@ -167,9 +171,9 @@ DIRECTORY_INPUT("d", "directoryInput", true, "defines the directory that contain
 ```
 
 ## Creating the FatJar
-This command will create a FatJar 'all-in-one-jar.jar':
+This command will create a FatJar 'CellTreeEditDistance.jar':
 ```
-./gradlew customFatJar
+./gradlew jar
 ```
 There are some problems with Lucene. It will throw this error:  
 Exception in thread "main" java.lang.IllegalArgumentException: An SPI class of type org.apache.lucene.codecs.PostingsFormat with name 'Lucene50' does not exist. ...
