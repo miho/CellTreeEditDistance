@@ -13,7 +13,7 @@ Neuronal Morphology'.
 The CellTreeEditDistance-Framework can be used from commandline by running the jar-file with the needed parameters as described in 'Using the commandline' below.
 If adjustments to the code are needed the project can be downloaded from GitHub and imported in your development IDE with Gradle. As no jar-file is used in this case, the commands described in 'Using the commandline' have to be adjusted.
 
-In both cases the following directory-structure must be created (or unzipped from the optional disk). In GitHub inside 'AdditionalData' an example is provided. Among other things, it contains the 'ProgramData'-structure (with unpreprocessed SWCFiles, relating metadata) and a json-file for test purposes.
+In both cases the following directory-structure must be created (or unzipped from the optional disk). In GitHub inside 'AdditionalData' an example is provided. Among other things, it contains the 'ProgramData'-structure (with preprocessed SWCFiles, relating metadata) and a json-file for test purposes.
 
 ```
 ProgramData
@@ -40,7 +40,7 @@ java -jar foo/CellTreeEditDistance.jar -c=3 -b=foo/ProgramData -f=foo/swcFiles.j
 ```
 
 #### --case=0
-This case is used to preprocess the SWCfiles directory within the given base directory. Not all swc-files can be used, some are duplicates. The unwanted files are moved to subdirectory 'ProgramData/Data/SWCFiles/00_Ignore/'. 
+This case is used to preprocess the SWCfiles directory within the given base directory. Not all swc-files can be used, some are duplicates. The unwanted files are moved to subdirectory 'ProgramData/Data/SWCFiles/00_Ignore/'.
 
 #### --case=1
 This case is used to query neurons with Lucene. Json-files containing neuronnames are very important when using the framework. They are used to tell for which neurons a TED-calculation shall be made. With this case it is possible to search the Metadata for neurons with specific properties. Not all Metadata are searchable only the ones that have a related swc file in the SWCfiles directory outside 00_Ignore.
@@ -79,7 +79,7 @@ This case is exactly the same as case 3 but it also calculates a dendrogram. Fur
 If '-e' is added to the commandline the dendrogram will not contain filenames but a mix of neuronMetadata of the neuron. eg '1, Amaral, 117' where 1 is its UniqueMetadata-category, Amaral is the archive the neuron belongs to, 117 is the Neuron-ID in NeuroMorpho.Org where it can be searched.  
 If -s is added the dendrogram will not be shown but saved to the output-directory. If the layout is not suitable, it can be changed inside the class 'Clustering' in line 67: contentPane.setSize(500, 800);
 Furthermore the dendrogram can be colored depending on its leafnames. This is adjustable directly in the class 'Main' with the property 'clusterColorRegexes'.  
-  
+
 This will lead to a completely black dendrogram:
 ```
 new ClusterColorRegex(Pattern.compile("^.*"), Color.BLACK)
@@ -136,7 +136,7 @@ sbatch submit_CellTED.sh
 ```
 
 'submit_AllLabels.sh' is a shell script. It calculates the clustermatrices for labels 1-11. For each label it divides the calculation into 112 subproblems. Important to note: It limits the number of used nodes to 10. This way the clustercomputer can still be used from by other clients.  
-The script must be run in a screen-session. Otherwise it would be stopped when the ssh-session is closed. 
+The script must be run in a screen-session. Otherwise it would be stopped when the ssh-session is closed.
 
 #### --case=13
 This case is used to reassemble clustermatrices created in case 12 to one big matrix. Therefore all clustermatrices must be located in one directory. The directory can be specified with '-d' parameter.  
@@ -171,7 +171,7 @@ Exception in thread "main" java.lang.IllegalArgumentException: An SPI class of t
 
 This can be solved. Unzip the jar. Inside the jar this file has to be adjusted:  
 META-INF/services/org.apache.lucene.codecs.PostingsFormat
-  
+
 Change this line:  
 org.apache.lucene.codecs.idversion.IDVersionPostingsFormat  
 To this line:  
@@ -196,7 +196,7 @@ This data is optional and relates to the bachelor thesis 'Clustering von Nervenz
 	+ used json-files
 - 04_HW_Algo: two small programs used for converting from the program of heumann and wittum and this framework
 - 05_Data: raw metadata and raw swc-files from NeuroMorpho.Org as a zip. Date: 19.08.2019
-- BA_ClusteringNeuroMorpho_LukasMaurer.pdf: Bachelor thesis 
+- BA_ClusteringNeuroMorpho_LukasMaurer.pdf: Bachelor thesis
 - CellTreeEditDistance.jar: fat-jar of the framework
 - CellTreeEditDistance.zip: Intellij-project from the framework as a zip
 - ProgramData.zip: directory-structure used by the framework, containing the actual data, that has been used in the bachelor thesis.
