@@ -14,8 +14,7 @@ Neuronal Morphology'.
 The CellTreeEditDistance-Framework can be used from commandline by running the jar-file with the needed parameters as described in 'Using the commandline' below.
 If adjustments to the code are needed the project can be downloaded from GitHub and imported in your development IDE with Gradle. As no jar-file is used in this case, the commands described in 'Using the commandline' have to be adjusted.
 
-In both cases the following directory-structure must be created (or unzipped from the optional disk). In GitHub inside 'AdditionalData' an example is provided. Among other things, it contains the 'ProgramData'-structure (with preprocessed SWCFiles, relating metadata) and a json-file for test purposes.
-
+In both cases the following directory-structure must be available:
 ```
 ProgramData
  |
@@ -33,6 +32,11 @@ ProgramData
 'Output' is empty and will contain output to be created with the framework  
 'WorkingDir' is used by some functions of the framework. No files are required to be contained.
 
+The ProgramData-directory can be created in three ways:  
+1. From the optional disk the zip 'ProgramData.zip' can be extracted. It also contains the preprocessed SWCFiles and Metadata from NeuroMorpho.Org. (recommended)
+2. Create the directories manually and request the most recent swc-files and metadata from NeuroMorpho.Org.
+3. In GitHub inside 'AdditionalData' a small example is provided. Among other things, it contains the 'ProgramData'-structure (with some preprocessed SWCFiles, relating metadata) and a json-file for test purposes.
+
 ### Using the commandline
 The Framework has 13 functionalities which are controlled by the parameter 'case'. It is the most important parameter. Without this parameter nothing will work. The framework will tell you if parameters needed for the case are missing. It will not complain if too many arguments are passed, they will be ignored. A list of the parameters is given in 'commandline parameters'.  
 For instance this could be a simple command to run a TED-calculation from the commandline:  
@@ -45,7 +49,7 @@ This case is used to preprocess the SWCfiles directory within the given base dir
 
 #### --case=1
 This case is used to query neurons with Lucene. Json-files containing neuronnames are very important when using the framework. They are used to tell for which neurons a TED-calculation shall be made. With this case it is possible to search the Metadata for neurons with specific properties. Not all Metadata are searchable only the ones that have a related swc file in the SWCfiles directory outside 00_Ignore.
-IMPORTANT: If the json-files from the bachelor-thesis shall be used, the 'ProgramData.zip' has to be used (preprocessing was not reproducible because it was not working alphabetically, but it is now).
+IMPORTANT: If the json-files from the bachelor-thesis shall be used, the 'ProgramData.zip' has to be used!
 
 Here is an example query:  
 ```
