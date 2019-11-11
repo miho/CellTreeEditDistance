@@ -45,7 +45,7 @@ java -jar foo/CellTreeEditDistance.jar -c=3 -b=foo/ProgramData -f=foo/swcFiles.j
 ```
 This would be the same command when using the gradle-wrapper.:
 ```
-foo/gradlew run --args='-c=3 -b=foo/ProgramData -f=foo/swcFiles.json'
+./gradlew run --args='-c=3 -b=foo/ProgramData -f=foo/swcFiles.json'
 ```
 
 #### --case=0
