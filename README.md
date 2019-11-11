@@ -6,6 +6,7 @@ Neuronal Morphology'.
 ## General Usage Notes
 - project needs gradle and java 8
 - There exists a disk containing further optional data regarding the bachelor thesis in which this program was created (see 'Content of disk with optional data' below). This data can be asked for at Goethe-University in Frankfurt, precisely Goethe Center for Scientific Computing (GCSC), Gabriel Wittum or Michael Hoffer.
+- [GitHub-Link](https://github.com/miho/CellTreeEditDistance/tree/master-lukas)
 
 ## Usage of the Framework
 
